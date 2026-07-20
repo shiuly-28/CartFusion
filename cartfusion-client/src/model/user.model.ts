@@ -10,7 +10,7 @@ email:string;
 password?:string;
 phone?:string;
 image?:string;
-role: "user" | "vendor" | "admin"
+role: "user" | "merchant" | "admin"
 
 shopName?:string;
 shopAddress?:string;
@@ -21,7 +21,7 @@ requestedAt: Date;
 approvedAt:Date;
 rejectedReason?:string
 
-vendorProducts?:mongoose.Types.ObjectId[];
+merchantProducts?:mongoose.Types.ObjectId[];
 orders?:mongoose.Types.ObjectId[];
 
 
@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     role: {
         type:String,
-        enum:["user", "vendor", "admin"],
+        enum:["user", "merchant", "admin"],
         default:"user"
     },
 
@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema<IUser>({
         type:String
     },
 
-    vendorProducts:[{
+    merchantProducts:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Product"
     }
