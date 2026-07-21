@@ -5,6 +5,10 @@ import { RiContractLeftRightLine } from "react-icons/ri";
 
 function Register() {
     const [step, setStep] = useState<1 | 2>(1)
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 
     via-black to-gray-900 text-white p-6'>
@@ -43,6 +47,7 @@ function Register() {
         </div>
 
         <motion.button
+        onClick={()=>setStep(2)}
         whileHover={{scale: 1.1}}
         whileTap={{scale: 0.95}}
         className='mt-4 px-4 py-3 bg-[#00684D] hover:bg-[#049770] rounded-xl font-medium 
@@ -50,8 +55,42 @@ function Register() {
         >Next <RiContractLeftRightLine /></motion.button>
       </motion.div>}
 
-      {step == 2 &&<motion.div>
+      {step == 2 &&<motion.div
+          initial={{ opacity: 0, y:40 }}
+      animate={{ opacity: 1, y:0 }}
+      exit={{ opacity: 0, y:-40 }}
+      transition={{duration:0.5}}
+      className='w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl
+      p-8 border border-white/20'
+      >
+        <h1 className='text-2xl font-semibold text-center mb-6 text-[#049770]'>Create your Account</h1>
+        <form action="" className='flex flex-col gap-4'>
 
+          <input type="text"
+          required
+          placeholder='Full Name'
+          className='bg-white/10 border border-white/30 rounded-lg p-3
+          focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
+          onChange={(e) =>setName(e.target.value)} value={name}/>
+
+          <input type="text"
+          required
+          placeholder='Email'
+          className='bg-white/10 border border-white/30 rounded-lg p-3
+          focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
+          onChange={(e) =>setEmail(e.target.value)} value={email}/>
+
+          <div className='relative'>
+            <input type="text"
+          required
+          placeholder={showPassword ? "text" : "password"}
+          className='bg-white/10 border border-white/30 rounded-lg p-3
+          focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
+          onChange={(e) =>setPassword(e.target.value)} value={password}/>
+          <button className='absolute right-3 top-1/2 -translate-y-1/2
+          text-gray-400 hover:text-white transition'>eye</button>
+          </div>
+        </form>
       </motion.div>}
       </AnimatePresence>
     </div>
