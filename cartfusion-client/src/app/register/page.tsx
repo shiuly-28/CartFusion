@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { AnimatePresence, motion } from "motion/react"
+import { RiContractLeftRightLine } from "react-icons/ri";
 
 function Register() {
     const [step, setStep] = useState<1 | 2>(1)
@@ -22,18 +23,31 @@ function Register() {
             {
                 [
                     {label:"User", icon: "👤", value: "user"},
-                    {label:"merchant", icon: "👤", value: "merchant"},
+                    {label:"merchant", icon: "🏬", value: "merchant"},
                     {label:"Admin", icon: "👤", value: "admin"},
 
                 ].map((item, index)=>(
                     <motion.div
-                    key={item.value}>
+                    key={item.value}
+                    whileHover={{scale: 0.95}}
+                    className='p-4 bg-white/10 hover:bg-white/20 cursor-pointer rounded-xl
+                    border border-white/30 shadow-lg flex flex-col items-center transition'
 
+                    >
+                      <span className='text-4xl mb-2'>{item.icon}</span>
+                      <span className='text-sm font-medium'>{item.value}</span>
                     </motion.div>
                 ))
             }
 
         </div>
+
+        <motion.button
+        whileHover={{scale: 1.1}}
+        whileTap={{scale: 0.95}}
+        className='mt-4 px-4 py-3 bg-[#00684D] hover:bg-[#049770] rounded-xl font-medium 
+        flex items-center justify-center gap-1 w-full'
+        >Next <RiContractLeftRightLine /></motion.button>
       </motion.div>}
 
       {step == 2 &&<motion.div>
