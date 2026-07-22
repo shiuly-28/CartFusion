@@ -1,48 +1,23 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from "motion/react"
-import { RiContractLeftRightLine } from "react-icons/ri";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { RiContractLeftRightLine } from 'react-icons/ri';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
-import { TbPlayerTrackNext } from 'react-icons/tb';
+import { FcGoogle } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
-function Register() {
+const Login= () => {
     const [step, setStep] = useState<1 | 2>(1)
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [showPassword, setShowPassword] = useState(false)
-    const router = useRouter()
-    const  [loading, setLoading] = useState(false)
-
-
-    const  handleSignUp = async(e:React.FormEvent) =>{
-      e.preventDefault()
-      setLoading(true)
-      try{
-        const result = await axios.post("/api/auth/register",
-          {name, email, password})
-          console.log(result.data)
-          setLoading(false)
-          setName("")
-          setEmail("")
-          setPassword("")
-          router.push("/login")
-      }catch(error){
-        console.log(error)
-        setLoading(false)
-      }
-    }
-    
-  return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 
+      const [email, setEmail] = useState("")
+        const [password, setPassword] = useState("")
+        const [showPassword, setShowPassword] = useState(false)
+        const router = useRouter()
+        const  [loading, setLoading] = useState(false)
+    return (
+        <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 
     via-black to-gray-900 text-white p-6'>
-
-        <AnimatePresence mode='wait'>
+         <AnimatePresence mode='wait'>
       {step == 1 && <motion.div 
       initial={{ opacity: 0, y:-40 }}
       animate={{ opacity: 1, y:0 }}
@@ -50,7 +25,7 @@ function Register() {
       transition={{duration:0.5}}
       className='w-full max-w-lg text-center bg-white/10 backdrop-blur-md rounded-2xl
       shadow-2xl p-10 border border-white/20'>
-        <h1 className='text-4xl font-bold mb-4 text-[#00684D]'>Welcome to CartFusion</h1>
+        <h1 className='text-4xl font-bold mb-4 text-[#00684D]'>Welcome to <span className='text-[#049770]'>CartFusion</span> </h1>
         <p className='text-gray-300 mb-6'>Register with one of the following account types:</p>
         <div className='grid grid-cols-3 gap-4 mb-6'>
             {
@@ -93,14 +68,8 @@ function Register() {
       p-8 border border-white/20'
       >
         <h1 className='text-2xl font-semibold text-center mb-6 text-[#049770]'>Create your Account</h1>
-        <form onSubmit={handleSignUp} className='flex flex-col gap-4'>
+        <form  className='flex flex-col gap-4'>
 
-          <input type="text"
-          required
-          placeholder='Full Name'
-          className='bg-white/10 border border-white/30 rounded-lg p-3
-          focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
-          onChange={(e) =>setName(e.target.value)} value={name}/>
 
           <input type="text"
           required
@@ -137,7 +106,7 @@ function Register() {
         className='mt-4 px-4 py-3 bg-[#00684D] hover:bg-[#049770] top-61 rounded-xl font-medium 
         flex items-center justify-center gap-1 w-full'
         >
-          {loading ? <ClipLoader size={20} color='white'/>: "Register Now "}
+          {loading ? <ClipLoader size={20} color='white'/>: "Login Now "}
         </motion.button>
           
           <div className='flex items-center my-3'>
@@ -155,15 +124,15 @@ function Register() {
         ><FcGoogle className='w-5 h-5' />
           <span className='font-medium'>Continue With Google</span>
         </motion.button>
-        <p className='text-center text-sm mt-4 text-gray-400'>Already have an account{" "}
-          <span onClick={()=>router.push("/login")}
-          className='text-[#00684D] hover:text-[#049770] hover:underline transition'>signIn</span>
+        <p className='text-center text-sm mt-4 text-gray-400'>Create New Account{" "}
+          <span onClick={()=>router.push("/register")}
+          className='text-[#00684D] hover:text-[#049770] hover:underline transition'>signUp</span>
         </p>
         </form>
       </motion.div>}
       </AnimatePresence>
-    </div>
-  )
-}
+        </div>
+    );
+};
 
-export default Register
+export default Login;
