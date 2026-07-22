@@ -2,6 +2,9 @@
 import React, { useState } from 'react'
 import { AnimatePresence, motion } from "motion/react"
 import { RiContractLeftRightLine } from "react-icons/ri";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 function Register() {
     const [step, setStep] = useState<1 | 2>(1)
@@ -9,6 +12,7 @@ function Register() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
+    
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 
     via-black to-gray-900 text-white p-6'>
@@ -80,16 +84,53 @@ function Register() {
           focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
           onChange={(e) =>setEmail(e.target.value)} value={email}/>
 
-          <div className='relative'>
-            <input type="text"
-          required
-          placeholder={showPassword ? "text" : "password"}
-          className='bg-white/10 border border-white/30 rounded-lg p-3
-          focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
-          onChange={(e) =>setPassword(e.target.value)} value={password}/>
-          <button className='absolute right-3 top-1/2 -translate-y-1/2
-          text-gray-400 hover:text-white transition'>eye</button>
+        
+         <div className="relative">
+  <input 
+    type={showPassword ? "text" : "password"}
+    required
+    placeholder='password'
+    className='bg-white/10 border border-white/30 rounded-lg p-3 w-full
+    focus:outline-none focus:ring-2 focus:ring-[#00684D]' 
+    onChange={(e) => setPassword(e.target.value)} 
+    value={password}
+  />
+  <button
+    type='button'
+    onClick={() => setShowPassword(!showPassword)}
+    className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition'
+  >
+    {showPassword ? <FaEyeSlash size={18}/> : <FaEye size={18}/>}
+  </button>
+</div>
+
+            <motion.button
+        type='submit'
+        whileHover={{scale: 1.03}}
+        whileTap={{scale: 0.95}}
+        className='mt-4 px-4 py-3 bg-[#00684D] hover:bg-[#049770] top-61 rounded-xl font-medium 
+        flex items-center justify-center gap-1 w-full'
+        >Register Now<RiContractLeftRightLine />
+        </motion.button>
+          
+          <div className='flex items-center my-3'>
+            <div className='flex-1 h-px bg-gray-600'></div>
+            <span className='px-3 text-sm text-gray-400'>or</span>
+            <div className='flex-1 h-px  bg-gray-600'></div>
           </div>
+
+          <motion.button
+     
+        whileHover={{scale: 1.03}}
+        whileTap={{scale: 0.95}}
+        className='flex items-center py-3 bg-white/10 hover:bg-white/20 border border-white/30 top-61 rounded-xl font-medium 
+         justify-center gap-3 w-full transition'
+        ><FcGoogle className='w-5 h-5' />
+          <span className='font-medium'>Continue With Google</span>
+        </motion.button>
+        <p className='text-center text-sm mt-4 text-gray-400'>Already have an account{" "}
+          <span className='text-[#00684D] hover:text-[#049770]'>signIn</span>
+        </p>
         </form>
       </motion.div>}
       </AnimatePresence>
