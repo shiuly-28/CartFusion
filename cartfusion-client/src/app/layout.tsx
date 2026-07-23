@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
 
+import type { Metadata } from "next";
 import "./globals.css";
+import Provider from "@/Provider";
+
 
 
 export const metadata: Metadata = {
@@ -19,7 +21,11 @@ export default function RootLayout({
       
     >
       <body className="">
-        {children}
+       
+          <Provider>
+            {children}
+          </Provider>
+       
         </body>
     </html>
   );

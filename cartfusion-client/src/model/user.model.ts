@@ -1,6 +1,4 @@
-
 import mongoose, { mongo } from "mongoose";
-
 
 interface IUser{
 id?:mongoose.Types.ObjectId;
