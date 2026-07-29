@@ -1,13 +1,20 @@
 
-import type { NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
+import { auth } from './auth'
  
 
-export function proxy(req: NextRequest) {
- 
+export async function proxy(req: NextRequest) {
+ const {pathname} = req.nextUrl
+ const publicRoute = ['/login', "/register", "/api/auth", "/favicon.ico", "/_next"]
+ if(publicRoute.some((path)=>pathname.startsWith(path))){
+    return NextResponse.next()
+ }
+ const session = await auth()
+ if(!session){
+    const loginUrl =new URL("/login", req.url)
+    loginUrl.searchParams.set("callbackUrl", req.url)
+ }
 }
  
 
  
-export const config = {
-  matcher: '/about/:path*',
-}
