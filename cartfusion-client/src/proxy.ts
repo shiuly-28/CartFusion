@@ -13,8 +13,13 @@ export async function proxy(req: NextRequest) {
  if(!session){
     const loginUrl =new URL("/login", req.url)
     loginUrl.searchParams.set("callbackUrl", req.url)
+    return NextResponse.redirect(loginUrl)
  }
 }
  
+export const config = {
+   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg|css|js)$).*)',
 
+   ]
+}
  
