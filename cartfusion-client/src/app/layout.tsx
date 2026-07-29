@@ -7,7 +7,7 @@ import Provider from "@/Provider";
 
 export const metadata: Metadata = {
   title: "CartFusion",
-  description: "Multi-vendor e-commerce website",
+  description: "CartFusion e-commerce website",
 };
 
 export default function RootLayout({

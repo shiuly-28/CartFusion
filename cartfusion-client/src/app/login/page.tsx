@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from "motion/react"
-import { RiContractLeftRightLine } from 'react-icons/ri';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
 import { FcGoogle } from 'react-icons/fc';
@@ -16,6 +15,7 @@ const Login= () => {
         const router = useRouter()
         const  [loading, setLoading] = useState(false)
         const session = useSession()
+        
         console.log(session.data?.user)
 
         const handleSignIn = async (e:React.FormEvent) => {
