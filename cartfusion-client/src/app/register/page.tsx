@@ -8,7 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { ClipLoader } from 'react-spinners';
-import { TbPlayerTrackNext } from 'react-icons/tb';
+import { signIn } from 'next-auth/react';
 
 function Register() {
     const [step, setStep] = useState<1 | 2>(1)
@@ -147,7 +147,7 @@ function Register() {
           </div>
 
           <motion.button
-     
+        onClick={()=>signIn("google", {callbackUrl: "/"})}
         whileHover={{scale: 1.03}}
         whileTap={{scale: 0.95}}
         className='flex items-center py-3 bg-white/10 hover:bg-white/20 border border-white/30 top-61 rounded-xl font-medium 
