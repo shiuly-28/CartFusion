@@ -47,7 +47,26 @@ function EditRoleAndPhone() {
               onSubmit={(e) =>setPhone(e.target.value)} value={phone}/>
 
               <div className=''>
+                  {
+                    roles.map((rol) =>{
+                      const isAdminBlocked = rol.value == "admin" && adminExist
+                      return(
+                        <motion.div
+                        key={rol.value}
+                        className={`cursor-pointer p-6 text-center rounded-2xl border transition text-lg font-medium
+                          ${
+                            role === rol.value 
+                            ? "border-[#00684D] bg-[#049770]"
+                            :"border-white/20 bg-white/10 hover:bg-white/20"
+                          }
+                          ${isAdminBlocked && "opacity-40 cursor-not-allowed"}
+                          `}
+                        >
 
+                        </motion.div>
+                      )
+                    })
+                  }
               </div>
             </form>
       </motion.div>
