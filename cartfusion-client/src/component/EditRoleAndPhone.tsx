@@ -1,7 +1,8 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {  AnimatePresence, motion } from "motion/react"
 import { AiOutlineShop, AiOutlineTool, AiOutlineUser } from 'react-icons/ai'
+import axios from 'axios'
 function EditRoleAndPhone() {
   const [role, setRole] = useState<string>("")
   const [phone, setPhone] = useState<string>("")
@@ -10,6 +11,19 @@ function EditRoleAndPhone() {
     {label: "merchant", value: "merchant", icon: <AiOutlineShop size={40} />},
     {label: "user", value: "user", icon: <AiOutlineUser size={40} />}
   ]
+  const [adminExist, setAdminExist] = useState(false)
+
+  useEffect(() =>{
+    const checkAdmin = async () =>{
+      try{
+        const res = await axios.get("/api/admin/check-admin")
+      }catch(error){
+        setAdminExist(false)
+        console.log(error)
+      }
+    }
+    checkAdmin()
+  }, [])
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900
     text-white p-6'>
@@ -32,6 +46,9 @@ function EditRoleAndPhone() {
               focus:ring-2 focus:ring-[#00684D]' 
               onSubmit={(e) =>setPhone(e.target.value)} value={phone}/>
 
+              <div className=''>
+
+              </div>
             </form>
       </motion.div>
       </AnimatePresence>
