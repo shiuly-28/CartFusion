@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import EditRoleAndPhone from '@/component/EditRoleAndPhone'
+import Navbar from '@/component/Navbar'
 import connectDb from '@/lib/connectDB'
 import User from '@/model/user.model'
 import { redirect } from 'next/navigation'
@@ -17,8 +18,9 @@ export default async function Home() {
     return <EditRoleAndPhone/>
   }
   return (
-    <div>
-     
+    <div className='flex min-h-screen items-center justify-center
+     bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
+     <Navbar/>
     </div>
   )
 }
