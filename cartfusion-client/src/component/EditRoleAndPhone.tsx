@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import {  AnimatePresence, motion } from "motion/react"
 import { AiOutlineShop, AiOutlineTool, AiOutlineUser } from 'react-icons/ai'
 import axios from 'axios'
+import { ClipLoader } from 'react-spinners'
 function EditRoleAndPhone() {
   const [role, setRole] = useState<string>("")
   const [phone, setPhone] = useState<string>("")
@@ -12,6 +13,7 @@ function EditRoleAndPhone() {
     {label: "user", value: "user", icon: <AiOutlineUser size={40} />}
   ]
   const [adminExist, setAdminExist] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() =>{
     const checkAdmin = async () =>{
@@ -76,6 +78,16 @@ function EditRoleAndPhone() {
                     })
                   }
               </div>
+               <motion.button
+            disabled={loading}
+        type='submit'
+        whileHover={{scale: 1.03}}
+        whileTap={{scale: 0.95}}
+        className='mt-4 px-4 py-3 bg-[#00684D] hover:bg-[#049770] top-61 rounded-xl font-medium 
+        flex items-center justify-center gap-1 w-full'
+        >
+          {loading ? <ClipLoader size={20} color='white'/>: "Submit Now "}
+        </motion.button>
             </form>
       </motion.div>
       </AnimatePresence>
