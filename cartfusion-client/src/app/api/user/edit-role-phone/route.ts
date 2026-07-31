@@ -8,7 +8,7 @@ export async function POST(req:NextRequest){
         await connectDb()
         const {phone, role} = await req.json()
         const session = await auth()
-        const user = await User.findByIdAndUpdate({email:session?.user?.
+        const user = await User.findOneAndUpdate({email:session?.user?.
             email}, {phone, role}, {new:true})
             if(!user){
                 return NextResponse.json({message: "user is not found"},

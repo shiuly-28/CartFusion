@@ -4,6 +4,7 @@ import {  AnimatePresence, motion } from "motion/react"
 import { AiOutlineShop, AiOutlineTool, AiOutlineUser } from 'react-icons/ai'
 import axios from 'axios'
 import { ClipLoader } from 'react-spinners'
+import { useRouter } from 'next/navigation'
 function EditRoleAndPhone() {
   const [role, setRole] = useState<string>("")
   const [phone, setPhone] = useState<string>("")
@@ -14,6 +15,7 @@ function EditRoleAndPhone() {
   ]
   const [adminExist, setAdminExist] = useState(false)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   useEffect(() =>{
     const checkAdmin = async () =>{
@@ -26,6 +28,26 @@ function EditRoleAndPhone() {
     }
     checkAdmin()
   }, [])
+
+  const handleSubmit = async (e:React.FormEvent) => {
+    e.preventDefault()
+    if(!role || !phone){
+      alert("please select the role and enter the phone number")
+      return;
+    }
+    setLoading(true)
+    try{
+      const result = await axios.post("/api/user/edit-role-phone",
+        {role, phone})
+        console.log(result)
+        setLoading(false)
+        router.push("/")
+    }catch(error){
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900
     text-white p-6'>
@@ -39,7 +61,7 @@ function EditRoleAndPhone() {
        backdrop-blur-md rounded-3xl shadow-xl p-10 border border-white/10'>
             <h1 className='text-4xl font-semibold text-center mb-4'>Choose Your Role</h1>
             <p className='text-center text-gray-300 mb-8 text-base'>Select Your Role </p>
-            <form action="" className='flex flex-col gap-8'>
+            <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
               <input type="text"
               placeholder='Enter Your Mobile Number'
               maxLength={10}
@@ -59,7 +81,9 @@ function EditRoleAndPhone() {
                         onClick={() =>{
                           if(isAdminBlocked){
                             alert("⚠️ Admin already exists. You cannot select Admin role" )
-                          }
+                          }else {
+                        setRole(rol.value) 
+                      }
                         }}
                         className={`cursor-pointer p-6 text-center rounded-2xl border transition text-lg font-medium
                           ${
