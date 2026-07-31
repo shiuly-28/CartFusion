@@ -44,25 +44,33 @@ function EditRoleAndPhone() {
               required
               className='bg-white/10 border border-white/10 rounded-lg p-4 text-lg focus:outline-none
               focus:ring-2 focus:ring-[#00684D]' 
-              onSubmit={(e) =>setPhone(e.target.value)} value={phone}/>
+              onChange={(e) =>setPhone(e.target.value)} value={phone}/>
 
-              <div className=''>
+              <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
                   {
                     roles.map((rol) =>{
                       const isAdminBlocked = rol.value == "admin" && adminExist
                       return(
                         <motion.div
+                        whileHover={!isAdminBlocked ? {scale : 1.07} : {}}
                         key={rol.value}
+                        onClick={() =>{
+                          if(isAdminBlocked){
+                            alert("⚠️ Admin already exists. You cannot select Admin role" )
+                          }
+                        }}
                         className={`cursor-pointer p-6 text-center rounded-2xl border transition text-lg font-medium
                           ${
                             role === rol.value 
                             ? "border-[#00684D] bg-[#049770]"
-                            :"border-white/20 bg-white/10 hover:bg-white/20"
+                            :"border-white/20 bg-white/10 hover:bg-[#00684D]"
                           }
                           ${isAdminBlocked && "opacity-40 cursor-not-allowed"}
-                          `}
-                        >
+                          `}>
+                            <div className='flex justify-center mb-3'>{rol.icon}</div>
+                            <p>{rol.value}</p>
 
+                            {isAdminBlocked && <p className='text-xs text-red-400 mt-2'>Admin already exists</p>}
                         </motion.div>
                       )
                     })
