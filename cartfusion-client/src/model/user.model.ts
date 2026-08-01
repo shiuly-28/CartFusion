@@ -1,6 +1,6 @@
 import mongoose, { mongo } from "mongoose";
 
-interface IUser{
+export interface IUser{
 id?:mongoose.Types.ObjectId;
 
 name:string;
@@ -32,9 +32,6 @@ createdAt?:Date;
 updatedAt?:Date;
 
 }
-
-
-
 
 const userSchema = new mongoose.Schema<IUser>({
 

@@ -17,10 +17,11 @@ export default async function Home() {
   if(inComplete){
     return <EditRoleAndPhone/>
   }
+  const plainUser = JSON.parse(JSON.stringify(user))
   return (
     <div className='flex min-h-screen items-center justify-center
      bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
-     <Navbar/>
+     <Navbar user={plainUser}/>
     </div>
   )
 }
