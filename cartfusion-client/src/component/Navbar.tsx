@@ -16,6 +16,8 @@ interface NavItemProps {
 function Navbar({user} : {user: IUser}) {
   const router = useRouter();
 
+  console.log("Current User Data:", user);
+
   return (
     <div className='fixed top-0 left-0 w-full bg-black text-white z-50 shadow-lg'>
       {/*logo*/}
@@ -41,8 +43,8 @@ function Navbar({user} : {user: IUser}) {
              <IconBtn Icon={AiOutlineSearch} onClick={()=>router.push("/category")}/>}
              <IconBtn Icon={AiOutlinePhone} onClick={()=>router.push("/support")}/>
 
-              <div>
-                {user?.image ? <Image src={user?.image} alt='user' width={40} height={40}
+              <div className='relative'>
+                {user?.image ? <Image src={user?.image} alt='user' width={30} height={30}
                 className='w-10 h-10 rounded-full object-cover
                  border border-gray-700 cursor-pointer'/>
 
