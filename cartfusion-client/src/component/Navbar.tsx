@@ -3,8 +3,9 @@ import React from 'react'
 import { IUser } from '@/model/user.model'
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
-
+import { AnimatePresence, motion } from "motion/react"
 import logo from '@/assets/logo.jpg.png'
+import { AiOutlinePhone, AiOutlineSearch, AiOutlineUser } from 'react-icons/ai';
 
 interface NavItemProps {
   label: string;
@@ -33,6 +34,21 @@ function Navbar({user} : {user: IUser}) {
           <NavItem label="Shop" path="/shop" router={router}/>
           <NavItem label="Orders" path="/orders" router={router}/>
           </div>}
+
+          {/* desktop icon */}
+          <div className='hidden md:flex items-center gap-6'>
+           {user?.role == 'user' && 
+             <IconBtn Icon={AiOutlineSearch} onClick={()=>router.push("/category")}/>}
+             <IconBtn Icon={AiOutlinePhone} onClick={()=>router.push("/support")}/>
+
+              <div>
+                {user?.image ? <Image src={user?.image} alt='user' width={40} height={40}
+                className='w-10 h-10 rounded-full object-cover
+                 border border-gray-700 cursor-pointer'/>
+
+                : <IconBtn Icon={AiOutlineUser}/>}
+              </div>
+          </div>
     </div>
     </div>
   )
@@ -40,11 +56,18 @@ function Navbar({user} : {user: IUser}) {
 
 export default Navbar
 
+// components
 const NavItem = ({ label, path, router }: NavItemProps) => (
-  <button 
+  <motion.button whileHover={{scale: 1.1}}
     onClick={() => router.push(path)} 
     className='hover:text-[#049770] font-medium transition'
   >
     {label}
-  </button>
+  </motion.button>
+)
+
+const IconBtn = ({Icon, onClick}:  any)=> (
+  <motion.button whileHover={{scale: 1.1}} onClick={onClick}>
+    <Icon size={24}/>
+  </motion.button>
 )
