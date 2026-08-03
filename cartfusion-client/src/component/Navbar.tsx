@@ -5,8 +5,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from "motion/react"
 import logo from '@/assets/logo.jpg.png'
-import { AiOutlinePhone, AiOutlineSearch, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineLogin, AiOutlineLogout, AiOutlinePhone, AiOutlineSearch, AiOutlineUser } from 'react-icons/ai';
 import { IconType } from 'react-icons';
+import { signOut } from 'next-auth/react';
 
 interface NavItemProps {
   label: string;
@@ -91,7 +92,9 @@ function Navbar({ user }: { user: IUser }) {
                   transition={{ duration: 0.3 }}
                   className='absolute right-0 mt-3 w-48 backdrop-blur-lg rounded-xl shadow-lg border bg-[#6a69693c] p-2'
                 >
-                  <DropDownBtn Icon={AiOutlineUser} label="profile" onClick={()=>router.push("/profile")}/>
+                  <DropDownBtn Icon={AiOutlineUser} label="Profile" onClick={()=>{router.push("/profile"); setOpenMenu(false)}}/>
+                  <DropDownBtn Icon={AiOutlineLogin} label="SignIn" onClick={()=>{router.push("/login"); setOpenMenu(false)}}/>
+                  <DropDownBtn Icon={AiOutlineLogout} label="SignOut" onClick={()=>{signOut; setOpenMenu(false)}}/>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -122,13 +125,14 @@ const IconBtn = ({ Icon, onClick }: IconBtnProps) => (
   </motion.button>
 )
 
-const DropDownBtn = ({ Icon, label, onClick, close }: DropDownBtnProps) => (
+const DropDownBtn = ({ Icon, label, onClick, }: DropDownBtnProps) => (
   <button 
     onClick={() => {
       if (onClick) onClick();
-      if (close) close();
+   
     }} 
-    className='flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-white/10 rounded-md transition cursor-pointer'
+    className='flex items-center gap-2 w-full px-3 py-2 text-left
+     hover:bg-white/10 rounded-md transition cursor-pointer'
   >
     {Icon && <Icon size={18}/>}
     {label && <span>{label}</span>}
