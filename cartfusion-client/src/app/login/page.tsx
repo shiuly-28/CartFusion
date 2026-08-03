@@ -42,7 +42,7 @@ const Login= () => {
     via-black to-gray-900 text-white p-6'>
        <AnimatePresence>
         {step == 2 &&<motion.div
-                  initial={{ opacity: 0, y:40 }}
+              initial={{ opacity: 0, y:40 }}
               animate={{ opacity: 1, y:0 }}
               exit={{ opacity: 0, y:-40 }}
               transition={{duration:0.5}}

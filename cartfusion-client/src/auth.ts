@@ -47,7 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         let DBUser = await User.findOne({ email: user.email })
 
         if (!DBUser) {
-          // ১. নতুন ইউজার হলে ডাটাবেজে ছবিসহ ক্রিয়েট হবে
+          
           DBUser = await User.create({
             name: user.name,
             email: user.email,
@@ -55,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: "user"
           })
         } else {
-          // 🌟 ২. ইউজার আগে থেকে থাকলেও ডাটাবেজে ইমেজ না থাকলে গুগলের ছবি সেভ করে নেবে
+         
           if (!DBUser.image && user.image) {
             DBUser.image = user.image
             await DBUser.save()
@@ -86,20 +86,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = token.email as string
         session.user.name = token.name as string
         session.user.role = token.role as string
-        session.user.image = token.picture as string // 🌟 সেশনে ইমেজের মান
+        session.user.image = token.picture as string 
       }
       return session
     }
   },
-
-  pages: {
+pages: {
     signIn: "/login",
     error: "/login"
   },
 
   session: {
     strategy: "jwt",
-    maxAge: 10 * 24 * 60 * 60 // 🌟 ১০ দিন (সেকেন্ডে হিসাব)
+    maxAge: 10 * 24 * 60 * 60 
   },
 
   secret: process.env.AUTH_SECRET
