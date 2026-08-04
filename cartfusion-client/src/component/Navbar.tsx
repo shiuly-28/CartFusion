@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from "motion/react"
 import logo from '@/assets/logo.jpg.png'
-import { AiOutlineLogin, AiOutlineLogout, AiOutlinePhone, AiOutlineSearch, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineLogin, AiOutlineLogout, AiOutlinePhone, AiOutlineSearch, AiOutlineShoppingCart, AiOutlineUser } from 'react-icons/ai';
 import { IconType } from 'react-icons';
 import { signOut } from 'next-auth/react';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 interface NavItemProps {
   label: string;
@@ -26,6 +27,12 @@ interface DropDownBtnProps {
   label?: string;   
   onClick?: () => void;
   close?: () => void;
+}
+
+// cart Btn
+interface CartBtnProps {
+  router: AppRouterInstance; // অথবা ReturnType<typeof useRouter>
+  count: number;
 }
 
 function Navbar({ user }: { user: IUser }) {
@@ -98,7 +105,9 @@ function Navbar({ user }: { user: IUser }) {
                 </motion.div>
               )}
             </AnimatePresence>
+            
           </div>
+          {user?.role == "user" && <CartBtn router={router} count={5}/>}
         </div>
       </div>
     </div>
@@ -136,4 +145,15 @@ const DropDownBtn = ({ Icon, label, onClick, }: DropDownBtnProps) => (
     {Icon && <Icon size={18}/>}
     {label && <span>{label}</span>}
   </button>
+)
+
+const CartBtn = ({ router, count }: CartBtnProps) => (
+  <motion.button whileHover={{ scale: 1.1 }} onClick={()=>router.push("/cart")}
+   className="relative">
+    <AiOutlineShoppingCart size={24}/>
+
+    {count >0 && <span className='absolute -top-2 -right-2 bg-[#00684D] text-white text-xs
+    rounded-full px-1'>
+      {count}</span>}
+  </motion.button>
 )
