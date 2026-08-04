@@ -118,7 +118,6 @@ const NavItem = ({ label, path, router }: NavItemProps) => (
   </motion.button>
 )
 
-// 🌟 explicit any সরিয়ে নির্দিষ্ট Type দেওয়া হলো
 const IconBtn = ({ Icon, onClick }: IconBtnProps) => (
   <motion.button whileHover={{ scale: 1.1 }} onClick={onClick} className="cursor-pointer">
     <Icon size={24}/>
