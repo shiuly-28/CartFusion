@@ -159,7 +159,7 @@ function Navbar({ user }: { user: IUser }) {
            <IconBtn Icon={AiOutlineSearch} onClick={() => router.push("/category")}/>
            <IconBtn Icon={AiOutlinePhone} onClick={() => router.push("/support")}/>
             <CartBtn router={router} count={5}/>
-            <AiOutlineMenu/>
+            <AiOutlineMenu size={28} className='cursor-pointer' onClick={() =>setSidebarOpen(true)}/>
             </>
           )}
         </div>
