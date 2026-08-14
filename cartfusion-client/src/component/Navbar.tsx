@@ -78,7 +78,7 @@ function Navbar({ user }: { user: IUser }) {
         {user?.role === 'user' && (
           <div className='hidden md:flex gap-8'>
             <NavItem label="Home" path="/" router={router}/>
-            <NavItem label="Category" path="/category" router={router}/>
+            <NavItem label="Categories" path="/category" router={router}/>
             <NavItem label="Shop" path="/shop" router={router}/>
             <NavItem label="Orders" path="/orders" router={router}/>
           </div>
