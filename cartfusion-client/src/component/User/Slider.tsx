@@ -1,9 +1,9 @@
 "use client"
 
-import React, { useState } from 'react'
-import slider from '@/assets/slider.avif'
-import slider1 from '@/assets/slider1.jpeg'
-import slider2 from '@/assets/slider2.jpeg'
+import React, { useEffect, useState } from 'react'
+import slider from '@/assets/slider.png'
+import slider1 from '@/assets/slider1.png'
+import slider2 from '@/assets/slider2.png'
 import { motion, AnimatePresence } from 'motion/react'
 import Image from 'next/image'
 
@@ -35,8 +35,17 @@ function Slider() {
         },
 
     ]
+
+    useEffect(()=>{
+      const interval = setInterval(()=>{
+        setCurrent((prev)=>(prev + 1)% slides.length)
+      }, 5000)
+      return ()=>clearInterval(interval)
+    }, [])
+
   return (
-    <div className='relative w-full min-h-[90vh] mt-0 overflow-hidden rounded-2xl bg-black text-white md:mt-[60px] pt-0 top-0'>
+    <div className='relative w-full min-h-[90vh] mt-0 overflow-hidden rounded-2xl bg-black
+     text-white md:mt-[60px] pt-0 top-0 '>
       <AnimatePresence>
         <motion.div
         key={current}
@@ -84,7 +93,9 @@ function Slider() {
         {
           slides.map((slide, index) =>(
             <motion.div 
+            key={index}
             whileHover={{scale: 1.1}}
+            onClick={() => setCurrent(index)}
             className={`relative w-20 h-12 cursor-pointer rounded-lg overflow-hidden
                border-2 transition-all duration-300 ${index === current
                 ? "border-gray-100 shadow-[0_0_10px_rgba(59, 130, 246, 0.8)]"

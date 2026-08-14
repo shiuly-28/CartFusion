@@ -26,7 +26,7 @@ export default async function Home() {
     <div className='flex min-h-screen items-center justify-center
      bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
      <Navbar user={plainUser}/>
-     {user?.role == "user" ? <UserDashBoard/> : user?.role == "merchant" ? <MerchantDashBoard/>  : <AdminDashBoard/>}
+     {user?.role == "user" ? (<UserDashBoard/>) : user?.role == "merchant" ? (<MerchantDashBoard/>)  : (<AdminDashBoard/>)}
     </div>
   )
 }
