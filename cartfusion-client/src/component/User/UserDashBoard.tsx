@@ -2,6 +2,7 @@
 "use client"
 import React from 'react'
 import Slider from './Slider'
+import CategorySlider from './CategorySlider'
 
 function UserDashBoard() {
   return (
@@ -9,6 +10,7 @@ function UserDashBoard() {
      bg-gradient-to-br from-gray-900 
     via-black to-gray-900 font-sens flex-col'>
       <Slider/>
+      <CategorySlider/>
     </div>
   )
 }
