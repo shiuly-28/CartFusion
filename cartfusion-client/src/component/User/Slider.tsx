@@ -89,7 +89,7 @@ function Slider() {
           </div>
         </motion.div>
       </AnimatePresence>
-      <div className='absolute bottom-6 flex gap-4'>
+      <div className='absolute bottom-6 right-4 md:right-10 flex gap-4'>
         {
           slides.map((slide, index) =>(
             <motion.div 
