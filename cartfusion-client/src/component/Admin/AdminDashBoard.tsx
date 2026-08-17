@@ -5,11 +5,26 @@ import { FaBox, FaCheckCircle, FaShoppingBag, FaStore } from 'react-icons/fa'
 import { MdDashboard } from 'react-icons/md'
 import { AnimatePresence, motion, } from 'motion/react'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
+import MerchantDetails from './MerchantDetails'
+import UserOrders from './UserOrders'
+import MerchantApproval from './MerchantApproval'
+import ProductApproval from './ProductApproval'
+import Dashboard from './Dashboard'
 
 
 function AdminDashBoard() {
   const [activePage, setActivePage] = useState("dashboard")
   const [openMenu, setOpenMenu] = useState(false)
+
+  const renderPage = () => {
+    switch(activePage){
+      case "dashboard" : return <Dashboard/>
+      case "merchant" : return <MerchantDetails/>
+      case "orders" : return <UserOrders/>
+      case "merchant-approval" : return <MerchantApproval/>
+      case "product-approval" : return <ProductApproval/>
+    }
+  }
   const menu = [
     { id: "dashboard", label: "Dashboard", icon: <MdDashboard size={22} /> },
     { id: "merchant", label: "Merchant Details", icon: <FaStore size={22} /> },
@@ -97,6 +112,15 @@ function AdminDashBoard() {
         </motion.div>)
         }
       </AnimatePresence>
+
+      {/* main agea */}
+      <motion.div
+      initial= {{opacity: 0, z: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{duration: 0.4 }}
+       className='flex-1 p-10 mt-16 lg:mt-0'>
+        {renderPage()}
+      </motion.div>
     </div>
   )
 }
