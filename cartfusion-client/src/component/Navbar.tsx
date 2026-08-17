@@ -172,13 +172,13 @@ function Navbar({ user }: { user: IUser }) {
                   className='fixed top-0 right-0 h-screen w-[75%] max-w-xs bg-zinc-900 p-6 text-white z-50 shadow-2xl flex flex-col justify-between'
                 >
                   <div>
-                    {/* Header (justify-between ফিক্সড) */}
+                    Header (justify-between ফিক্সড)
                     <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-800">
                       <h1 className='text-lg font-semibold text-[#049770]'>Menu</h1>
                       <AiOutlineClose size={24} className='cursor-pointer hover:text-red-500' onClick={() => setSidebarOpen(false)}/>
                     </div>
 
-                    {/* Navigation Buttons Container */}
+                    Navigation Buttons Container
                     <div className="flex flex-col gap-3">
                       <SidebarBtn label="Home" Icon={AiOutlineHome} path="/" router={router} setSidebarOpen={setSidebarOpen}/>
                       <SidebarBtn label="Category" Icon={AiOutlineAppstore} path="/category" router={router} setSidebarOpen={setSidebarOpen}/>
