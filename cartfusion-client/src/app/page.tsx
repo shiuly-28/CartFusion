@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import AdminDashBoard from '@/component/Admin/AdminDashBoard'
 import EditRoleAndPhone from '@/component/EditRoleAndPhone'
+import Footer from '@/component/Footer'
 import MerchantDashBoard from '@/component/Merchant/MerchantDashBoard'
 import Navbar from '@/component/Navbar'
 import UserDashBoard from '@/component/User/UserDashBoard'
@@ -27,6 +28,7 @@ export default async function Home() {
      bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
      <Navbar user={plainUser}/>
      {user?.role == "user" ? (<UserDashBoard/>) : user?.role == "merchant" ? (<MerchantDashBoard/>)  : (<AdminDashBoard/>)}
+     <Footer user={plainUser}/>
     </div>
   )
 }
