@@ -44,9 +44,26 @@ function Footer({ user }: { user: IUser }) {
                
             </ul>
         </div>}
-        <div cl>
-
-        </div>
+       {isAdminOrMerchant && <div className='bg-[#1a1a1a] rounded-2xl p-6 shadow-lg border border-gray-700' >
+            <h3 className='text-white text-lg font-semibold mb-3'>{role == "admin" ? "System Access" : "Vendor DashBoard"}</h3>
+            <ul className='space-y-2 text-sm text-gray-400 mb-4'>
+                {role == "admin" ? (
+                    <>
+                    <li>Platform Management</li>
+                    <li>Merchant Control</li>
+                    <li>Orders & Revenue</li>
+                    <li>System Security</li>
+                    </>
+                ):(
+                    <>
+                    <li>Product Upload & Edit</li>
+                    <li>Order & Delivery Tracking</li>
+                    <li>Sels & Profit Analytices</li>
+                    <li>Wallet & Settlement</li>
+                    </>
+                )}
+            </ul>
+        </div>}
     </div>
     </div>
   )
