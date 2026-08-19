@@ -44,26 +44,35 @@ function Footer({ user }: { user: IUser }) {
                
             </ul>
         </div>}
-       {isAdminOrMerchant && <div className='bg-[#1a1a1a] rounded-2xl p-6 shadow-lg border border-gray-700' >
+       {isAdminOrMerchant && <div className='bg-[#1a1a1a] rounded-2xl p-6 shadow-lg ' >
             <h3 className='text-white text-lg font-semibold mb-3'>{role == "admin" ? "System Access" : "Vendor DashBoard"}</h3>
             <ul className='space-y-2 text-sm text-gray-400 mb-4'>
                 {role == "admin" ? (
                     <>
-                    <li>Platform Management</li>
-                    <li>Merchant Control</li>
-                    <li>Orders & Revenue</li>
-                    <li>System Security</li>
+                    <li>✓ Platform Management</li>
+                    <li>✓ Merchant Control</li>
+                    <li>✓ Orders & Revenue</li>
+                    <li>✓ System Security</li>
                     </>
                 ):(
                     <>
-                    <li>Product Upload & Edit</li>
-                    <li>Order & Delivery Tracking</li>
-                    <li>Sels & Profit Analytices</li>
-                    <li>Wallet & Settlement</li>
+                    <li>✓ Product Upload & Edit</li>
+                    <li>✓ Order & Delivery Tracking</li>
+                    <li>✓ Sels & Profit Analytices</li>
+                    <li>✓ Wallet & Settlement</li>
                     </>
                 )}
             </ul>
         </div>}
+        <div className='space-y-2'>
+            <h3 className='text-center text-lg font-semibold mb-4'>Contact Info</h3>
+            <p className='text-shadow-mauve-500'>admin@cartfusion.com</p>
+            <p className='text-shadow-mauve-500'>01757321528</p>
+            <p className='text-shadow-mauve-500'>Shylet, Bangladesh</p>
+        </div>
+    </div>
+    <div className='text-center text-xs text-gray-500 mt-12 border-t border-gray-700 pt-4'>
+                @{new Date().getFullYear()} CartFusion - Powered by Secur Commerce Engine
     </div>
     </div>
   )

@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import AdminDashBoard from '@/component/Admin/AdminDashBoard'
 import EditRoleAndPhone from '@/component/EditRoleAndPhone'
 import Footer from '@/component/Footer'
+import EditMerchantDetails from '@/component/Merchant/EditMerchantDetails'
 import MerchantDashBoard from '@/component/Merchant/MerchantDashBoard'
 import Navbar from '@/component/Navbar'
 import UserDashBoard from '@/component/User/UserDashBoard'
@@ -21,6 +22,13 @@ export default async function Home() {
   const inComplete = !user.role || !user.phone || (!user.phone && user.role == "user")
   if(inComplete){
     return <EditRoleAndPhone/>
+  }
+
+  if(user?.role == "merchant"){
+    const isCompleteDetails = !user.shonName || !user.shopAddress || !user.gstNumber
+    if(isCompleteDetails){
+      return <EditMerchantDetails/>
+    }
   }
   const plainUser = JSON.parse(JSON.stringify(user))
   return (
