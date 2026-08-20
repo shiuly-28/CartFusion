@@ -65,14 +65,14 @@ function Footer({ user }: { user: IUser }) {
             </ul>
         </div>}
         <div className='space-y-2'>
-            <h3 className='text-center text-lg font-semibold mb-4'>Contact Info</h3>
+            <h3 className='text-lg font-semibold mb-4'>Contact Info</h3>
             <p className='text-shadow-mauve-500'>admin@cartfusion.com</p>
             <p className='text-shadow-mauve-500'>01757321528</p>
             <p className='text-shadow-mauve-500'>Shylet, Bangladesh</p>
         </div>
     </div>
     <div className='text-center text-xs text-gray-500 mt-12 border-t border-gray-700 pt-4'>
-                @{new Date().getFullYear()} CartFusion - Powered by Secur Commerce Engine
+                © {new Date().getFullYear()} CartFusion - Powered by Secur Commerce Engine
     </div>
     </div>
   )

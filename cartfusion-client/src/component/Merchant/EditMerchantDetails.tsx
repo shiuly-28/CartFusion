@@ -4,14 +4,14 @@ import { AnimatePresence, motion} from 'motion/react'
 import { AiOutlineHome, AiOutlineShop } from 'react-icons/ai'
 import { ClipLoader } from 'react-spinners'
 import axios from 'axios'
-
-
+import { useRouter } from 'next/navigation'
 
 function EditMerchantDetails() {
     const [shopName, setShopName] = useState("")
     const [shopAddress, setShopAddress] = useState("")
     const [gstNumber, setGstNumber] = useState("")
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
     const handleSubmit = async (e:React.FormEvent) => {
         e.preventDefault()
@@ -24,6 +24,8 @@ function EditMerchantDetails() {
                 shopName, shopAddress, gstNumber})
                 console.log(result.data)
                 alert("Merchant Shop Details added Successfully")
+                setLoading(false)
+                router.push("/")
         }catch(error){
             setLoading(false)
             console.log(error)

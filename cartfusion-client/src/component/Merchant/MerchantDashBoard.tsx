@@ -32,7 +32,7 @@ function MerchantDashBoard() {
   ]
 
   return (
-    <div className='w-full min-h-screen flex bg-gradient-to-br from-gray-900 
+    <div className='w-full min-h-screen flex bg-linear-to-br from-gray-900 
     via-black to-gray-900 text-white mt-10'>
 
       {/* mobile areA */}

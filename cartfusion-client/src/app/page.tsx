@@ -3,7 +3,7 @@ import AdminDashBoard from '@/component/Admin/AdminDashBoard'
 import EditRoleAndPhone from '@/component/EditRoleAndPhone'
 import Footer from '@/component/Footer'
 import EditMerchantDetails from '@/component/Merchant/EditMerchantDetails'
-import MerchantDashBoard from '@/component/Merchant/MerchantDashBoard'
+import MerchantPage from '@/component/Merchant/MerchantPage'
 import Navbar from '@/component/Navbar'
 import UserDashBoard from '@/component/User/UserDashBoard'
 
@@ -25,7 +25,7 @@ export default async function Home() {
   }
 
   if(user?.role == "merchant"){
-    const isCompleteDetails = !user.shonName || !user.shopAddress || !user.gstNumber
+    const isCompleteDetails = !user.shopName || !user.shopAddress || !user.gstNumber
     if(isCompleteDetails){
       return <EditMerchantDetails/>
     }
@@ -35,7 +35,7 @@ export default async function Home() {
     <div className='flex min-h-screen items-center justify-center
      bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
      <Navbar user={plainUser}/>
-     {user?.role == "user" ? (<UserDashBoard/>) : user?.role == "merchant" ? (<MerchantDashBoard/>)  : (<AdminDashBoard/>)}
+     {user?.role == "user" ? (<UserDashBoard/>) : user?.role == "merchant" ? (<MerchantPage user={plainUser}/>)  : (<AdminDashBoard/>)}
      <Footer user={plainUser}/>
     </div>
   )
