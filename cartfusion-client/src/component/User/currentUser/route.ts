@@ -10,10 +10,11 @@ import { NextResponse } from "next/server";
         const user = User.findOne({email:session?.user?.email}).
         select("-password")
         if(!user){
-            return NextResponse.json({message: "User is not found"},)
+            return NextResponse.json({message: "User is not found"},{status:400})
         }
+        return NextResponse.json({user},{status:400})
     }catch(error){
-
+        return NextResponse.json({message: `get current User error ${error}`},{status:500})
     };
     
  }
