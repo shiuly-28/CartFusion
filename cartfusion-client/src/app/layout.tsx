@@ -3,9 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
-
-
-
+import InitUser from "@/InitUser";
 
 export const metadata: Metadata = {
   title: "CartFusion",
@@ -26,6 +24,7 @@ export default function RootLayout({
        
           <Provider>
             <StoreProvider>
+              <InitUser/>
             {children}
             </StoreProvider>
            </Provider>
