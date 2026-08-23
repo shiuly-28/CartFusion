@@ -86,8 +86,29 @@ function MerchantApproval() {
       </div>
       <AnimatePresence>
         {selectedMerchant && (
-          <motion.div>
-
+          <motion.div
+          initial = {{opacity: 0}}
+          animate = {{ opacity : 1 }}
+          transition={{duration : 0.3}}
+          exit={{opacity: 0}}
+          className='fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4'>
+            <motion.div 
+              initial = {{scale: 0.9 }}
+            animate = {{ scale : 1 }}
+            transition={{duration : 0.3}}
+            exit={{scale: 0.9}}
+            className='bg-gray-900 p-6 rounded-2xl w-full max-w-lg 
+            border border-white/10'>
+              <h3 className='text-xl sm:text-2xl w-full font-bold mb-4'>Selected Vendor Details</h3>
+              <div className='space-y-2 text-sm mt-3'>
+                <p><b>Name:</b>{" "}{selectedMerchant.name}</p>
+                <p><b>Email:</b>{" "}{selectedMerchant.email}</p>
+                <p><b>Phone:</b>{" "}{selectedMerchant.phone}</p>
+                <p><b>ShopName:</b>{" "}{selectedMerchant.shopName}</p>
+                <p><b>ShopAddress:</b>{" "}{selectedMerchant.shopAddress}</p>
+                <p><b>GSTIN:</b>{" "}{selectedMerchant.gstNumber}</p>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
