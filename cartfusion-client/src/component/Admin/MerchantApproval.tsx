@@ -99,8 +99,8 @@ function MerchantApproval() {
             exit={{scale: 0.9}}
             className='bg-gray-900 p-6 rounded-2xl w-full max-w-lg 
             border border-white/10'>
-              <h3 className='text-xl sm:text-2xl w-full font-bold mb-4'>Selected Vendor Details</h3>
-              <div className='space-y-2 text-sm mt-3'>
+              <h3 className='text-xl sm:text-2xl w-full font-bold mb-4'>Selected Merchant Details</h3>
+              <div className='space-y-2 text-sm'>
                 <p><b>Name:</b>{" "}{selectedMerchant.name}</p>
                 <p><b>Email:</b>{" "}{selectedMerchant.email}</p>
                 <p><b>Phone:</b>{" "}{selectedMerchant.phone}</p>
@@ -108,6 +108,11 @@ function MerchantApproval() {
                 <p><b>ShopAddress:</b>{" "}{selectedMerchant.shopAddress}</p>
                 <p><b>GSTIN:</b>{" "}{selectedMerchant.gstNumber}</p>
               </div>
+              <div className='flex flex-col sm:flex-row gap-3 mt-6'>
+                <button className='flex-1 bg-[#00684D] hover:bg-[#045f47] py-2 rounded-lg text-sm'>Approved</button>
+                <button className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'>Rejected</button>
+                <button onClick={() => setSelectedMerchant(null)} className='flex-1 bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
+                </div>
             </motion.div>
           </motion.div>
         )}
