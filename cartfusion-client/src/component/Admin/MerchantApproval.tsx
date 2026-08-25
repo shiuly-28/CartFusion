@@ -1,21 +1,47 @@
 "use client"
 
+import UseGetAllMerchant from '@/hooks/UseGetAllMerchant'
 import { IUser } from '@/model/user.model'
-import { RootState } from '@/redux/store'
+import { setAllMerchantData } from '@/redux/merchantSlice'
+import { AppDispatch, RootState } from '@/redux/store'
+import axios from 'axios'
 import { AnimatePresence, motion } from 'motion/react'
 import { div, tr } from 'motion/react-client'
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { ClipLoader } from 'react-spinners'
 
 function MerchantApproval() {
+  const dispatch = useDispatch<AppDispatch>()
+  UseGetAllMerchant()
+
   const allMerchantData: IUser[] = useSelector((state:RootState)=>state.merchant.AllMerchantData)
   const pendingMerchant = Array.isArray(allMerchantData)?
     allMerchantData.filter((v)=>v.verificationStatus === "pending") : []
 
     const [selectedMerchant, setSelectedMerchant] = useState<IUser | null>(null)
-  
+    const [loading, setLoading] = useState(false)
 
-    console.log(pendingMerchant)
+    const handleApproved = async () => {
+      if(!selectedMerchant)return;
+      setLoading(true)
+      try{
+       await axios.post("/api/admin/update-merchant-status", {
+          merchantId: selectedMerchant._id,
+          status: "approved"
+        })
+        const updated = allMerchantData.filter((v) => v._id !==selectedMerchant._id)
+
+        dispatch(setAllMerchantData(updated))
+        setSelectedMerchant(null)
+        setLoading(false)
+        alert("Merchant Approved")
+      }catch (error){
+        console.log(error)
+        setLoading(false)
+        alert("Approvel failed")
+      }
+    }
   return (
       <div className='w-full px-3 sm:px-6 lg:px-10 py-6 text-white'>
         <h1 className='tex-xl sm:text-xl lg:text-3xl font-bold mb-6 text-center sm:text-left text-white'>Merchant Approval Request</h1>
@@ -109,7 +135,9 @@ function MerchantApproval() {
                 <p><b>GSTIN:</b>{" "}{selectedMerchant.gstNumber}</p>
               </div>
               <div className='flex flex-col sm:flex-row gap-3 mt-6'>
-                <button className='flex-1 bg-[#00684D] hover:bg-[#045f47] py-2 rounded-lg text-sm'>Approved</button>
+                <button disabled={loading} className='flex-1 bg-[#00684D] hover:bg-[#045f47] py-2 rounded-lg text-sm'
+                 onClick={handleApproved}>{loading? <ClipLoader size={22} color='white'/>:"Approved"}</button>
+
                 <button className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'>Rejected</button>
                 <button onClick={() => setSelectedMerchant(null)} className='flex-1 bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
                 </div>
