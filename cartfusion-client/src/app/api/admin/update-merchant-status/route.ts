@@ -19,14 +19,14 @@ return NextResponse.json({message: "only admin can approve merchant or admin is 
 
 const merchant = await User.findById(merchantId)
 
-if(status === "apprived"){
-merchant.verificationStatus = "apprived",
+if(status === "approved"){
+merchant.verificationStatus = "approved",
 merchant.isApproved = true,
 merchant.approvedAt = new Date(),
 merchant.rejectedReason = undefined
 }
 
-if(status === "apprived"){
+if(status === "rejected"){
 merchant.verificationStatus = "rejected",
 merchant.isApproved = false,
 merchant.rejectedReason = rejectReason || "rejected by admin"

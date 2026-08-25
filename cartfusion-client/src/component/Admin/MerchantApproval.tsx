@@ -21,6 +21,13 @@ function MerchantApproval() {
 
     const [selectedMerchant, setSelectedMerchant] = useState<IUser | null>(null)
     const [loading, setLoading] = useState(false)
+    const [rejectModal, setRejectModal] = useState(false)
+    const [rejectedReason, setRejectedReason] = useState("")
+
+    const openRejectReasonArea = () => {
+      setRejectModal(true)
+      setRejectedReason("")
+    }
 
     const handleApproved = async () => {
       if(!selectedMerchant)return;
@@ -138,9 +145,43 @@ function MerchantApproval() {
                 <button disabled={loading} className='flex-1 bg-[#00684D] hover:bg-[#045f47] py-2 rounded-lg text-sm'
                  onClick={handleApproved}>{loading? <ClipLoader size={22} color='white'/>:"Approved"}</button>
 
-                <button className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'>Rejected</button>
+                <button className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'
+                onClick={openRejectReasonArea}
+                >Rejected</button>
                 <button onClick={() => setSelectedMerchant(null)} className='flex-1 bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
                 </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {rejectModal && (
+          <motion.div
+          initial = {{opacity: 0}}
+          animate = {{ opacity : 1 }}
+          transition={{duration : 0.3}}
+          exit={{opacity: 0}}
+          className='fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4'>
+            <motion.div 
+              initial = {{scale: 0.9 }}
+            animate = {{ scale : 1 }}
+            transition={{duration : 0.3}}
+            exit={{scale: 0.9}}
+            className='bg-gray-900 p-6 rounded-2xl w-full max-w-lg 
+            border border-white/10'>
+              <h3 className='text-xl sm:text-2xl w-full font-bold mb-4'>Enter Rjecyed Reason</h3>
+             
+                <textarea placeholder='Enter rejection reason...'
+                className='w-full bg-white/10 border border-white/20 rounded-lg p-3 *:
+                text-sm' rows={3} onChange={(e)=>setRejectedReason(e.target.value)}
+                value={rejectedReason}
+                />
+                <button className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'
+               
+                >Confirm Rejected</button>
+                <button onClick={() => setRejectModal(false)} className='flex-1 bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
+            
             </motion.div>
           </motion.div>
         )}
