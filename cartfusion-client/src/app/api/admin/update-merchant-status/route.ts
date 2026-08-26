@@ -11,7 +11,7 @@ const adminUser = await User.findById(session?.user?.id)
 if(!adminUser || adminUser.role !== "admin"){
 return NextResponse.json({message: "only admin can approve merchant or admin is not found"},{status:403})
 }
-const {merchantId, status, rejectReason} = await req.json()
+const {merchantId, status, rejectedReason} = await req.json()
 if(!merchantId || !status){
 return NextResponse.json({message: "only admin can approve merchant or admin is not found"},
     {status:400})
@@ -29,7 +29,7 @@ merchant.rejectedReason = undefined
 if(status === "rejected"){
 merchant.verificationStatus = "rejected",
 merchant.isApproved = false,
-merchant.rejectedReason = rejectReason || "rejected by admin"
+merchant.rejectedReason = rejectedReason || "rejected by admin"
 }
 
 await merchant.save()

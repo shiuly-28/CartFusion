@@ -49,6 +49,27 @@ function MerchantApproval() {
         alert("Approvel failed")
       }
     }
+    const handleRejected = async () => {
+      if(!selectedMerchant)return;
+      setLoading(true)
+      try{
+       await axios.post("/api/admin/update-merchant-status", {
+          merchantId: selectedMerchant._id,
+          status: "Rejected",
+          rejectedReason
+        })
+        const updated = allMerchantData.filter((v) => v._id !==selectedMerchant._id)
+
+        dispatch(setAllMerchantData(updated))
+        setSelectedMerchant(null)
+        setLoading(false)
+        alert("Merchant Rejected")
+      }catch (error){
+        console.log(error)
+        setLoading(false)
+        alert("Rejected failed")
+      }
+    }
   return (
       <div className='w-full px-3 sm:px-6 lg:px-10 py-6 text-white'>
         <h1 className='tex-xl sm:text-xl lg:text-3xl font-bold mb-6 text-center sm:text-left text-white'>Merchant Approval Request</h1>
@@ -177,11 +198,16 @@ function MerchantApproval() {
                 text-sm' rows={3} onChange={(e)=>setRejectedReason(e.target.value)}
                 value={rejectedReason}
                 />
-                <button className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'
-               
-                >Confirm Rejected</button>
-                <button onClick={() => setRejectModal(false)} className='flex-1 bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
+
+                <div className='flex flex-col sm:flex-row gap-3 mt-6'>
+                  <button disabled={loading} className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'
+               onClick={handleRejected}
+                >{loading ? <ClipLoader size={20} color='white'/>: "Confirm Rejected"}</button>
+                <button onClick={() => setRejectModal(false)} className='flex-1
+                 bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
             
+                </div>
+                
             </motion.div>
           </motion.div>
         )}
