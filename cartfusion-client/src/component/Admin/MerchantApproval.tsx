@@ -55,7 +55,7 @@ function MerchantApproval() {
       try{
        await axios.post("/api/admin/update-merchant-status", {
           merchantId: selectedMerchant._id,
-          status: "Rejected",
+          status: "rejected",
           rejectedReason
         })
         const updated = allMerchantData.filter((v) => v._id !==selectedMerchant._id)
@@ -63,6 +63,7 @@ function MerchantApproval() {
         dispatch(setAllMerchantData(updated))
         setSelectedMerchant(null)
         setLoading(false)
+        setRejectModal(false)
         alert("Merchant Rejected")
       }catch (error){
         console.log(error)
@@ -191,7 +192,7 @@ function MerchantApproval() {
             exit={{scale: 0.9}}
             className='bg-gray-900 p-6 rounded-2xl w-full max-w-lg 
             border border-white/10'>
-              <h3 className='text-xl sm:text-2xl w-full font-bold mb-4'>Enter Rjecyed Reason</h3>
+              <h3 className='text-xl sm:text-2xl w-full font-bold mb-4'>Enter Rejected Reason</h3>
              
                 <textarea placeholder='Enter rejection reason...'
                 className='w-full bg-white/10 border border-white/20 rounded-lg p-3 *:
@@ -201,7 +202,7 @@ function MerchantApproval() {
 
                 <div className='flex flex-col sm:flex-row gap-3 mt-6'>
                   <button disabled={loading} className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'
-               onClick={handleRejected}
+               onClick={()=>{handleRejected();setRejectModal(false)}}
                 >{loading ? <ClipLoader size={20} color='white'/>: "Confirm Rejected"}</button>
                 <button onClick={() => setRejectModal(false)} className='flex-1
                  bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
