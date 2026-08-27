@@ -38,7 +38,20 @@ function Profile() {
           </motion.div>
           <h2 className='text-2xl sm:text-3xl font-bold mt-4'>{user?.name}</h2>
           <p className='text-gray-400 text-sm sm:text-base'>{user?.email}</p>
-          <p className='text-gray-400 text-xs sm:text-sm mt-1'>Role: {user?.role}</p>
+          <p className='text-gray-400 text-xs sm:text-sm mt-1'>Role: {" "} <span
+          className='text-[#00684D] uppercase font-semibold'>{user?.role}</span></p>
+        </div>
+
+        <div className='mt-5 sapce-y-3 text-sm sm:text-base'>
+          <p><b>Phone:</b>{user?.phone || "-"}</p>
+
+          {user?.role == "merchant" && (
+            <>
+             <p><b>Shop Name:</b>{user?.shopName || "-"}</p>
+             <p><b>Shop Address:</b>{user?.shopAddress || "-"}</p>
+             <p><b>GSTIN:</b>{user?.gstNumber || "-"}</p>
+            </>
+          )}
         </div>
       </motion.div>
     </div>
