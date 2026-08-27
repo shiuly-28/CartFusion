@@ -3,6 +3,9 @@ import { IUser } from '@/model/user.model'
 import { div } from 'motion/react-client'
 import React, { useState } from 'react'
 import MerchantDashBoard from './MerchantDashBoard'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { ClipLoader } from 'react-spinners'
 
 function MerchantPage({ user }: { user: IUser }) {
   const [openVeryfyform, setOpenVeryfyform] = useState(false)
@@ -10,6 +13,7 @@ function MerchantPage({ user }: { user: IUser }) {
   const [shopAddress, setAddressName] = useState(user?.shopAddress || "")
   const [gstNumber, setGstNumber] = useState(user?.gstNumber || "")
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const handleVerifyAgain = async () => {
     if(!shopAddress || !shopName || !gstNumber){
@@ -17,6 +21,21 @@ function MerchantPage({ user }: { user: IUser }) {
       return;
     }
     setLoading(true)
+    try{
+      const result = await axios.post("/api/merchant/verifyagain", {
+        shopName,
+        shopAddress, 
+        gstNumber
+      })
+      console.log(result.data)
+      setLoading(false)
+      alert("verification requst sent again")
+      router.push("/")
+    }catch(error){
+      console.log(error)
+      setLoading(false)
+      alert("Failed to send verification")
+    }
   }
 
   if(!user){
@@ -94,7 +113,12 @@ function MerchantPage({ user }: { user: IUser }) {
             placeholder='GSTIN Number'
             className='w-full p-3 rounded bg-white/10 border border-white/20'
             onChange={(e)=>setGstNumber(e.target.value)} value={gstNumber} />
-            <button className='w-full p-2 bg-[#00684D] hover:bg-[#045f47] rounded-lg font-semibold'>Submit & Verify again</button>
+            <button
+            onClick={handleVerifyAgain}
+            disabled={loading}
+            className='w-full p-2 bg-[#00684D] hover:bg-[#045f47] rounded-lg font-semibold'>
+              {loading? <ClipLoader size={22} color='white'/>: "Submit & Verify again"}</button>
+              
             <button onClick={()=>setOpenVeryfyform(false)}
              className='w-full p-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold'>Cancel</button>
           </div>
