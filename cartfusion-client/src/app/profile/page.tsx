@@ -7,12 +7,22 @@ import { AnimatePresence, motion} from 'motion/react'
 import Image from 'next/image'
 import { AiOutlineUser } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
+import userImage from "@/assets/userpng.avif"
 
 function Profile() {
   const user = useSelector((state:RootState)=>state.user.userData)
   const router = useRouter()
   const [showEditProfile, setShowEditProfile] = useState(false)
   const [showEditShop, setShowEditShop] = useState(false)
+  const [previewImage, setPreviewImage] = useState(user?.image || userImage )
+  const [profileImage, setProfileImage] = useState<File | null>(null)
+
+  const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if(!file)return;
+    setProfileImage(file)
+    setPreviewImage(URL.createObjectURL(file))
+  }
   return (
     <div className='min-h-screen  bg-linear-to-br from-gray-900 
     via-black to-gray-900 text-white px-6 pt-24 pb-10'>
@@ -81,10 +91,44 @@ function Profile() {
             </motion.button>
           )}
         </div>
-      </motion.div>
-      <AnimatePresence>
-        
+         <AnimatePresence>
+       {showEditProfile &&(
+         <motion.div 
+         initial={{opacity : 0, y: 30}}
+         animate={{opacity: 1, y: 0 }}
+         exit={{opacity: 0 , y: 30 }}
+         className='mt-10 bg-white/5 p-5 sm:p-6 rounded-xl border border-white/20'>
+            <h3 className='text-xl font-bold mb-3'>Edit Profile</h3>
+            <div className='flex flex-col items-center mb-6'>
+              <motion.div 
+              whileHover={{scale: 1.05}}
+              className='w-24 h-24 rounded-full overflow-hidden border-2 border-white/30
+              hover:border-[#00684D] mb-3'>
+                <Image src={previewImage} alt='select Image' width={120} height={120}
+                className='object-cover w-full h-full'/>
+              </motion.div>
+              <label className='cursor-pointer bg-[#00684D] px-4 py-2 rounded-lg text-sm'>
+                Select Image
+                <input type="file" hidden accept='image/*' onChange={handlePreviewImage}/>
+              </label>
+            </div>
+        </motion.div>
+       )}
       </AnimatePresence>
+
+       <AnimatePresence>
+       {showEditShop &&(
+         <motion.div 
+         initial={{opacity : 0, y: 30}}
+         animate={{opacity: 1, y: 0 }}
+         exit={{opacity: 0 , y: 30 }}
+         className='mt-10 bg-white/5 p-5 sm:p-6 rounded-xl border border-white/20'>
+            <h3 className='text-xl font-bold mb-3'>Edit Shop Details</h3>
+        </motion.div>
+       )}
+      </AnimatePresence>
+      </motion.div>
+     
     </div>
   )
 }
