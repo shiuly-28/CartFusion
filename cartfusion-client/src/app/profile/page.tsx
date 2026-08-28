@@ -1,15 +1,18 @@
 "use client"
 
 import { RootState } from '@/redux/store'
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AnimatePresence, motion} from 'motion/react'
 import Image from 'next/image'
 import { AiOutlineUser } from 'react-icons/ai'
+import { useRouter } from 'next/navigation'
 
 function Profile() {
   const user = useSelector((state:RootState)=>state.user.userData)
-  console.log(user)
+  const router = useRouter()
+  const [showEditProfile, setShowEditProfile] = useState(false)
+  const [showEditShop, setShowEditShop] = useState(false)
   return (
     <div className='min-h-screen  bg-linear-to-br from-gray-900 
     via-black to-gray-900 text-white px-6 pt-24 pb-10'>
@@ -43,17 +46,45 @@ function Profile() {
         </div>
 
         <div className='mt-5 sapce-y-3 text-sm sm:text-base'>
-          <p><b>Phone:</b>{user?.phone || "-"}</p>
+          <p><b>Phone : </b>{user?.phone || "-"}</p>
 
           {user?.role == "merchant" && (
             <>
-             <p><b>Shop Name:</b>{user?.shopName || "-"}</p>
-             <p><b>Shop Address:</b>{user?.shopAddress || "-"}</p>
-             <p><b>GSTIN:</b>{user?.gstNumber || "-"}</p>
+             <p><b>Shop Name : </b>{user?.shopName || "-"}</p>
+             <p><b>Shop Address : </b>{user?.shopAddress || "-"}</p>
+             <p><b>GSTIN : </b>{user?.gstNumber || "-"}</p>
             </>
           )}
         </div>
+        <div className='flex flex-col gap-3 w-full mt-4'>
+          {user?.role == "user" && (
+            <motion.button
+            onClick={()=>router.push("/orders")}
+            whileHover={{scale:1.02}}
+            className='bg-gray-600 hover:bg-gray-700 py-3 rounded-lg font-semibold'>
+              My Orders
+            </motion.button>
+          )}
+           <motion.button
+           onClick={()=> {setShowEditProfile(!showEditProfile); setShowEditShop(false)}}
+            whileHover={{scale:1.02}}
+            className='bg-[#00684D] hover:[#045f47] py-3 rounded-lg font-semibold'>
+            Edit Profile
+            </motion.button>
+
+              {user?.role == "merchant" && (
+              <motion.button
+                onClick={()=> {setShowEditShop(!showEditShop); setShowEditProfile(false)}}
+              whileHover={{scale:1.02}}
+              className='bg-gray-600 hover:bg-gray-700 py-3 rounded-lg font-semibold'>
+              Edit Shop Details
+            </motion.button>
+          )}
+        </div>
       </motion.div>
+      <AnimatePresence>
+        
+      </AnimatePresence>
     </div>
   )
 }
