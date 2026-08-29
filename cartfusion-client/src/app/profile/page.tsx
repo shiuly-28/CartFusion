@@ -8,6 +8,8 @@ import Image from 'next/image'
 import { AiOutlineUser } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
 import userImage from "@/assets/userpng.avif"
+import axios from 'axios'
+import { ClipLoader } from 'react-spinners'
 
 function Profile() {
   const user = useSelector((state:RootState)=>state.user.userData)
@@ -16,6 +18,12 @@ function Profile() {
   const [showEditShop, setShowEditShop] = useState(false)
   const [previewImage, setPreviewImage] = useState(user?.image || userImage )
   const [profileImage, setProfileImage] = useState<File | null>(null)
+  const [name, setName] = useState(user?.name || "")
+  const [phone, setPhone] = useState(user?.phone || "")
+  const [shopName, setShopName] = useState(user?.shopName || "")
+  const [shopAddress, setShopAddress] = useState(user?.shopAddress || "")
+  const [gstNumber, setGstNumber] = useState(user?.gstNumber || "")
+   const [loading, setLoading] = useState(false)
 
   const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -23,6 +31,31 @@ function Profile() {
     setProfileImage(file)
     setPreviewImage(URL.createObjectURL(file))
   }
+
+  
+  const handleVerifyAgain = async () => {
+    if(!shopAddress || !shopName || !gstNumber){
+      alert("Fill all fields")
+      return;
+    }
+    setLoading(true)
+    try{
+      const result = await axios.post("/api/merchant/verifyagain", {
+        shopName,
+        shopAddress, 
+        gstNumber
+      })
+      // console.log(result.data)
+      setLoading(false)
+      alert("Shop Details updated ✅")
+      router.push("/")
+    }catch(error){
+      console.log(error)
+      setLoading(false)
+      alert("Failed to send verification ❌")
+    }
+  }
+
   return (
     <div className='min-h-screen  bg-linear-to-br from-gray-900 
     via-black to-gray-900 text-white px-6 pt-24 pb-10'>
@@ -112,6 +145,20 @@ function Profile() {
                 <input type="file" hidden accept='image/*' onChange={handlePreviewImage}/>
               </label>
             </div>
+            <div className='space-y-4'>
+              <input type="text" className='w-full p-3 bg-white/10 border border-white/20 rounded'
+              placeholder='Full Name'
+              onChange={(e) => setName(e.target.value)} value={name} />
+
+              <input type="text" className='w-full p-3 bg-white/10 border border-white/20 rounded'
+              placeholder='Phone'
+              onChange={(e) => setPhone(e.target.value)} value={phone} />
+               <motion.button
+              
+              className='hover:bg-[#045f47] bg-[#00684D] w-full py-3 rounded-lg font-semibold'>
+              Updated Profile
+            </motion.button>
+            </div>
         </motion.div>
        )}
       </AnimatePresence>
@@ -124,6 +171,24 @@ function Profile() {
          exit={{opacity: 0 , y: 30 }}
          className='mt-10 bg-white/5 p-5 sm:p-6 rounded-xl border border-white/20'>
             <h3 className='text-xl font-bold mb-3'>Edit Shop Details</h3>
+             <div className='space-y-4'>
+              <input type="text" className='w-full p-3 bg-white/10 border border-white/20 rounded'
+              placeholder='Shop Name'
+              onChange={(e) => setShopName(e.target.value)} value={shopName} />
+
+              <input type="text" className='w-full p-3 bg-white/10 border border-white/20 rounded'
+              placeholder='Shop Address'
+              onChange={(e) => setShopAddress(e.target.value)} value={shopAddress} />
+              <input type="text" className='w-full p-3 bg-white/10 border border-white/20 rounded'
+              placeholder='GSTIN'
+              onChange={(e) => setGstNumber(e.target.value)} value={gstNumber} />
+               <motion.button
+              onClick={handleVerifyAgain}
+              disabled={loading}
+              className='hover:bg-[#045f47] bg-[#00684D] w-full py-3 rounded-lg font-semibold'>
+              {loading? <ClipLoader size={22} color='white'/> :"Updated Shop Profile"}
+            </motion.button>
+            </div>
         </motion.div>
        )}
       </AnimatePresence>
