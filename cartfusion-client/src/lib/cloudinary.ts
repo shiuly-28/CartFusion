@@ -1,6 +1,5 @@
-import { rejects } from 'assert';
+
 import { v2 as cloudinary } from 'cloudinary';
-import { error } from 'console';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,11 +14,11 @@ const uploadOnCloudinary = async (file: Blob): Promise<string | null> => {
   try{
  const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
-    return new Promise((resolve, rejects) => {
+    return new Promise((resolve, reject) => {
       const uploadStrem = cloudinary.uploader.upload_stream
       ({resource_type:'auto'}, (error, result) => {
         if(error){
-          rejects(error)
+          reject(error)
         }else{resolve(result?.secure_url ?? null)}
       })
       uploadStrem.end(buffer)

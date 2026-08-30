@@ -33,6 +33,7 @@ function Profile() {
   }
 
   
+  
   const handleVerifyAgain = async () => {
     if(!shopAddress || !shopName || !gstNumber){
       alert("Fill all fields")
