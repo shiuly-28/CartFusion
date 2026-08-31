@@ -1,8 +1,8 @@
 "use client"
 
-import { RootState } from '@/redux/store'
+import { AppDispatch, RootState } from '@/redux/store'
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AnimatePresence, motion} from 'motion/react'
 import Image from 'next/image'
 import { AiOutlineUser } from 'react-icons/ai'
@@ -10,8 +10,11 @@ import { useRouter } from 'next/navigation'
 import userImage from "@/assets/userpng.avif"
 import axios from 'axios'
 import { ClipLoader } from 'react-spinners'
+import { setUserData } from '@/redux/userSlice'
+import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
 
 function Profile() {
+  UserGetCurrentUser()
   const user = useSelector((state:RootState)=>state.user.userData)
   const router = useRouter()
   const [showEditProfile, setShowEditProfile] = useState(false)
@@ -24,6 +27,7 @@ function Profile() {
   const [shopAddress, setShopAddress] = useState(user?.shopAddress || "")
   const [gstNumber, setGstNumber] = useState(user?.gstNumber || "")
    const [loading, setLoading] = useState(false)
+   const dispatch = useDispatch<AppDispatch>()
 
   const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -32,7 +36,27 @@ function Profile() {
     setPreviewImage(URL.createObjectURL(file))
   }
 
-  
+  const handleUpdateProfile = async () => {
+    const formData = new FormData()
+    formData.append("phone", phone);
+    formData.append("name", name);
+    if(profileImage){
+      formData.append("image", profileImage)
+    }
+    setLoading(true)
+    try{
+      const result = await axios.post("/api/user/update-profile", formData)
+      dispatch(setUserData(result.data))
+      console.log(result)
+      setLoading(false)
+      setProfileImage(null)
+      alert("profile update error ✅")
+    }catch(error){
+      console.log(error)
+      setLoading(false)
+      alert("Profile update error")
+    }
+  }
   
   const handleVerifyAgain = async () => {
     if(!shopAddress || !shopName || !gstNumber){
@@ -155,9 +179,10 @@ function Profile() {
               placeholder='Phone'
               onChange={(e) => setPhone(e.target.value)} value={phone} />
                <motion.button
-              
+              whileHover={{scale: 1.02}}
+              onClick={handleUpdateProfile}
               className='hover:bg-[#045f47] bg-[#00684D] w-full py-3 rounded-lg font-semibold'>
-              Updated Profile
+              {loading ? <ClipLoader size={20} color='white'/>:"Updated Profile"}
             </motion.button>
             </div>
         </motion.div>
