@@ -25,9 +25,9 @@ function MerchantDashBoard() {
     }
   }
   const menu = [
-    { id: "dashboard", label: "Merchant Dashboard", icon: <MdDashboard size={22} /> },
-    { id: "merchant", label: "Merchant Product", icon: <FaStore size={22} /> },
-    { id: "orders", label: "Merchant Orders", icon: <FaShoppingBag size={22} /> },
+    { id: "dashboard", label: "Dashboard", icon: <MdDashboard size={22} /> },
+     { id: "products", label: "Product", icon: <FaStore size={22} /> },
+    { id: "orders", label: "Orders", icon: <FaShoppingBag size={22} /> },
   
   ]
 

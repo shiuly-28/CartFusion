@@ -135,5 +135,35 @@ const productSchema = new mongoose.Schema<IProduct>({
         default:[]
     },
 
+    reviews:[
+        {
+            user: {
+                type:mongoose.Schema.Types.ObjectId,
+                ref: "User",
+                required:true,
+            },
+            rating:{
+                type:Number,
+                required:true,
+                min:1,
+                max:5
+            },
+            comment:{
+                type:String,
+                trim:true,
+            },
+            image:{
+                type:String
+            },
+            createdAt:{
+                type:Date,
+                default:Date.now,
+            },
+        },
+    ],
+
 
 },{timestamps:true})
+
+const Product = mongoose.models?.Product || mongoose.model<IProduct>("Product", productSchema)
+export default Product
