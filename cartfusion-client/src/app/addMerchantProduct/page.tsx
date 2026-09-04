@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react'
 import {  AnimatePresence, motion } from "motion/react"
-import { button } from 'motion/react-client';
 import { FiUpload } from 'react-icons/fi';
 import Image from 'next/image';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { ClipLoader } from 'react-spinners';
 function AddMerchantProduct() {
 
   const categories = [
@@ -46,11 +48,85 @@ const [preview2, setPreview2] = useState<string | null>(null)
 const [preview3, setPreview3] = useState<string | null>(null)
 const [preview4, setPreview4] = useState<string | null>(null)
 
+const [detailsPoints, setDetailsPoint] = useState<string[]>([])
+const [currentPoint, setCurrentPoint] = useState("")
+const [pointIndex, setPointIndex] = useState(0)
+const [loading, setLoading] = useState(false)
+const router = useRouter()
+
+
 const toggleSize = (size:string)=>{
 setSizes((prev)=>prev.includes(size)
 ?prev.filter((s)=> s !==size) : [...prev, size]);
 }
 
+const handleAddPoint = () => {
+  if(!currentPoint.trim())return;
+
+  setDetailsPoint((prev) =>{
+    const updated = [...prev]
+    updated[pointIndex] = currentPoint;
+    return updated;
+  })
+  setCurrentPoint("")
+  setPointIndex((prev)=>prev+ 1)
+
+ 
+}
+ const handleRemove = (i:number)=>{
+    setDetailsPoint((prev)=>prev.filter((_,index)=> index !== i))
+  }
+
+  const handleSubmit = async () =>{
+    if(!title || !description || !price || !stock || !category || !image1 || !image2 || !image3 || !image4){
+      alert("All feilds & images are required")
+      return;
+    }
+    if(isWearable && sizes.length === 0){
+       alert("All feilds & images are required")
+      return;
+    }
+    setLoading(true)
+
+     const formData = new FormData()
+     formData.append("title", title);
+     formData.append("description", description);
+     formData.append("price", price);
+     formData.append("stock", stock);
+     formData.append(
+      "category", 
+      category === "Others" ? customCategory : category
+     );
+
+     formData.append("isWearable", String(isWearable));
+     sizes.forEach((size) => formData.append("sizes", size));
+
+     formData.append("replacementDays", replacementDays);
+     formData.append("freeDelivey", String(freeDelivey));
+     formData.append("warranty", warranty)
+     formData.append("payOnDelivey", String(payOnDelivey));
+     detailsPoints.forEach((point)=>
+    formData.append("detailPoints", point)
+    );
+
+    if(image1 && image2 && image3 && image4){
+      formData.append("image1", image1)
+      formData.append("image2", image2)
+      formData.append("image3", image3)
+      formData.append("image4", image4)
+    }
+    try{
+      const result = await axios.post("/api/merchant/addProduct", formData)
+      console.log(result.data)
+      setLoading(false)
+      alert("✅ Product added successfully. Waiting for admin approval");
+      router.push("/")
+    }catch(error){
+      setLoading(false)
+      console.log("ADD PRODUCT ERROR:", error);
+      alert("❌ product add failed");
+    }
+  }
   return (
     <div  className='min-h-screen  bg-linear-to-br from-gray-900 
     via-black to-gray-900 text-white px-4 pt-20 pb-10'>
@@ -106,7 +182,7 @@ setSizes((prev)=>prev.includes(size)
     <p className='mb-2 text-sm font-semibold'>Select Sizes</p>
     <div>
       {sizeOption.map((size) =>(
-        <button className={`px-4 py-1 rounded-full border  ${
+        <button type='button' className={`px-4 py-1 rounded-full border  ${
           size.includes(size)
           ?"bg-[#00684D] hover:bg-[#045f47]"
           : "bg-white/10 border-white/20"
@@ -117,12 +193,14 @@ setSizes((prev)=>prev.includes(size)
     </div>}
 
     <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6'>
-      <input type="text" className='p-3 bg-white/10 border border-white/20 rounded'
+      <input type="text" className='p-3 bg-white/10 border border-white/20 rounded
+      focus:outline-none focus:ring-2 focus:ring-[#00684D]'
        placeholder='Replacements(e.g. 7 days)'
        onChange={(e)=>setReplacementDays(e.target.value)}
        value={replacementDays}/>
 
-      <input type="text" className='p-3 bg-white/10 border border-white/20 rounded'
+      <input type="text" className='p-3 bg-white/10 border border-white/20 rounded
+      focus:outline-none focus:ring-2 focus:ring-[#00684D]'
        placeholder='Warranty(e.g. 1 years)'
        onChange={(e)=>setWarranty(e.target.value)}
        value={warranty}/>
@@ -216,11 +294,11 @@ setSizes((prev)=>prev.includes(size)
           setImage4(file)
           setPreview4(URL.createObjectURL(file))
         }} />
-        <label htmlFor='img1'
+        <label htmlFor='img4'
         className='cursor-pointer bg-gray-800 p-2 rounded h-28 flex items-center justify-center
         border border-white/20'>
           {preview4 ? (
-            <Image src={preview4} alt='img1' width={120} height={120}
+            <Image src={preview4} alt='img' width={120} height={120}
             className="w-full h-full object-cover rounded"/>
           ) :(
             <div className='flex flex-col items-center text-gray-400 text-xs'>
@@ -232,7 +310,34 @@ setSizes((prev)=>prev.includes(size)
       </div>
   </div>
 
-  <div></div>
+  <div className='mt-6'>
+    <p className='font-semibold mb-2'>Product Details Points</p>
+    <div className='flex gap-2'>
+      <input type="text" className='flex-1 p-3 bg-white/10 border border-white/20
+       rounded focus:outline-none focus:ring-2 focus:ring-[#00684D]'
+        placeholder={`Point ${pointIndex + 1}`} onChange={(e)=>setCurrentPoint(e.target.value)} 
+        value={currentPoint} />
+      <button type='button' className='px-4 bg-[#00684D] hover:bg-[#045f47] rounded
+       font-semibold' onClick={handleAddPoint}>Add Point</button>
+    </div>
+    {detailsPoints.length> 0 && (
+      <ul className='mt-3 space-y-2'>
+        {detailsPoints.map((point,index)=>(
+          <li key={index} className='flex justify-between items-center bg-white/10 p-2 rounded'>
+           <span className='text-sm'> {index + 1}{point}</span>
+           <button type='button' className='text-red-400 text-xs' onClick={()=>handleRemove(index)}>Remove</button>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+  <motion.button
+   whileHover={{scale:1.02}}
+    whileTap={{scale:0.97}}
+    onClick={handleSubmit}
+    disabled={loading}
+   className='w-full mt-8 bg-[#00684D] hover:bg-[#045f47] py-3 rounded-lg font-semibold'
+   >{loading? <ClipLoader size={20} color='white'/>: "Add Product"}</motion.button>
   </motion.div>
     </div>
   )
