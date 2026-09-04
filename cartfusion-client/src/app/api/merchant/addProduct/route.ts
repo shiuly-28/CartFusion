@@ -73,6 +73,6 @@ export async function POST(req:NextRequest){
 
 
     }catch(error){
-return NextResponse.json({message: `failed to care new product ${error}`},{status:500})
+return NextResponse.json({message: `failed to create new product ${error}`},{status:500})
     }
 }

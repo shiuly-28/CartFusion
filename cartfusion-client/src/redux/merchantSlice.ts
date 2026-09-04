@@ -1,12 +1,15 @@
+import { IProduct } from './../model/product.model';
 
 import { createSlice } from '@reduxjs/toolkit';
 import { IUser } from './../model/user.model';
 interface IUserData {
-     AllMerchantData : IUser[]
+     AllMerchantData : IUser[],
+     allProductData : IProduct[]
 }
 
 const initialState: IUserData = {
-     AllMerchantData : []
+     AllMerchantData : [],
+     allProductData : []
 }
 
 const merchantSlice = createSlice({
@@ -15,9 +18,13 @@ const merchantSlice = createSlice({
     reducers: {
         setAllMerchantData: (state, action)=>{
             state. AllMerchantData = action.payload
-        }
+        },
+        setAllProductData: (state, action)=>{
+            state. allProductData = action.payload
+        },
     }
 })
 
 export const {setAllMerchantData} = merchantSlice.actions
+export const {setAllProductData} = merchantSlice.actions
 export default merchantSlice.reducer

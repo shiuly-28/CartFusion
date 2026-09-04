@@ -22,7 +22,7 @@ function AdminDashBoard() {
       case "merchant" : return <MerchantDetails/>
       case "orders" : return <UserOrders/>
       case "merchant-approval" : return <MerchantApproval/>
-      case "product-approval" : return <ProductApproval/>
+      case "product-request" : return <ProductApproval/>
     }
   }
   const menu = [
@@ -30,7 +30,7 @@ function AdminDashBoard() {
     { id: "merchant", label: "Merchant Details", icon: <FaStore size={22} /> },
     { id: "orders", label: "Orders", icon: <FaShoppingBag size={22} /> },
     { id: "merchant-approval", label: "Merchant-approval", icon: <FaCheckCircle size={22} /> },
-    { id: "product-approval", label: "product-approval", icon: <FaBox size={22} /> },
+    { id: "product-request", label: "Product-request", icon: <FaBox size={22} /> },
   ]
 
   return (
