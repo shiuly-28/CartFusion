@@ -75,7 +75,7 @@ setStock(String(product.stock))
 setCategory(product.category);
 
 setIsWearable(Boolean(product.isWearable));
-setSizes(product.size || []);
+setSizes(product.size || [])
 
 setReplacementDays(
     product.replacementDays ? String(product.replacementDays) : ""
@@ -91,7 +91,7 @@ setPreview1(product.image1);
 setPreview2(product.image2)
 setPreview3(product.image3)
 setPreview4(product.image4)
-},[])
+},[product])
 
 const toggleSize = (size:string)=>{
 setSizes((prev)=>prev.includes(size)
@@ -116,17 +116,17 @@ const handleAddPoint = () => {
   }
 
   const handleSubmit = async () =>{
-    if(!title || !description || !price || !stock || !category || !image1 || !image2 || !image3 || !image4){
-      alert("All feilds & images are required")
-      return;
-    }
+    console.log("DEBUG isWearable:", isWearable)
+    console.log("DEBUG sizes:", sizes)
     if(isWearable && sizes.length === 0){
        alert("All feilds & images are required")
       return;
     }
+    
     setLoading(true)
 
      const formData = new FormData()
+     formData.append("productId", productId)
      formData.append("title", title);
      formData.append("description", description);
      formData.append("price", price);
@@ -154,15 +154,15 @@ const handleAddPoint = () => {
       formData.append("image4", image4)
     }
     try{
-      const result = await axios.post("/api/merchant/addProduct", formData)
-      console.log(result.data)
+      const result = await axios.post("/api/merchant/updatedProduct", formData)
+     
       setLoading(false)
-      alert("✅ Product added successfully. Waiting for admin approval");
+      alert("✅ Product updated successfully. Waiting for admin approval");
       router.push("/")
     }catch(error){
       setLoading(false)
-      console.log("ADD PRODUCT ERROR:", error);
-      alert("❌ product add failed");
+      console.log("UPDATE PRODUCT ERROR:", error);
+      alert("❌ product update failed");
     }
   }
   return (
@@ -221,7 +221,7 @@ const handleAddPoint = () => {
     <div>
       {sizeOption.map((size) =>(
         <button type='button' className={`px-4 py-1 rounded-full border  ${
-          size.includes(size)
+          sizes.includes(size)
           ?"bg-[#00684D] hover:bg-[#045f47]"
           : "bg-white/10 border-white/20"
         }`}

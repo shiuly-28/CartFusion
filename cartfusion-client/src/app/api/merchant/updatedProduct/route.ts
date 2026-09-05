@@ -15,7 +15,7 @@ export async function POST(req: NextRequest){
                 const formData = await req.formData()
                 const productId = formData.get("productId")
 
-                const product = await Product.findById({productId})
+                const product = await Product.findById(productId)
 
                  if(!product){
                     return NextResponse.json({message:"Product is not found"},{status:400})
@@ -67,28 +67,27 @@ export async function POST(req: NextRequest){
             {status:400})
             }
 
-        const updatedProduct = await Product.findByIdAndUpdate(productId,{
-              title,
-            description,
-            price,
-            stock,
-            isStockAvailable:stock > 0,
-            image1,
-            image2,
-            image3,
-            image4,
-            category,
-            isWearable,
-            sizes: isWearable ? sizes : [],
-            replacementDays,
-            warranty,
-            payOnDelivey,
-            freeDelivey,
-            detailsPoint,
-            verificationStatus: "pending",
-            isActive: false
-        },{new: true});
-
+       const updatedProduct = await Product.findByIdAndUpdate(productId,{
+    title,
+    description,
+    price,
+    stock,
+    isStockAvailable: stock > 0,
+    image1,
+    image2,
+    image3,
+    image4,
+    category,
+    isWearable,
+    size: isWearable ? sizes : [],
+    replacementDays,
+    warranty,
+    freeDelivery: freeDelivey,           // 👈 key "freeDelivery", ভ্যালু ভ্যারিয়েবল freeDelivey
+    payOnDevelivery: payOnDelivey,       // 👈 key "payOnDevelivery", ভ্যালু ভ্যারিয়েবল payOnDelivey
+    detailsPoint,                         // এটা ঠিকই আছে (নাম মিলছে)
+    verificationStatus: "pending",
+    isActive: false
+}, {new: true});
         return NextResponse.json(updatedProduct,{status:200})
         
     }catch(error){
