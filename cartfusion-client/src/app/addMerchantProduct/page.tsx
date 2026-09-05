@@ -324,7 +324,7 @@ const handleAddPoint = () => {
       <ul className='mt-3 space-y-2'>
         {detailsPoints.map((point,index)=>(
           <li key={index} className='flex justify-between items-center bg-white/10 p-2 rounded'>
-           <span className='text-sm'> {index + 1}{point}</span>
+           <span className='text-sm'>{index + 1}  {point}</span>
            <button type='button' className='text-red-400 text-xs' onClick={()=>handleRemove(index)}>Remove</button>
           </li>
         ))}

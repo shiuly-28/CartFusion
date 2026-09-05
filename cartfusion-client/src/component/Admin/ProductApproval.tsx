@@ -2,7 +2,8 @@
 
 import UseGetAllProducts from '@/hooks/UseGetAllProductsData'
 import { IProduct } from '@/model/product.model'
-import { setAllMerchantData } from '@/redux/merchantSlice'
+import { setAllProductData } from '@/redux/merchantSlice'
+
 import { AppDispatch, RootState } from '@/redux/store'
 import axios from 'axios'
 import { AnimatePresence, motion } from 'motion/react'
@@ -31,10 +32,46 @@ function ProductApproval() {
     }
 
     const handleApproved = async () => {
-    
+      if(!selectedProduct)return;
+      setLoading(true)
+      try{
+       await axios.post("/api/admin/update-product-status", {
+          productId: selectedProduct._id,
+          status: "approved"
+        })
+        const updated = allProductData.filter((v) => v._id !== selectedProduct._id)
+
+        dispatch(setAllProductData(updated))
+        setSelectedProduct(null)
+        setLoading(false)
+        alert("Product Approved")
+      }catch (error){
+        console.log(error)
+        setLoading(false)
+        alert("Approval failed")
+      }
     }
     const handleRejected = async () => {
-    
+      if(!selectedProduct)return;
+      setLoading(true)
+      try{
+       await axios.post("/api/admin/update-product-status", {
+          productId: selectedProduct._id,
+          status: "rejected",
+          rejectedReason
+        })
+        const updated = allProductData.filter((v) => v._id !==selectedProduct._id)
+
+        dispatch(setAllProductData(updated))
+        setSelectedProduct(null)
+        setLoading(false)
+        setRejectModal(false)
+        alert("Product Rejected")
+      }catch (error){
+        console.log(error)
+        setLoading(false)
+        alert("Rejected failed")
+      }
     }
   return (
       <div className='w-full px-3 sm:px-6 lg:px-10 py-6 text-white'>
@@ -143,6 +180,7 @@ function ProductApproval() {
               <b>status</b>{" "}
                 <span className='text-yellow-400'>Pending</span></p>
               </div>
+
               <div className='flex flex-col sm:flex-row gap-3 mt-6'>
                 <button disabled={loading} className='flex-1 bg-[#00684D] hover:bg-[#045f47] py-2 rounded-lg text-sm'
                  onClick={handleApproved}>{loading? <ClipLoader size={22} color='white'/>:"Approved"}</button>
@@ -182,7 +220,7 @@ function ProductApproval() {
 
                 <div className='flex flex-col sm:flex-row gap-3 mt-6'>
                   <button disabled={loading} className='flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm'
-               onClick={()=>{handleRejected();setRejectModal(false)}}
+               onClick={handleRejected}
                 >{loading ? <ClipLoader size={20} color='white'/>: "Confirm Rejected"}</button>
                 <button onClick={() => setRejectModal(false)} className='flex-1
                  bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-sm'>Cancel</button>
