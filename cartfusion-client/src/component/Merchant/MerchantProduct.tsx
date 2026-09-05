@@ -105,6 +105,7 @@ function MerchantProduct() {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
+                        onClick={()=>router.push(`/updateProduct/${p._id}`)}
                         className='px-3 py-1 rounded text-sm bg-amber-500 hover:bg-amber-600 font-medium'
                       >
                         Edit
@@ -197,21 +198,22 @@ function MerchantProduct() {
               </div>
 
             {p.verificationStatus === "rejected" && (
-  <div className='mt-2 bg-red-500/10 border border-red-500/30 text-red-300 text-xs p-2 rounded text-center'>
-    <p>
-      <b>Rejected: </b>
-      {p.rejectedReason || "No reason provided"}
-    </p>
-    <p className='mt-1 text-yellow-300'>
-      After edit, product will be sent for re-verification.
-    </p>
-  </div>
-)}
+              <div className='mt-2 bg-red-500/10 border border-red-500/30 text-red-300 text-xs p-2 rounded text-center'>
+             <p>
+            <b>Rejected: </b>
+            {p.rejectedReason || "No reason provided"}
+            </p>
+              <p className='mt-1 text-yellow-300'>
+               After edit, product will be sent for re-verification.
+              </p>
+              </div>
+              )}
 
               <div className='flex items-center gap-3 mt-4'>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
+                   onClick={()=>router.push(`/updateProduct/${p._id}`)}
                   className='px-4 py-1.5 rounded text-sm bg-amber-500 hover:bg-amber-600 font-medium'
                 >
                   Edit
