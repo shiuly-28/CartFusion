@@ -24,7 +24,8 @@ const product = await Product.findById(productId)
 if(status === "approved"){
 product.verificationStatus = "approved",
 product.approvedAt = new Date(),
-product.rejectedReason = undefined
+product.rejectedReason = undefined;
+  product.isActive = true;
 }
 
 if(status === "rejected"){

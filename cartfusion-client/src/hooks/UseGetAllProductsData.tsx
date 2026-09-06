@@ -15,7 +15,7 @@ function UseGetAllProducts() {
         try{
               const result = await axios.get("/api/merchant/allProduct")
               dispatch(setAllProductData(result.data))
-            console.log(result.data)
+            // console.log(result.data)
         }catch(error){
           console.log(error)
           dispatch(setAllProductData([]))

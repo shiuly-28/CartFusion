@@ -2,16 +2,19 @@
 import React from 'react'
 import { motion } from "motion/react"
 import { useRouter } from 'next/navigation'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
 import Image from 'next/image'
 import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
 import UseGetAllProducts from '@/hooks/UseGetAllProductsData'
+import axios from 'axios'
+import { setAllProductData } from '@/redux/merchantSlice'
 
 function MerchantProduct() {
   const router = useRouter()
   UserGetCurrentUser()
   UseGetAllProducts()
+  const dispatch = useDispatch<AppDispatch>()
 
   const currentUser = useSelector((state: RootState) => state.user.userData)
   const { allProductData } = useSelector((state: RootState) => state.merchant)
@@ -21,9 +24,22 @@ function MerchantProduct() {
       ? allProductData.filter(
           (p: any) =>
             p.merchant === currentUser?._id ||
-            p.merchant?._id === currentUser?._id
-        )
-      : []
+            p.merchant?._id === currentUser?._id) : []
+
+  const toggleIsActive = async(productId:string, currentisActive:boolean) => {
+  
+      try{
+        const result = await axios.post("/api/merchant/isActiveProduct", 
+          {productId, isActive:!currentisActive })
+          const updatedProducts = allProductData.map((p:any)=>p._id === productId ? result.data : p)
+
+          dispatch(setAllProductData(updatedProducts))
+   
+    }catch(error){
+      console.log(error)
+      alert("Update isActive error")
+    }
+  }
 
   return (
     <div className='w-full p-4 sm:p-8 text-white'>
@@ -115,6 +131,7 @@ function MerchantProduct() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         disabled={p.verificationStatus !== "approved"}
+                        onClick={()=>toggleIsActive(String(p._id), Boolean(p.isActive))}
                         className={`px-3 py-1 rounded text-sm font-medium ${
                           p.verificationStatus === "approved"
                             ? "bg-[#00684D] hover:bg-[#045f47]"
@@ -221,6 +238,7 @@ function MerchantProduct() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
+                   onClick={()=>toggleIsActive(String(p._id), Boolean(p.isActive))}
                   disabled={p.verificationStatus !== "approved"}
                   className={`px-4 py-1.5 rounded text-sm font-medium ${
                     p.verificationStatus === "approved"
