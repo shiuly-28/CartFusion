@@ -26,7 +26,7 @@ export async function POST(req:NextRequest){
         const freeDelivey = formData.get("freeDelivey") === "true";
         const warranty = formData.get("warranty") as string || "No Warranty";
         const payOnDelivey = formData.get("payOnDelivey") === "true";
-        const detailsPoint = formData.getAll("detailsPoint");
+        const detailsPoint = formData.getAll("detailPoints");
         const img1 = formData.get("image1") as Blob;
         const img2 = formData.get("image2") as Blob;
         const img3 = formData.get("image3") as Blob;
@@ -43,28 +43,28 @@ export async function POST(req:NextRequest){
         const image3 = await uploadOnCloudinary(img3);
         const image4 = await uploadOnCloudinary(img4);
 
-        const product = await Product.create({
-            title,
-            description,
-            price,
-            stock,
-            isStockAvailable:stock > 0,
-            image1,
-            image2,
-            image3,
-            image4,
-            category,
-            merchant:session.user.id,
-            isWearable,
-            sizes: isWearable ? sizes : [],
-            replacementDays,
-            warranty,
-            payOnDelivey,
-            freeDelivey,
-            detailsPoint,
-            verificationStatus: "pending",
-            isActive: false
-        })
+       const product = await Product.create({
+    title,
+    description,
+    price,
+    stock,
+    isStockAvailable: stock > 0,
+    image1,
+    image2,
+    image3,
+    image4,
+    category,
+    merchant: session.user.id,
+    isWearable,
+    size: isWearable ? sizes : [],
+    replacementDays,
+    warranty,
+    freeDelivery: freeDelivey,        // 👈 এটা বদলাও
+    payOnDevelivery: payOnDelivey,    // 👈 এটা বদলাও
+    detailsPoint,
+    verificationStatus: "pending",
+    isActive: false
+})
         await User.findByIdAndUpdate(session.user.id,{
             $push : {merchantProducts : product._id}
         },{new:true})

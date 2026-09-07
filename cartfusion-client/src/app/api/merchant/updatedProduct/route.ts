@@ -38,7 +38,7 @@ export async function POST(req: NextRequest){
         const freeDelivey = formData.get("freeDelivey") === "true";
         const warranty = formData.get("warranty") as string || "No Warranty";
         const payOnDelivey = formData.get("payOnDelivey") === "true";
-        const detailsPoint = formData.getAll("detailsPoint");
+       const detailsPoint = formData.getAll("detailPoints");
         const img1 = formData.get("image1") as Blob | null;
         const img2 = formData.get("image2") as Blob | null;
         const img3 = formData.get("image3") as Blob | null;
@@ -82,9 +82,9 @@ export async function POST(req: NextRequest){
     size: isWearable ? sizes : [],
     replacementDays,
     warranty,
-    freeDelivery: freeDelivey,           // 👈 key "freeDelivery", ভ্যালু ভ্যারিয়েবল freeDelivey
-    payOnDevelivery: payOnDelivey,       // 👈 key "payOnDevelivery", ভ্যালু ভ্যারিয়েবল payOnDelivey
-    detailsPoint,                         // এটা ঠিকই আছে (নাম মিলছে)
+    freeDelivery: freeDelivey,         
+    payOnDevelivery: payOnDelivey,       
+    detailsPoint,                         
     verificationStatus: "pending",
     isActive: false
 }, {new: true});
