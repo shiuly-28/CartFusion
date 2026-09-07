@@ -17,7 +17,7 @@ function ViewProduct() {
     UseGetAllProducts()
     const [reviewsRating, setReviewsRating] = useState(0)
     const [reviewsComment, setReviewsComment] = useState("")
-    const [reviewsImage, setIeviewsImage] = useState<File | null>(null)
+    const [reviewsImage, setReviewsImage] = useState<File | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
 
     const {allProductData} = useSelector((state:RootState) =>state.merchant)
@@ -171,6 +171,34 @@ function ViewProduct() {
                 ))
               }
             </div>
+
+            <textarea
+            onChange={(e)=>setReviewsComment(e.target.value)} value={reviewsComment}
+            placeholder='Write a reveiw...' className='w-full p-3 focus:ring-[#00684D] focus:outline-none 
+            focus:ring-2 rounded bg-black text-white
+            border border-white/20 mb-3' rows={3}/>
+
+           <div className='flex flex-col'>
+            <label className='text-white font-semibold mb-2'
+            htmlFor='img'>Select Image for Review</label>
+            <input type="file" accept='image/*' className='mb-3 bg-white text-black p-2 w-[200px] rounded-lg' id='img'
+            onChange={(e)=>{
+              const file = e.target.files?.[0]
+              if(file){
+                 setReviewsImage(file)
+                setPreview(URL.createObjectURL(file))
+              }
+            }} />
+
+            {preview && <Image src={preview} alt='preview' width={100} height={100}
+            className='rounded mb-3'/>}
+           </div>
+
+           <motion.button
+           whileHover={{scale:1.04}}
+           whileTap={{scale: 0.07}}
+            className='bg-[#00684D] hover:bg-[#045f47] py-2 px-6 rounded 
+           text-white font-semibold mt-4'>Submit Review</motion.button>
           </div>
         </div>
       </div>
