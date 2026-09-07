@@ -3,13 +3,15 @@ import ProductCard from '@/component/ProductCard';
 import UseGetAllProducts from '@/hooks/UseGetAllProductsData';
 import { IProduct } from '@/model/product.model';
 import { RootState } from '@/redux/store';
+import axios from 'axios';
 import { AnimatePresence, motion } from "motion/react"
 import { p } from 'motion/react-client';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import React, { useState } from 'react'
-import { FaRegStar, FaStar } from 'react-icons/fa';
+import { FaRegStar, FaStar, FaUserCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { ClipLoader } from 'react-spinners';
 
 function ViewProduct() {
     const params = useParams()
@@ -19,6 +21,7 @@ function ViewProduct() {
     const [reviewsComment, setReviewsComment] = useState("")
     const [reviewsImage, setReviewsImage] = useState<File | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false);
 
     const {allProductData} = useSelector((state:RootState) =>state.merchant)
     
@@ -36,6 +39,31 @@ function ViewProduct() {
      && p._id !==product._id)
 
     const [activeImage, setActiveImage] = useState(0)
+
+    const handleSubmitReview = async () =>{
+      const formData = new FormData()
+      formData.append("productId",String(productId));
+      formData.append("rating", String(reviewsRating))
+      formData.append("comment", reviewsComment)
+      if(reviewsImage){
+        formData.append("image", reviewsImage)
+      }
+      setLoading(true)
+      try{
+        const result = await axios.post("/api/merchant/addReview", formData)
+        setLoading(false)
+        alert("✅ Review added successfully");
+        setPreview(null)
+        setReviewsComment("")
+        setReviewsRating(0)
+        setReviewsImage(null)
+      }catch(error){
+        console.log(error)
+        setLoading(false)
+        alert("Add review error")
+      }
+    }
+
   return (
     <div className='min-h-screen bg-linear-to-br from-gray-900 
     via-black to-gray-900 px-4 p-10'>
@@ -196,9 +224,52 @@ function ViewProduct() {
 
            <motion.button
            whileHover={{scale:1.04}}
-           whileTap={{scale: 0.07}}
+           whileTap={{scale: 0.97}}
+           disabled = {loading}
+           onClick={handleSubmitReview}
             className='bg-[#00684D] hover:bg-[#045f47] py-2 px-6 rounded 
-           text-white font-semibold mt-4'>Submit Review</motion.button>
+           text-white font-semibold mt-4'>{loading ?
+            <ClipLoader size={22} color='white'/> : "Submit Review"}</motion.button>
+          </div>
+
+              {product?.reviews && product.reviews.length > 0 ? (
+               <h2 className='text-white font-semibold mb-2 text-2xl'>All Reviews</h2>
+            
+            ):(
+              <h2 className='text-white font-semibold mb-2 text-2xl'>No Reviews found</h2>
+            )
+          }
+
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10'>
+           
+         {product?.reviews && product.reviews.length > 0 && (
+               
+               product?.reviews?.map((r,i)=>
+              <div key={i} className='bg-white w-[300px] border border-black/10 rounded-lg p-5'>
+                <div className='flex items-center gap-3 mb-2'>
+                  <div className='w-10 h-10 rounded-full flex items-center justify-center bg-black'>
+                    {r.user.image ?
+                     (<Image 
+                      src={r.user.image} alt={r.user.name || "User"}
+                      width={40}
+                      height={40}
+                      className='rounded-full object-cover'
+                      />
+
+                     ):(<FaUserCircle className='w-8 h-8'/>)}
+                  </div>
+                  <div>
+                    <p className='text-black font-semibold text-sm'>{r.user.name}</p>
+                    <div className='flex text-yellow-400 text-sm'>
+                      {[1, 2, 3, 4, 5].map((i)=>(
+                        i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i}/>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              ))
+            }
           </div>
         </div>
       </div>
