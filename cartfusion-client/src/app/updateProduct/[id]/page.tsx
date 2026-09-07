@@ -33,7 +33,7 @@ const productId = params.id as string;
 const {allProductData} = useSelector((state:RootState) =>state.merchant)
 
 const  product = allProductData?.find((p)=>String(p._id) === String(productId))
-console.log(product)
+// console.log(product)
 
 const [title, setTitle] = useState("")
 const [description, setDescription] = useState("")

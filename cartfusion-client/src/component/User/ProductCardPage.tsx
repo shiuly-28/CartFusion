@@ -8,10 +8,10 @@ import ProductCard from '../ProductCard'
 function ProductCardPage() {
 
     const {allProductData} = useSelector((state:RootState)=>state.merchant)
-    
+
     const products = Array.isArray(allProductData) ? 
     allProductData.filter((p:any)=>p.isActive === true && p.verificationStatus === "approved") : []
-    console.log(products)
+    // console.log(products)
     
   return (
     <div className='min-h-screen w-full bg-gradient-to-br from-gray-900 

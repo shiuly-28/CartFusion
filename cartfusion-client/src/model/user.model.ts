@@ -14,9 +14,9 @@ shopName?:string;
 shopAddress?:string;
 gstNumber?:string;
 isApproved?:boolean;
-verificationStatus : "pending" | "approved" | "rejected"
-requestedAt: Date;
-approvedAt:Date;
+verificationStatus? : "pending" | "approved" | "rejected"
+requestedAt?: Date;
+approvedAt?:Date;
 rejectedReason?:string
 
 merchantProducts?:mongoose.Types.ObjectId[];
