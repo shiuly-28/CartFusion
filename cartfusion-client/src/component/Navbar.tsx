@@ -54,10 +54,19 @@ interface SidebarBtnProps {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function Navbar({ user }: { user: IUser }) {
+// Navbar Props-এ cartCount যোগ করা হয়েছে
+interface NavbarProps {
+  user: IUser;
+  cartCount?: number;
+}
+
+function Navbar({ user, cartCount }: NavbarProps) {
   const router = useRouter();
   const [openMenu, setOpenMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // user অবজেক্ট থেকে কার্ট সংখ্যা বের করা (যদি cartCount প্রোপ না দেওয়া হয়)
+  const finalCartCount = cartCount ?? (user?.cart?.length || 0);
 
   return (
     <div className='fixed top-0 left-0 w-full bg-black text-white z-50 shadow-lg'>
@@ -74,7 +83,7 @@ function Navbar({ user }: { user: IUser }) {
           </span>
         </div>
 
-        {/* DESKTOP NAV LINKS (শুধুমাত্র md:flex স্ক্রিনে দেখাবে) */}
+        {/* DESKTOP NAV LINKS */}
         {user?.role === 'user' && (
           <div className='hidden md:flex gap-8'>
             <NavItem label="Home" path="/" router={router}/>
@@ -84,7 +93,7 @@ function Navbar({ user }: { user: IUser }) {
           </div>
         )}
 
-        {/* DESKTOP ICONS (শুধুমাত্র md:flex স্ক্রিনে দেখাবে) */}
+        {/* DESKTOP ICONS */}
         <div className='hidden md:flex items-center gap-6'>
           {user?.role === 'user' && (
             <IconBtn Icon={AiOutlineSearch} onClick={() => router.push("/category")}/>
@@ -133,15 +142,17 @@ function Navbar({ user }: { user: IUser }) {
             </AnimatePresence>
           </div>
 
-          {user?.role === "user" && <CartBtn router={router} count={5}/>}
+          {/* Dynamic Cart Badge (Desktop) */}
+          {user?.role === "user" && <CartBtn router={router} count={finalCartCount}/>}
         </div>
 
-        {/* MOBILE SECTION (md:hidden দেওয়া হয়েছে যেন বড় স্ক্রিনে না আসে) */}
+        {/* MOBILE SECTION */}
         <div className='flex md:hidden items-center gap-4'>
           {user?.role === "user" && (
             <>
               <IconBtn Icon={AiOutlineSearch} onClick={() => router.push("/category")}/>
-              <CartBtn router={router} count={5}/>
+              {/* Dynamic Cart Badge (Mobile) */}
+              <CartBtn router={router} count={finalCartCount}/>
             </>
           )}
 
@@ -154,7 +165,6 @@ function Navbar({ user }: { user: IUser }) {
           <AnimatePresence>
             {sidebarOpen && (
               <>
-                {/* Backdrop / Background Overlay */}
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -163,7 +173,6 @@ function Navbar({ user }: { user: IUser }) {
                   className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
                 />
 
-                {/* Sidebar Drawer */}
                 <motion.div 
                   initial={{ x: "100%" }}
                   animate={{ x: 0 }}
@@ -172,13 +181,11 @@ function Navbar({ user }: { user: IUser }) {
                   className='fixed top-0 right-0 h-screen w-[75%] max-w-xs bg-zinc-900 p-6 text-white z-50 shadow-2xl flex flex-col justify-between'
                 >
                   <div>
-                    Header (justify-between ফিক্সড)
                     <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-800">
                       <h1 className='text-lg font-semibold text-[#049770]'>Menu</h1>
                       <AiOutlineClose size={24} className='cursor-pointer hover:text-red-500' onClick={() => setSidebarOpen(false)}/>
                     </div>
 
-                    Navigation Buttons Container
                     <div className="flex flex-col gap-3">
                       <SidebarBtn label="Home" Icon={AiOutlineHome} path="/" router={router} setSidebarOpen={setSidebarOpen}/>
                       <SidebarBtn label="Category" Icon={AiOutlineAppstore} path="/category" router={router} setSidebarOpen={setSidebarOpen}/>
@@ -188,7 +195,6 @@ function Navbar({ user }: { user: IUser }) {
                     </div>
                   </div>
 
-                  {/* Auth Actions (Bottom) */}
                   <div className="pt-4 border-t border-gray-800">
                     {user ? (
                       <button 

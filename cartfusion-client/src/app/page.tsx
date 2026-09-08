@@ -31,6 +31,7 @@ export default async function Home() {
     }
   }
   const plainUser = JSON.parse(JSON.stringify(user))
+  const cartCount = plainUser?.cart?.length || 0;
   return (
     <div className='flex min-h-screen items-center justify-center
      bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
