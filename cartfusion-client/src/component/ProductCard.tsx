@@ -3,8 +3,9 @@ import { IProduct } from '@/model/product.model'
 import React, { useState } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image'
-import { FaChevronLeft, FaChevronRight, FaShoppingCart, FaStar } from 'react-icons/fa'
+import { FaChevronLeft, FaChevronRight, FaRegStar, FaShoppingCart, FaStar } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 function ProductCard({product} : {product:IProduct}) {
   const images = [
@@ -24,6 +25,28 @@ function ProductCard({product} : {product:IProduct}) {
   }
 
   const router = useRouter()
+
+       const totalReviews = product?.reviews?.length ?? 0
+
+     const avgRating = product && totalReviews>0 ?(
+      product.reviews!.reduce((sum:number, r : {rating:number})=> sum + r.rating, 0)/totalReviews
+     ).toFixed(1) : 0
+
+    //  const handleAddCart = async(e: React.MouseEvent) => {
+    //     e.stopPropagation()
+    //   try {
+    //     const result = await axios.post("/api/user/cart/add", {
+    //       productId: product._id,
+    //       quantity: 1
+    //     })
+    //     console.log(result.data)
+    //     alert("✅ Added to cart")
+    //     router.push("/cart")
+    //   }catch(error){
+    //     console.log(error)
+    //     alert("add to cart error")
+    //   }
+    //  }
   
   return (
     <motion.div 
@@ -82,11 +105,11 @@ function ProductCard({product} : {product:IProduct}) {
         <p className='font-bold text-lg text-[#00684D]'>৳ {product.price}</p>
         <div className='flex items-center gap-1 text-yellow-500 text-sm'>
           {[1,2,3,4,5].map((i)=>(
-            <FaStar key={i}/>
+              i<= Math.round(Number(avgRating)) ?
+              <FaStar key={i}/>: <FaRegStar key={i}/>
           ))}
           <span className='text-gray-500 text-xs ml-1'>
-            5 (120)
-          </span>
+            ({avgRating} / {totalReviews})</span>
         </div>
         <p className='text-xs text-gray-500'><span>{product.merchant.
         shopName}</span></p>

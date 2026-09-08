@@ -2,12 +2,13 @@
 import ProductCard from '@/component/ProductCard';
 import UseGetAllProducts from '@/hooks/UseGetAllProductsData';
 import { IProduct } from '@/model/product.model';
+import { IUser } from '@/model/user.model';
 import { RootState } from '@/redux/store';
 import axios from 'axios';
 import { AnimatePresence, motion } from "motion/react"
-import { p } from 'motion/react-client';
+import { div, p } from 'motion/react-client';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { FaRegStar, FaStar, FaUserCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
@@ -24,6 +25,7 @@ function ViewProduct() {
     const [loading, setLoading] = useState(false);
 
     const {allProductData} = useSelector((state:RootState) =>state.merchant)
+    const router = useRouter()
     
     const  product:IProduct | undefined = allProductData?.find((p:IProduct)=>String(p._id) === String(productId))
     // console.log("PRODUCT DATA:", product)
@@ -37,6 +39,28 @@ function ViewProduct() {
 
     const relatedProducts = allProductData.filter((p)=> p.category === product?.category
      && p._id !==product._id)
+
+     const totalReviews = product?.reviews?.length ?? 0
+
+     const avgRating = product && totalReviews>0 ?(
+      product.reviews!.reduce((sum:number, r : {rating:number})=> sum + r.rating, 0)/totalReviews
+     ).toFixed(1) : 0
+
+        const handleAddCart = async(e: React.MouseEvent) => {
+             e.stopPropagation()
+           try {
+             const result = await axios.post("/api/user/cart/add", {
+               productId: productId,
+               quantity: 1
+             })
+             console.log(result.data)
+             alert("✅ Added to cart")
+             router.push("/cart")
+           }catch(error){
+             console.log(error)
+             alert("add to cart error")
+           }
+          }
 
     const [activeImage, setActiveImage] = useState(0)
 
@@ -111,10 +135,11 @@ function ViewProduct() {
             <div className='flex items-center gap-2 mt-1 mb-4'>
               <div className='flex text-yellow-400'>
                 {[1, 2, 3, 4, 5].map((i)=>(
-                  <FaStar key={i}/>
+                  i<= Math.round(Number(avgRating)) ?
+                  <FaStar key={i}/>: <FaRegStar key={i}/>
                 ))}
               </div>
-              <span className='text-sm text-gray-400'>(4 / 120) Reviews</span>
+              <span className='text-sm text-gray-400'>(avgRating / {totalReviews}) Reviews</span>
             </div>
             <p className='mb-4 text-gray-300'>{product?.description}</p>
             <p className='mb-3 text-gray-50'>
@@ -126,7 +151,7 @@ function ViewProduct() {
               </span>
             </p>
             <motion.button 
-            
+            onClick={handleAddCart}
             whileHover={{scale: 1.02}}
             whileTap={{scale:0.96}}
             className='w-full bg-[#00684D] hover:bg-[#045f47]
@@ -242,34 +267,44 @@ function ViewProduct() {
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10'>
            
-         {product?.reviews && product.reviews.length > 0 && (
-               
-               product?.reviews?.map((r,i)=>
-              <div key={i} className='bg-white w-[300px] border border-black/10 rounded-lg p-5'>
-                <div className='flex items-center gap-3 mb-2'>
-                  <div className='w-10 h-10 rounded-full flex items-center justify-center bg-black'>
-                    {r.user.image ?
-                     (<Image 
-                      src={r.user.image} alt={r.user.name || "User"}
-                      width={40}
-                      height={40}
-                      className='rounded-full object-cover'
-                      />
+       {product?.reviews?.map((r, i) => {
+  const reviewUser = r.user as IUser;   // 👈 এখানে type assert করো
+  return (
+    <div key={i} className='bg-white w-[250px] border border-black/10 rounded-lg p-5'>
+      <div className='flex items-center gap-3 mb-2'>
+        <div className='w-10 h-10 rounded-full flex items-center justify-center bg-black'>
+          {reviewUser.image ? (
+            <Image 
+              src={reviewUser.image} 
+              alt={reviewUser.name || "User"}
+              width={40}
+              height={40}
+              className='rounded-full object-cover'
+            />
+          ) : (
+            <FaUserCircle className='w-8 h-8'/>
+          )}
+        </div>
+        <div>
+          <p className='text-black font-semibold text-sm'>{reviewUser.name}</p>
+          <div className='flex text-yellow-400 text-sm mt-1.5'>
+            {[1, 2, 3, 4, 5].map((i) => (
+              i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i}/>
+            ))}
+          </div>
+        </div>
 
-                     ):(<FaUserCircle className='w-8 h-8'/>)}
-                  </div>
-                  <div>
-                    <p className='text-black font-semibold text-sm'>{r.user.name}</p>
-                    <div className='flex text-yellow-400 text-sm'>
-                      {[1, 2, 3, 4, 5].map((i)=>(
-                        i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i}/>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              ))
-            }
+      </div>
+
+      <p className='text-gray-900 text-sm mb-3'> {r.comment}</p>
+      {r.image  ? <div className='w-[180px] h-[180px] border border-white/10 
+      rounded-lg overflow-hidden bg-black'>
+        <Image src={r.image} alt='Review Image' width={140} height={180}
+        className='object-contain'/></div> : <div className='w-[180px] h-[180px] border border-white/10 
+      rounded-lg overflow-hidden bg-gray-400 flex items-center justify-center text-white text-xl'>No Review Image</div>}
+    </div>
+  );
+})}
           </div>
         </div>
       </div>
