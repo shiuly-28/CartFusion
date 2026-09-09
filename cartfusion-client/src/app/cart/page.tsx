@@ -2,16 +2,17 @@
 
 import axios from "axios";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 function CartPage() {
   const [cart, setCart] = useState<any[]>([]);
+  const router = useRouter()
   const [loading, setLoading] = useState<boolean>(true);
 
   const getCart = useCallback(async () => {
     try {
       const result = await axios.get("/api/user/cart/get");
-      // null প্রোডাক্ট বাদ দিয়ে ক্লিন ডাটা সেভ
       const cleanCart = (result.data.cart || []).filter((item: any) => item && item.product);
       setCart(cleanCart);
     } catch (error) {
@@ -119,8 +120,10 @@ function CartPage() {
                   </button>
                 </div>
 
-                <div className="w-full flex items-center justify-start gap-4 pt-3 text-sm font-medium">
-                  <button className="bg-[#00684D] hover:bg-[#045f47] px-4 py-2 rounded text-white transition">
+                <div className="w-full flex flex-col md:flex-row items-center justify-start gap-2 md:gap-4 pt-3 text-sm font-medium">
+                  <button
+                  onClick={()=>router.push(`/checkout/${item.product._id}`)}
+                  className="bg-[#00684D] hover:bg-[#045f47] px-4 py-2 rounded text-white transition mt-3 text-nowrap">
                     Checkout This Product
                   </button>
                   <button
@@ -132,7 +135,7 @@ function CartPage() {
                 </div>
               </div>
 
-              <div className="font-bold text-xl text-[#00684D] md:self-start">
+              <div className="font-bold text-xl  md:self-start">
                 ৳ {(item.product.price || 0) * item.quantity}
               </div>
             </div>
