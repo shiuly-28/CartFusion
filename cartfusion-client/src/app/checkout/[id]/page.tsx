@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image';
+import { FaStripe } from 'react-icons/fa';
 
 function Checkout() {
   const params = useParams()
@@ -46,7 +47,8 @@ function Checkout() {
 
   if (!item) {
     return (
-      <div className='min-h-screen bg-linear-to-br from-[#020617] via-black to-[#020617] text-4xl text-white flex items-center justify-center font-semibold'>
+      <div className='min-h-screen bg-linear-to-br from-[#020617] via-black to-[#020617]
+       text-4xl text-white flex items-center justify-center font-semibold'>
         Loading....
       </div>
     )
@@ -55,7 +57,9 @@ function Checkout() {
   const productTotal = item.product.price * item.quantity
   const deliveryCharge = item.product.freeDelivery ? 0 : 50;
   const serviceCharge = 30;
-  const finalTotal = productTotal + deliveryCharge + serviceCharge
+  const finalTotal = 
+  productTotal + deliveryCharge + serviceCharge
+  const codDisabled = !item.product.payOnDevelivery
 
   return (
     <div className='min-h-screen bg-linear-to-br from-[#020617] via-black to-[#020617] flex items-center justify-center px-6 py-12'>
@@ -146,6 +150,48 @@ function Checkout() {
               <span className='text-[#00684D]'>৳ {finalTotal}</span>
             </div>
           </div>
+
+          <div className='space-y-3'>
+            <p className='font-semibold text-white'>Payment Method</p>
+            <div className='flex gap-3'>
+
+              <motion.button
+          whileHover={{scale:1.03}}
+          whileTap={{scale:0.97}}
+            onClick={()=>setPaymentMethod("cod")} 
+              className={`flex-1 py-3 rounded-xl font-semibold transition text-white
+                 ${paymentMethod === "cod"
+                ? "bg-[#00684D]"
+                : "bg-white/10"
+              } `}
+              >Cash On Delivery</motion.button>
+              <motion.button
+          whileHover={{scale:1.03}}
+          whileTap={{scale:0.97}}
+           
+               onClick={()=>setPaymentMethod("stripe")}
+               className={`flex-1 py-3 rounded-xl font-semibold flex items-center justify-center
+                 gap-2 transition text-white
+                 ${paymentMethod === "stripe"
+                ? "bg-[#00684D]"
+                : "bg-white/10"
+              }`}
+             
+              ><FaStripe className='text-xl border rounded bg-[#00684D] p-[2px]'/>Stripe</motion.button>
+            </div>
+          </div>
+
+          <motion.div 
+          whileHover={{scale:1.03}}
+          whileTap={{scale:0.97}}
+          className='w-full bg-gradient-to-r from-[#00684D] to-orange-400 hover:opacity-90 py-4 rounded-2xl
+          font-semibold text-lg transition text-white text-center'>
+            {paymentMethod === "cod"
+            ? "Place Order"
+            :"Proceed to Secure Payment"
+            }
+
+          </motion.div>
         </div>
 
       </motion.div>

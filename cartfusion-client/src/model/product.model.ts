@@ -53,7 +53,7 @@ const productSchema = new mongoose.Schema<IProduct>(
   {
     title: {
       type: String,
-      required: true, // 🌟 isRequired -> required
+      required: true, 
     },
     description: {
       type: String,
