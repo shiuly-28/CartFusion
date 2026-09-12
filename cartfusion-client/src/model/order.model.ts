@@ -4,6 +4,7 @@ import { IUser } from "./user.model";
 
 
 export interface IOrder{
+_id?:mongoose.Types.ObjectId;
 products:{
     product:IProduct;
     quantity:number;
