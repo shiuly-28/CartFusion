@@ -89,7 +89,7 @@ export async function POST(req: NextRequest){
             )
          }
 
-         const productTotal = product.price * quantity
+         const productsTotal = product.price * quantity
 
          const order = await Order.create({
             buyer: userId,
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest){
             ],
             productMerchant: product.merchant,
 
-            productTotal,
+            productsTotal,
             deliveryCharge,
             serviceCharge,
             totalAmount: amount,
@@ -111,7 +111,7 @@ export async function POST(req: NextRequest){
             paymentMethod: "cod",
             isPaid: false,
             orderStatus: "pending",
-            returnedAmount: 0,
+            returnAmount: 0,
 
             address,
          })

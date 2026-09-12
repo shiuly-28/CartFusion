@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image';
 import { FaStripe } from 'react-icons/fa';
+import { ClipLoader } from 'react-spinners';
 
 function Checkout() {
   const params = useParams()
@@ -18,6 +19,7 @@ function Checkout() {
   const [address, setAddress] = useState("")
   const [city, setCity] = useState("")
   const [pincode, setPincode] = useState("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!productId) return;
@@ -60,6 +62,35 @@ function Checkout() {
   const finalTotal = 
   productTotal + deliveryCharge + serviceCharge
   const codDisabled = !item.product.payOnDevelivery
+
+  const handlePlaceOrder = async () => {
+    if (!name || !phone || !address || !city || !pincode){
+      alert("Please fill all address fields");
+      return;
+    }
+
+    const payload = {
+      productId,
+      quantity: item.quantity,
+      address: {name, phone, address, city, pincode},
+      amount: finalTotal,
+      deliveryCharge,
+        serviceCharge
+    }
+    setLoading(true)
+    try{
+      if(paymentMethod === "cod"){
+        const result = await axios.post("/api/order/cod", payload)
+        router.push("/orders")
+        console.log(result)
+        setLoading(false)
+      }
+    }catch(error){
+      console.log(error)
+      alert("checkout failed")
+      setLoading(false)
+    }
+  }
 
   return (
     <div className='min-h-screen bg-linear-to-br from-[#020617] via-black to-[#020617] flex items-center justify-center px-6 py-12'>
@@ -181,17 +212,19 @@ function Checkout() {
             </div>
           </div>
 
-          <motion.div 
+          <motion.button
           whileHover={{scale:1.03}}
           whileTap={{scale:0.97}}
+          onClick={handlePlaceOrder} 
+          disabled={loading}
           className='w-full bg-gradient-to-r from-[#00684D] to-orange-400 hover:opacity-90 py-4 rounded-2xl
           font-semibold text-lg transition text-white text-center'>
-            {paymentMethod === "cod"
+            {loading? <ClipLoader size={20} color='white'/> : paymentMethod === "cod"
             ? "Place Order"
             :"Proceed to Secure Payment"
             }
 
-          </motion.div>
+          </motion.button>
         </div>
 
       </motion.div>

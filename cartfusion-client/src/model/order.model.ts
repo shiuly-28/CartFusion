@@ -1,8 +1,7 @@
 import mongoose from "mongoose"
 import { IProduct } from "./product.model"
 import { IUser } from "./user.model";
-import { number } from "motion";
-import { tr } from "motion/react-client";
+
 
 export interface IOrder{
 products:{
@@ -100,7 +99,7 @@ const orderSchema = new mongoose.Schema<IOrder>({
     },
     paymentMethod: {
         type: String,
-        enum: ["cod", "string"],
+        enum: ["cod", "stripe"], 
         required:true
 
     },
