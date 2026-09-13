@@ -16,6 +16,7 @@ productMerchant:IUser;
 
 productsTotal:number;
 deliveryCharge:number;
+serviceCharge:number;
 totalAmount: number;
 
 paymentMethod: "cod" | "stripe";
@@ -91,6 +92,10 @@ const orderSchema = new mongoose.Schema<IOrder>({
         required:true
     },
     deliveryCharge: {
+        type: Number,
+        default: 0,
+    },
+    serviceCharge: {          
         type: Number,
         default: 0,
     },

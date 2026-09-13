@@ -4,7 +4,7 @@ import UseGetAllOrdersData from '@/hooks/UseGetAllOrdersData'
 import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
 import { RootState } from '@/redux/store'
 import { AnimatePresence, motion} from 'motion/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { FiTruck } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 
@@ -15,6 +15,8 @@ function Orders() {
 
   const {userData} = useSelector((state:RootState) => state.user)
   const {allOrdersData} = useSelector((state:RootState) => state.user)
+  const [selectedOrder, setSelectedOrder] = useState<any | null>(null)
+  const [trackOrderModel, setTrackOrderModel] = useState<any | null>(null)
 
   const orders =Array.isArray(allOrdersData)?
   allOrdersData.filter((o)=>String(o.buyer._id) === String(userData?._id)) : []
@@ -33,9 +35,8 @@ function Orders() {
 
   }
 
+  const isCanceldDisable = (order:any)=> order.isPaid === true && order.paymentMethod === "stripe"
   
-
-
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black
      to-gray-900 text-white '>
@@ -91,10 +92,14 @@ function Orders() {
           </td>
           <td className='px-4 py-4 flex justify-center'>
             <div className='flex gap-2'>
-              <button className='px-3 py-1 bg-[#00684D] rounded hover:bg-[#0ba57c]'>
+              <button 
+              onClick={()=>setSelectedOrder(order)}
+              className='px-3 py-1 bg-[#00684D] rounded hover:bg-[#0ba57c]'>
                 Check Details
               </button>
-              <button className='px-3 flex gap-0.5 py-1 bg-white/10 justify-center items-center rounded hover:bg-white/20'>
+              <button
+              onClick={()=>setTrackOrderModel(order)}
+              className='px-3 flex gap-0.5 py-1 bg-white/10 justify-center items-center rounded hover:bg-white/20'>
                 <FiTruck/><span>Track Order</span>
               </button>
             </div>
@@ -138,8 +143,20 @@ function Orders() {
                 </div>
                 <div className='text-right'>
                   <div className='text-xs text-gray-400'>Status</div>
-                  <div className='text-sm font-semibold'>{order.orderStatus}</div>
+                  <div className='text-sm font-semibold'>{order.orderStatus.toUpperCase()}</div>
                 </div>
+              </div>
+              <div className='mt-3 space-y-1'>
+                 {order.products.map((p, i) => (
+              <div key={i} className='text-gray-200 text-sm'>{p.product.title} * {p.quantity}</div>
+            ))}
+              </div>
+              <div className='mt-3 flex gap-2'>
+                <button
+                onClick={()=>setSelectedOrder(order)}
+                className='flex-1 py-2 bg-white/10 rounded'>Check Details</button>
+                <button onClick={()=>setTrackOrderModel(order)}
+                className='flex-1 items-center justify-center gap-1 py-2 bg-white/10 rounded'>Track Order</button>
               </div>
             </motion.div>
           ))
@@ -153,7 +170,108 @@ function Orders() {
       </div>
       </div>
    
+        {selectedOrder && (
+          <div className='fixed inset-0 z-50 flex items-center justify-center'>
+            <motion.div 
+            initial={{scale: 0.95, opacity: 0}}
+          animate={{scale: 1, opacity: 1 }}
+          transition={{duration: 0.4}}
+            className='relative z-0 w-full max-w-3xl bg-[#061526] border border-white/10 p-6 
+            rounded-xl shadow-2xl shadow-black/40'>
+              <h2 className='text-lg font-semibold'>Order Details: #{String(selectedOrder._id).slice(-8)}</h2>
+              <p>{formateDate(String(selectedOrder.createAt))}</p>
+              <hr className='my-4 border-white/10' />
+              <h3 className='font-semibold mb-2'>Product</h3>
+                   {selectedOrder.products.map((p:any, i:any) => (
+              <div key={i} className='flex justify-between bg-white/5 rounded mb-2 p-3'>
+               <div>
+                <div className='font-medium'>{p.product.title}</div>
+                <div>Qty: {p.quantity} * Price: {p.price}</div>
+               </div>
+               </div>
+            ))}
+            <hr className='my-4 border-white/10' />
+            <h3 className='font-semibold mb-2'>Invoice</h3>
+            <div className='text-sm space-y-1'>
+              <div className='flex justify-between'>
+                <span>Product Total</span>
+                <span>{selectedOrder.productsTotal}</span>
+              </div>
 
+              <div className='flex justify-between'>
+                <span>Delivery Charge</span>
+                <span>{selectedOrder.deliveryCharge}</span>
+              </div>
+
+              <div className='flex justify-between'>
+                <span>Service Charge</span>
+                <span>৳ {selectedOrder.serviceCharge ?? 0}</span>
+              </div>
+            </div>
+            <hr className='my-4 border-white/10' />
+            <div className='flex justify-between font-semibold text-[#00684D]'>
+              <span>Final Total</span>
+              <span>৳{selectedOrder.totalAmount}</span>
+            </div>
+
+            {selectedOrder.isPaid == true && selectedOrder.paymentMethod == 
+            "strpe" && <div className='bg-yellow-500/10 border border-yellow-500/30 text-xs rounded-lg p-3 mt-4'>
+              <p>Important Note:</p>
+              <ul>
+                <li>
+                  Order cancellation feature is <b>not available if payment is done using Online Payment(Stripe)</b>
+                </li>
+                <li>You can only <b>return the product</b>after delivery.</li>
+                <li>On return, you will recive only the <b>product amount</b></li>
+                <li><b>Delivery & service charges are non-refundable</b></li>
+              </ul>
+            </div> }
+
+            <div className='mt-6 flex justify-end gap-3 '>
+              <button 
+              onClick={()=>setSelectedOrder(null)}
+              className='px-4 py-2 bg-white/10 rounded'>Cancel</button>
+              <button onClick={()=>setTrackOrderModel(selectedOrder)}
+              className='px-4 py-2 rounded flex items-center gap-2 transition bg-[#00684D] hover:bg-[#06b486]'>Track Order</button>
+              <button className={`px-4 py-2 rounded ${isCanceldDisable
+                (selectedOrder)
+                ?"bg-white/10 text-gray-400 cursor-not-allowed"
+                : "bg-red-600 hover:bg-red-700"
+              }`}>Cancel Order</button>
+            </div>
+            </motion.div>
+          </div>
+        )}
+
+        {trackOrderModel && (
+          <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
+            <motion.div
+            initial={{scale: 0.95, opacity: 0}}
+            animate={{scale: 1, opacity: 1 }}
+            transition={{duration: 0.4}}
+            className='relative z-10 w-full max-w-md bg-[#061526] border border-white/10 p-6 rounded-xl'>
+                <h2 className='text-lg font-semibold'>Track Order</h2>
+                <div className='text-sm text-gray-300 mb-4 leading-relaxed'>
+
+                  <div className='flex justify-start gap-2'>
+                    <span>Buyer Name: </span>
+                    <span>{trackOrderModel.address.name}</span>
+                  </div>
+
+                  <div className='flex justify-start gap-2'>
+                    <span>Delivery Address: </span>
+                    <span>{trackOrderModel.address.address}</span>
+                  </div>
+                  <div className='flex justify-start gap-2'>
+                    <span>City and state: </span>
+                    <span>{trackOrderModel.address.city}{" "} & {" "}
+                      {trackOrderModel.address.state}
+                    </span>
+                  </div>
+                </div>
+            </motion.div>
+          </div>
+        )}
     </div>
   )
 }
