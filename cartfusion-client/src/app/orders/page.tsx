@@ -4,6 +4,7 @@ import UseGetAllOrdersData from '@/hooks/UseGetAllOrdersData'
 import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
 import { RootState } from '@/redux/store'
 import { AnimatePresence, motion} from 'motion/react'
+import { div } from 'motion/react-client'
 import React, { useState } from 'react'
 import { FiTruck } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
@@ -36,6 +37,32 @@ function Orders() {
   }
 
   const isCanceldDisable = (order:any)=> order.isPaid === true && order.paymentMethod === "stripe"
+
+  const status = ["pending", "confirmed", "shipped", "delivered", "returned"]
+
+  const renderTrackStep = (currentStatus:string)=>{
+    return(
+      <div className='relative pl-6'>
+      <div className='absolute top left-8 w-fullw-[1px] h-full  bg-gray-600'></div>
+        {status.map((s,i)=>{
+          const active = currentStatus === s
+          return(
+          <div key={i} className='relative mb-6 flex items-start'>
+            {/* dot */}
+            <div className={`w-4 h-4 rounded-full ${active ?
+             "bg-[#00684D] shadow-lg shadow-[#00684D]" : "bg-gray-500"
+
+            }`}></div>
+          <div className='ml-4 text-sm'>{s.toUpperCase()}</div>
+      </div>
+    )
+        })}
+
+   
+      </div>
+    )
+  }
+
   
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black
@@ -249,10 +276,10 @@ function Orders() {
             initial={{scale: 0.95, opacity: 0}}
             animate={{scale: 1, opacity: 1 }}
             transition={{duration: 0.4}}
-            className='relative z-10 w-full max-w-md bg-[#061526] border border-white/10 p-6 rounded-xl'>
+            className='relative z-10  w-full max-w-md bg-[#061526] border border-white/10 p-6 rounded-xl'>
                 <h2 className='text-lg font-semibold'>Track Order</h2>
                 <div className='text-sm text-gray-300 mb-4 leading-relaxed'>
-
+                  <h2 className='text-md font-semibold mb-2'>Delivery Complete Address</h2>
                   <div className='flex justify-start gap-2'>
                     <span>Buyer Name: </span>
                     <span>{trackOrderModel.address.name}</span>
@@ -268,8 +295,22 @@ function Orders() {
                       {trackOrderModel.address.state}
                     </span>
                   </div>
+                  <div className='flex justify-start gap-2'>
+                    <span>Pincode: </span>
+                    <span>{trackOrderModel.address.pincode}</span>
+                  </div>
+                  <div className='flex justify-start gap-2'>
+                    <span>Mobile No: </span>
+                    <span>{trackOrderModel.address.phone}</span>
+                  </div>
+                 
                 </div>
+                 {renderTrackStep(trackOrderModel.orderStatus)}
+                 <button 
+              onClick={()=>setTrackOrderModel(null)}
+              className='px-4 py-2 bg-white/10 rounded'>Cancel</button>
             </motion.div>
+            
           </div>
         )}
     </div>
