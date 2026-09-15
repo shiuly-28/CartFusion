@@ -41,10 +41,7 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
     console.log(error)
   }
  }
-
-
- 
-   const verifyOtp = async () =>{
+const verifyOtp = async () =>{
     try{
       await axios.post("/api/order/verify-delivery-otp", {
         orderId:otpModel._id,
@@ -55,7 +52,7 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
         o._id == otpModel._id ? {...o, orderStatus:"delivered"}: o
       ))
     ))
-    alert("Order delivered succesfully")
+ 
 
     }catch(error){
       console.log(error)
@@ -94,7 +91,7 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
             orders.map((order, index) => (
               <tr key={index} className='border-t border-white/10 hover:bg-white/5'>
                 <td className='p-4'>#{String(order._id)!.slice(-8)}</td>
-                <td className='p-4'>#{order.address.name}
+                <td className='p-4'>{order.address.name}
                   <div className='text-xs text-gray-400'>{order.address.phone}</div>
                 </td>
                 <td className='p-4'>
@@ -105,12 +102,30 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
                   ))}
                 
                 </td>
-                  <td className='p-4'>#{order.paymentMethod.toUpperCase()}
-                  <div className='text-xs text-gray-400'>{order.isPaid? "Paid" : "Pending"}</div>
+                  <td className='p-4'>{order.paymentMethod.toUpperCase()}
+                  <div className={`text-xs ${order.isPaid ? 'text-yellow-400' : 'text-white'}`}>
+                    {order.isPaid ? 'Paid' : 'Pending'}
+                    </div>
                 </td>
                 <td className='p-4'>{order.orderStatus.toUpperCase()}</td>
                 <td className='p-4'>
-                  <select onChange={async (e)=>{
+
+                  {order.orderStatus === "cancelled" && (
+                    <span className='text-red-500 font-semibold capitalize'
+                    >Cancelled</span>
+                  )}
+                  {order.orderStatus === "delivered" && (
+                    <span className='text-[#00684D] font-semibold capitalize'
+                    >delivered</span>
+                  )}
+                  {order.orderStatus === "returned" && (
+                    <span className='text-orange-500 font-semibold capitalize'
+                    >Returned</span>
+                  )}
+
+              {order.orderStatus !== "cancelled" && order.orderStatus !== "delivered" &&
+              order.orderStatus !== "returned" &&
+              <select onChange={async (e)=>{
                   if(e.target.value === "delivered"){
                     updateStatus(String(order._id),"delivered")
                     setOtpModel(order)
@@ -121,7 +136,10 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
                 {statusOptions.map((s,i)=>(
                   <option key={i} value={s} className='bg-black '>{s}</option>
                 ))}
-                </select></td>
+                </select>
+            }
+                
+                </td>
               </tr>
              ))
             )}
@@ -160,7 +178,22 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
                   <b>Status:</b>{" "}
                   <span className='capitalize'>{order.orderStatus}</span>
                 </div>
-                 
+
+                 {order.orderStatus === "cancelled" && (
+                    <span className='text-red-500 font-semibold capitalize'
+                    >Cancelled</span>
+                  )}
+                  {order.orderStatus === "delivered" && (
+                    <span className='text-[#00684D] font-semibold capitalize'
+                    >delivered</span>
+                  )}
+                  {order.orderStatus === "returned" && (
+                    <span className='text-orange-500 font-semibold capitalize'
+                    >Returned</span>
+                  )}
+
+                  {order.orderStatus !== "cancelled" && order.orderStatus !== "delivered" &&
+              order.orderStatus !== "returned" &&
                  <select 
                   onChange={async (e)=>{
                   if(e.target.value === "delivered"){
@@ -173,7 +206,7 @@ const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
                 {statusOptions.map((s,i)=>(
                   <option key={i} value={s} className='bg-black'>{s}</option>
                 ))}
-                </select>
+                </select>}
                </div>
              ))
             )}

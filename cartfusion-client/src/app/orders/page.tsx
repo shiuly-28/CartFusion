@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import UseGetAllOrdersData from '@/hooks/UseGetAllOrdersData'
 import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
-import { RootState } from '@/redux/store'
+import { AppDispatch, RootState } from '@/redux/store'
+import { setAllOrdersData } from '@/redux/userSlice'
+import axios from 'axios'
 import { AnimatePresence, motion} from 'motion/react'
 import { div } from 'motion/react-client'
 import React, { useState } from 'react'
 import { FiTruck } from 'react-icons/fi'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 function Orders() {
@@ -21,6 +24,8 @@ function Orders() {
 
   const orders =Array.isArray(allOrdersData)?
   allOrdersData.filter((o)=>String(o.buyer._id) === String(userData?._id)) : []
+
+  const dispatch = useDispatch<AppDispatch>()
 
 
     const formateDate = (date:string)=> {
@@ -38,7 +43,7 @@ function Orders() {
 
   const isCanceldDisable = (order:any)=> order.isPaid === true && order.paymentMethod === "stripe"
 
-  const status = ["pending", "confirmed", "shipped", "delivered", "returned"]
+  const status = ["pending", "confirmed", "shipped", "delivered"]
 
   const renderTrackStep = (currentStatus:string)=>{
     return(
@@ -63,6 +68,55 @@ function Orders() {
     )
   }
 
+  const handleCancel = async (orderId: string) => {
+  try {
+    await axios.post("/api/order/cancelOrder", { orderId });
+
+    // orderStatus এর পাশাপাশি isPaid কে false করে দিন
+    const updatedOrder = allOrdersData.map((o: any) =>
+      o._id === orderId
+        ? { ...o, orderStatus: "cancelled", isPaid: false }
+        : o
+    );
+
+    dispatch(setAllOrdersData(updatedOrder));
+    alert("Order Cancelled Successfully");
+    setSelectedOrder(null);
+  } catch (error) {
+    console.error(error);
+    alert("Order Cancel error");
+  }
+};
+
+const isEligibleReturn = (deliveryDate:string, replacementDays:number)=>{
+  if(!deliveryDate || !replacementDays) return false;
+
+  const deliveredAt = new Date(deliveryDate).getTime();
+  const expiry = deliveredAt + replacementDays * 24 * 60 * 60 * 1000;
+
+  return Date.now() <= expiry;
+}
+
+const remainingDays = (deliveryDate:string, replacementDays:number)=>{
+if (!deliveryDate || !replacementDays) return 0;
+
+  const deliveredAt = new Date(deliveryDate).getTime();
+ const expiry = deliveredAt + replacementDays * 24 * 60 * 60 * 1000;
+
+ const diff = expiry - Date.now();
+ if(diff <= 0) return 0;
+
+ return Math.ceil(diff / (24 * 60 * 60 * 1000))
+
+}
+const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
+ if(!deliveryDate || !replacementDays) return null;
+
+ const deliveredAt = new Date(deliveryDate);
+ deliveredAt.setDate(deliveredAt.getDate() + replacementDays);
+
+ return deliveredAt;
+}
   
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black
@@ -119,15 +173,25 @@ function Orders() {
           </td>
           <td className='px-4 py-4 flex justify-center'>
             <div className='flex gap-2'>
-              <button 
-              onClick={()=>setSelectedOrder(order)}
-              className='px-3 py-1 bg-[#00684D] rounded hover:bg-[#0ba57c]'>
+
+              {order.orderStatus === "cancelled" && (
+                <span className='text-red-500 font-semibold'>Cancelled</span>
+              )}
+              {order.orderStatus !== "cancelled" && order.orderStatus !== "returned" &&  
+                 <button onClick={()=>setSelectedOrder(order)}
+              className='px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-nowrap'>
                 Check Details
               </button>
-              <button
+              }
+            <button disabled={order.orderStatus === "delivered"}
               onClick={()=>setTrackOrderModel(order)}
-              className='px-3 flex gap-0.5 py-1 bg-white/10 justify-center items-center rounded hover:bg-white/20'>
-                <FiTruck/><span>Track Order</span>
+              className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
+              ${order.orderStatus === "delivered"
+              ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
+              :"bg-white/10 hover:bg-white/20"
+               }`}>
+                {order.orderStatus === "delivered" ? "Delivered" :
+                "Track Order"}
               </button>
             </div>
           </td>
@@ -182,8 +246,16 @@ function Orders() {
                 <button
                 onClick={()=>setSelectedOrder(order)}
                 className='flex-1 py-2 bg-white/10 rounded'>Check Details</button>
-                <button onClick={()=>setTrackOrderModel(order)}
-                className='flex-1 items-center justify-center gap-1 py-2 bg-white/10 rounded'>Track Order</button>
+               <button disabled={order.orderStatus === "delivered"}
+              onClick={()=>setTrackOrderModel(order)}
+              className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
+              ${order.orderStatus === "delivered"
+              ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
+              :"bg-white/10 hover:bg-white/20"
+               }`}>
+                {order.orderStatus === "delivered" ? "Delivered" :
+                "Track Order"}
+              </button>
               </div>
             </motion.div>
           ))
@@ -241,8 +313,15 @@ function Orders() {
               <span>৳{selectedOrder.totalAmount}</span>
             </div>
 
-            {selectedOrder.isPaid == true && selectedOrder.paymentMethod == 
-            "strpe" && <div className='bg-yellow-500/10 border border-yellow-500/30 text-xs rounded-lg p-3 mt-4'>
+            {selectedOrder.orderStatus === "delivered" && 
+            selectedOrder.deliveryDate && (
+              <div className='mt-3 text-sm text-[#00684D]'>
+                Delivered on:{" "}
+                {new Date(selectedOrder.deliveryDate).toLocaleDateString("en-IN")}
+              </div>
+            )}
+            {selectedOrder.isPaid == true && selectedOrder.paymentMethod == "stripe" && 
+            <div className='bg-yellow-500/10 border border-yellow-500/30 text-xs rounded-lg p-3 mt-4'>
               <p>Important Note:</p>
               <ul>
                 <li>
@@ -258,13 +337,40 @@ function Orders() {
               <button 
               onClick={()=>setSelectedOrder(null)}
               className='px-4 py-2 bg-white/10 rounded'>Cancel</button>
-              <button onClick={()=>setTrackOrderModel(selectedOrder)}
-              className='px-4 py-2 rounded flex items-center gap-2 transition bg-[#00684D] hover:bg-[#06b486]'>Track Order</button>
-              <button className={`px-4 py-2 rounded ${isCanceldDisable
+
+              <button disabled={selectedOrder.orderStatus === "delivered"}
+              onClick={()=>setTrackOrderModel(selectedOrder)}
+              className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
+              ${selectedOrder.orderStatus === "delivered"
+              ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
+              :"bg-white/10 hover:bg-white/20"
+               }`}>
+                {selectedOrder.orderStatus === "delivered" ? "Delivered" :
+                "Track Order"}
+              </button>
+
+              {selectedOrder.orderStatus === "delivered" ? (<button onClick={()=>handleCancel(selectedOrder._id)}
+              className={`px-4 py-2 rounded ${isCanceldDisable
                 (selectedOrder)
                 ?"bg-white/10 text-gray-400 cursor-not-allowed"
                 : "bg-red-600 hover:bg-red-700"
-              }`}>Cancel Order</button>
+              }`}>Cancel Order</button>) : (
+                selectedOrder.products.map((p:any, i:number) =>{
+                  const replacementDays = p.product.replaymentDays || 0;
+                  const eligible = isEligibleReturn(selectedOrder.deliveryDate,replacementDays);
+                  const remaining = remainingDays(selectedOrder.deliveryDate,replacementDays);
+                  const returnEnddate = ReturnEndDate(selectedOrder.deliveryDate, replacementDays);
+
+                  return(
+                    <div key={i} className='flex justify-between items-center bg-white/5 px-3 py-2 rounded ml-2'>
+                      <div>
+                         
+                      </div>
+
+                    </div>
+                  )
+                })
+              )}
             </div>
             </motion.div>
           </div>
@@ -279,7 +385,7 @@ function Orders() {
             className='relative z-10  w-full max-w-md bg-[#061526] border border-white/10 p-6 rounded-xl'>
                 <h2 className='text-lg font-semibold'>Track Order</h2>
                 <div className='text-sm text-gray-300 mb-4 leading-relaxed'>
-                  <h2 className='text-md font-semibold mb-2'>Delivery Complete Address</h2>
+                  <span className='text-md font-semibold mb-2'>Delivery Complete Address</span>
                   <div className='flex justify-start gap-2'>
                     <span>Buyer Name: </span>
                     <span>{trackOrderModel.address.name}</span>
