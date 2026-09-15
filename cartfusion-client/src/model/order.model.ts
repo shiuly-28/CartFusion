@@ -50,7 +50,7 @@ paymentDetails?:{
 deliveryDate?: string;
 deliveryOtp?: string;
 
-otpExpriseAt?:Date;
+otpExpiresAt?:Date;
 
 createAt:Date;
 updatedAt: Date;
@@ -166,7 +166,7 @@ const orderSchema = new mongoose.Schema<IOrder>({
     deliveryOtp: {
         type: String,
     },
-    otpExpriseAt: {
+    otpExpiresAt: {
         type: Date,
     }
 

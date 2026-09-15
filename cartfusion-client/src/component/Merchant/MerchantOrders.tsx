@@ -1,16 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 
 import UseGetAllOrdersData from '@/hooks/UseGetAllOrdersData'
 import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
-import { RootState } from '@/redux/store'
-import { useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
+import { setAllOrdersData } from '@/redux/userSlice'
+import axios from 'axios'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 function MerchantOrders() {
  
   UserGetCurrentUser()
   UseGetAllOrdersData()
+  const dispatch = useDispatch<AppDispatch>()
+  const [otpModel, setOtpModel] = useState<any|null>(null)
+  const [otp, setOtp] = useState('')
 
   const {userData} = useSelector((state: RootState)=> state.user)
   const { allOrdersData } = useSelector((state:RootState)=>state.user)
@@ -19,11 +26,42 @@ function MerchantOrders() {
   allOrdersData.filter((o)=>String(o.productMerchant._id) === String(userData?._id)) : []
 
 
-const statusOptions = ["pending", "confirmed", "shipped", "deliverd"];
+const statusOptions = ["pending", "confirmed", "shipped", "delivered"];
+
+ const updateStatus = async (orderId:string, status:string) => {
+  try{
+     await axios.post("/api/order/update-status", {orderId, status})
+    dispatch(setAllOrdersData(
+      allOrdersData.map((o:any)=>(
+        o._id == orderId ? {...o, orderStatus:status}: o
+      ))
+    ))
+    alert("Order Status Updated")
+  }catch(error){
+    console.log(error)
+  }
+ }
+
 
  
+   const verifyOtp = async () =>{
+    try{
+      await axios.post("/api/order/verify-delivery-otp", {
+        orderId:otpModel._id,
+        otp:otp
+      })
+       dispatch(setAllOrdersData(
+      allOrdersData.map((o:any)=>(
+        o._id == otpModel._id ? {...o, orderStatus:"delivered"}: o
+      ))
+    ))
+    alert("Order delivered succesfully")
 
-    
+    }catch(error){
+      console.log(error)
+      alert("order Delivered error")
+    }
+   } 
 
   return (
       <div className='w-full px-3 sm:px-6 lg:px-10 py-6 text-white'>
@@ -71,7 +109,15 @@ const statusOptions = ["pending", "confirmed", "shipped", "deliverd"];
                   <div className='text-xs text-gray-400'>{order.isPaid? "Paid" : "Pending"}</div>
                 </td>
                 <td className='p-4'>{order.orderStatus.toUpperCase()}</td>
-                <td className='p-4'><select value={order.orderStatus} className='bg-white/10 border border-white/20 w-full rounded px-2 py-1'>
+                <td className='p-4'>
+                  <select onChange={async (e)=>{
+                  if(e.target.value === "delivered"){
+                    updateStatus(String(order._id),"delivered")
+                    setOtpModel(order)
+                  }else{
+                  updateStatus(String(order._id), e.target.value)}}}
+
+                value={order.orderStatus} className='bg-white/10 border border-white/20 w-full rounded px-2 py-1'>
                 {statusOptions.map((s,i)=>(
                   <option key={i} value={s} className='bg-black '>{s}</option>
                 ))}
@@ -115,7 +161,15 @@ const statusOptions = ["pending", "confirmed", "shipped", "deliverd"];
                   <span className='capitalize'>{order.orderStatus}</span>
                 </div>
                  
-                 <select value={order.orderStatus} className='bg-white/10 border border-white/20 w-full rounded px-2 py-1'>
+                 <select 
+                  onChange={async (e)=>{
+                  if(e.target.value === "delivered"){
+                    updateStatus(String(order._id),"delivered")
+                    setOtpModel(order)
+                  }else{
+                  updateStatus(String(order._id), e.target.value)}}}
+
+                 value={order.orderStatus} className='bg-white/10 border border-white/20 w-full rounded px-2 py-1'>
                 {statusOptions.map((s,i)=>(
                   <option key={i} value={s} className='bg-black'>{s}</option>
                 ))}
@@ -124,6 +178,19 @@ const statusOptions = ["pending", "confirmed", "shipped", "deliverd"];
              ))
             )}
       </div>
+
+      {otpModel && (
+        <div className='fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50'>
+          <div className='bg-[#061526] p-6 rounded-xl w-full max-w-md'>
+            <h2 className='text-lg font-semibold mb-3'>Enter Delivery Otp</h2>
+            <input type="text" className='w-full bg-white/10 border border-white/20 px-4 py-2 rounded mb-4'
+            onChange={(e)=>setOtp(e.target.value)} value={otp} placeholder='Enter Otp'/>
+            <button 
+            onClick={verifyOtp}
+            className='w-full bg-[#00684D] py-2 rounded flex items-center justify-center gap-2'>Verify & Deliver</button>
+          </div>
+        </div>
+      )}
       </div>
      
 

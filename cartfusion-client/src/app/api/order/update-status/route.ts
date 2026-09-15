@@ -9,6 +9,7 @@ export async function POST(req:NextRequest){
         const {orderId, status} = await req.json()
 
         const order = await Order.findById(orderId).populate("buyer")
+        // console.log("Target Buyer Email:", order.buyer?.email);
 
         if(!order){
             return NextResponse.json({message: "Order not found"}, 
@@ -16,15 +17,17 @@ export async function POST(req:NextRequest){
         }
         if(status === "confirmed" || status === "shipped"){
             order.orderStatus = status
-            order.save()
+             await order.save()
+
+
             return NextResponse.json({message: "Order status updated"}, 
                 {status:200});
         }
 
         if(status==="delivered"){
             const otp = Math.floor(1000 + Math.random()*9000).toString()
-            order.deliveryOtp = otp
-            order.otpExpriseAt = new Date(Date.now() + 10 *60 *1000)
+            order. deliveryOtp = otp
+            order.otpExpiresAt = new Date(Date.now() + 10 *60 *1000)
             await order.save()
             const email = order.buyer?.email
 
@@ -35,11 +38,11 @@ export async function POST(req:NextRequest){
                 )
             }
             await sendDeliveryOtpEmail(email, otp)
-            return NextResponse.json({message: "OTP sent to buyer email"})
+
+            return NextResponse.json({ message: "OTP sent to buyer email" });
         }
           return NextResponse.json(
-                    {message: "Buyer email not found"},
-                    {status: 400}
+                    {message: "Invalid status"},{status: 400}
                 )
     }catch(error){
          return NextResponse.json({message: `failed to update order status ${error}`},
