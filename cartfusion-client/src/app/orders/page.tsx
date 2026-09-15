@@ -154,7 +154,7 @@ const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
           className='border-t border-white/5 hover:bg-white/10 transition-all duration-200'
         >
           <td className='px-4 py-4 text-sm'>#{String(order._id).slice(-8)}</td>
-          <td className='px-4 py-4 text-sm'>{formateDate(String(order.createAt))}</td>
+          <td className='px-4 py-4 text-sm'>{formateDate(String(order.createdAt))}</td>
           <td className='px-4 py-4 text-sm'>
             {order.products.map((p, i) => (
               <div key={i} className='text-gray-200'>{p.product.title} * {p.quantity}</div>
@@ -220,7 +220,7 @@ const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
               <div className='flex justify-between'>
                 <div>
                   <div className='text-sm text-gray-300'>#{String(order._id).slice(-8)}</div>
-                  <div className='font-semibold'>{formateDate(String(order.createAt))}</div>
+                  <div className='font-semibold'>{formateDate(String(order.createdAt))}</div>
                   <div className='text-sm text-gray-300 mt-1'>{order.productMerchant.shopName}</div>
                 </div>
                 <div className='text-[#00684D] font-bold text-right'>
@@ -278,7 +278,7 @@ const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
             className='relative z-0 w-full max-w-3xl bg-[#061526] border border-white/10 p-6 
             rounded-xl shadow-2xl shadow-black/40'>
               <h2 className='text-lg font-semibold'>Order Details: #{String(selectedOrder._id).slice(-8)}</h2>
-              <p>{formateDate(String(selectedOrder.createAt))}</p>
+              <p>{formateDate(String(selectedOrder.createdAt))}</p>
               <hr className='my-4 border-white/10' />
               <h3 className='font-semibold mb-2'>Product</h3>
                    {selectedOrder.products.map((p:any, i:any) => (
@@ -364,9 +364,29 @@ const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
                   return(
                     <div key={i} className='flex justify-between items-center bg-white/5 px-3 py-2 rounded ml-2'>
                       <div>
-                         
+                         <p className='text-xs text-gray-300'>{p.product?.title}</p>
+                         {eligible ? (
+                          <>
+                          <p className='text-xs text-yellow-400'>Return available for{remaining} day 
+                            {remaining > 1 ? "s" : ""}
+                          </p>
+
+                          {returnEnddate && (
+                            <p>Return till:{" "}
+                            {returnEnddate.toLocaleDateString("en-IN")}
+                            </p>
+                          )}
+                          </>
+                         ) : (
+                          <p className='text-xs text-red-400'>Return window closed </p>
+                         )}
                       </div>
 
+                         {eligible && (
+                          <button className='mx-3 px-3 py-1 bg-yellow-600 rounded text-sm'>
+                            Return
+                          </button>
+                         )}
                     </div>
                   )
                 })

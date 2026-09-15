@@ -52,7 +52,7 @@ deliveryOtp?: string;
 
 otpExpiresAt?:Date;
 
-createAt:Date;
+createdAt:Date;
 updatedAt: Date;
 
 }

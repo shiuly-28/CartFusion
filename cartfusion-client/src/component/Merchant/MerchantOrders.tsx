@@ -56,7 +56,7 @@ const verifyOtp = async () =>{
 
     }catch(error){
       console.log(error)
-      alert("order Delivered error")
+      alert("order Delivered successfully")
     }
    } 
 
