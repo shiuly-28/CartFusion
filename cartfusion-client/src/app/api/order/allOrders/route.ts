@@ -12,12 +12,12 @@ try{
     {status:400})
     }
 
-    const orders = await Order.find().populate("buyer", "name email phone image")
+   const orders = await Order.find().populate("buyer", "name email phone image")
     .populate("productMerchant", "name shopName email")
     .populate({
         path: "products.product",
         model: "Product",
-        select: "title image1 price category stock merchant replacement"
+        select: "title image1 price category stock merchant replacementDays"
     })
     .sort({ createdAt: -1});
 

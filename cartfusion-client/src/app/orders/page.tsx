@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
 
 import UseGetAllOrdersData from '@/hooks/UseGetAllOrdersData'
@@ -6,10 +7,8 @@ import UserGetCurrentUser from '@/hooks/UserGetCurrentUser'
 import { AppDispatch, RootState } from '@/redux/store'
 import { setAllOrdersData } from '@/redux/userSlice'
 import axios from 'axios'
-import { AnimatePresence, motion} from 'motion/react'
-import { div } from 'motion/react-client'
-import React, { useState } from 'react'
-import { FiTruck } from 'react-icons/fi'
+import {motion} from 'motion/react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 
@@ -26,6 +25,14 @@ function Orders() {
   allOrdersData.filter((o)=>String(o.buyer._id) === String(userData?._id)) : []
 
   const dispatch = useDispatch<AppDispatch>()
+
+  const [now, setNow] = useState<number | null>(null)
+
+useEffect(() => {
+  setNow(Date.now())
+  const interval = setInterval(() => setNow(Date.now()), 60000) // প্রতি মিনিটে আপডেট (optional)
+  return () => clearInterval(interval)
+}, [])
 
 
     const formateDate = (date:string)=> {
@@ -88,26 +95,20 @@ function Orders() {
   }
 };
 
-const isEligibleReturn = (deliveryDate:string, replacementDays:number)=>{
-  if(!deliveryDate || !replacementDays) return false;
-
+const isEligibleReturn = (deliveryDate: string, replacementDays: number, now: number | null) => {
+  if (!deliveryDate || !replacementDays || !now) return false;
   const deliveredAt = new Date(deliveryDate).getTime();
   const expiry = deliveredAt + replacementDays * 24 * 60 * 60 * 1000;
-
-  return Date.now() <= expiry;
+  return now <= expiry;
 }
 
-const remainingDays = (deliveryDate:string, replacementDays:number)=>{
-if (!deliveryDate || !replacementDays) return 0;
-
+const remainingDays = (deliveryDate: string, replacementDays: number, now: number | null) => {
+  if (!deliveryDate || !replacementDays || !now) return 0;
   const deliveredAt = new Date(deliveryDate).getTime();
- const expiry = deliveredAt + replacementDays * 24 * 60 * 60 * 1000;
-
- const diff = expiry - Date.now();
- if(diff <= 0) return 0;
-
- return Math.ceil(diff / (24 * 60 * 60 * 1000))
-
+  const expiry = deliveredAt + replacementDays * 24 * 60 * 60 * 1000;
+  const diff = expiry - now;
+  if (diff <= 0) return 0;
+  return Math.ceil(diff / (24 * 60 * 60 * 1000))
 }
 const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
  if(!deliveryDate || !replacementDays) return null;
@@ -349,48 +350,52 @@ const ReturnEndDate = (deliveryDate:string, replacementDays:number)=>{
                 "Track Order"}
               </button>
 
-              {selectedOrder.orderStatus === "delivered" ? (<button onClick={()=>handleCancel(selectedOrder._id)}
-              className={`px-4 py-2 rounded ${isCanceldDisable
-                (selectedOrder)
-                ?"bg-white/10 text-gray-400 cursor-not-allowed"
-                : "bg-red-600 hover:bg-red-700"
-              }`}>Cancel Order</button>) : (
-                selectedOrder.products.map((p:any, i:number) =>{
-                  const replacementDays = p.product.replaymentDays || 0;
-                  const eligible = isEligibleReturn(selectedOrder.deliveryDate,replacementDays);
-                  const remaining = remainingDays(selectedOrder.deliveryDate,replacementDays);
-                  const returnEnddate = ReturnEndDate(selectedOrder.deliveryDate, replacementDays);
+           {selectedOrder.orderStatus !== "delivered" ? (
+  <button 
+    onClick={()=>handleCancel(selectedOrder._id)}
+    disabled={isCanceldDisable(selectedOrder)}
+    className={`px-4 py-2 rounded ${isCanceldDisable(selectedOrder)
+      ? "bg-white/10 text-gray-400 cursor-not-allowed"
+      : "bg-red-600 hover:bg-red-700"
+    }`}>
+    Cancel Order
+  </button>
+) : (
+  selectedOrder.products.map((p:any, i: number) => {
+    const replacementDays = p?.product.replacementDays || 0;
+    const eligible = isEligibleReturn(selectedOrder.deliveryDate, replacementDays, now);
+const remaining = remainingDays(selectedOrder.deliveryDate, replacementDays, now);
+    const returnEndDate = ReturnEndDate(selectedOrder.deliveryDate, replacementDays);
+      console.log("Product:", p.product?.title, "ReplacementDays:", replacementDays, "DeliveryDate:", selectedOrder.deliveryDate)
 
-                  return(
-                    <div key={i} className='flex justify-between items-center bg-white/5 px-3 py-2 rounded ml-2'>
-                      <div>
-                         <p className='text-xs text-gray-300'>{p.product?.title}</p>
-                         {eligible ? (
-                          <>
-                          <p className='text-xs text-yellow-400'>Return available for{remaining} day 
-                            {remaining > 1 ? "s" : ""}
-                          </p>
-
-                          {returnEnddate && (
-                            <p>Return till:{" "}
-                            {returnEnddate.toLocaleDateString("en-IN")}
-                            </p>
-                          )}
-                          </>
-                         ) : (
-                          <p className='text-xs text-red-400'>Return window closed </p>
-                         )}
-                      </div>
-
-                         {eligible && (
-                          <button className='mx-3 px-3 py-1 bg-yellow-600 rounded text-sm'>
-                            Return
-                          </button>
-                         )}
-                    </div>
-                  )
-                })
+    return(
+      <div key={i} className='flex justify-between items-center bg-white/5 px-3 py-2 rounded ml-2'>
+        <div>
+          <p className='text-xs text-gray-300'>{p.product?.title}</p>
+          {eligible ? (
+            <>
+              <p className='text-xs text-yellow-400'>
+                Return available for {remaining} day{remaining > 1 ? "s" : ""}
+              </p>
+              {returnEndDate && (
+                <p className='text-[11px] text-gray-400'>
+                  Return till: {returnEndDate.toLocaleDateString("en-IN")}
+                </p>
               )}
+            </>
+          ) : (
+            <p className='text-xs text-red-400'>Return window closed</p>
+          )}
+        </div>
+        {eligible && (
+          <button className='mx-3 px-3 py-1 bg-yellow-600 rounded text-sm'>
+            Return
+          </button>
+        )}
+      </div>
+    )
+  })
+)}
             </div>
             </motion.div>
           </div>
