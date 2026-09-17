@@ -148,10 +148,16 @@ export async function POST(req: NextRequest){
                     quantity: 1,
                 },
             ],
+            metadata:{
+                orderId: order._id.toString(),
+                productId: product._id.toString(),
+            },
           })
+
+          return NextResponse.json({url:strpeSession.url},{status: 200})
          
     }catch(error){
-         return NextResponse.json({message: `failed to create order in cod ${error}`},
+         return NextResponse.json({message: `Online payment failed ${error}`},
             {status:500})
     }
 }

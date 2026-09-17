@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { auth } from "@/auth"
 import connectDb from "@/lib/connectDB"
 import User from "@/model/user.model"

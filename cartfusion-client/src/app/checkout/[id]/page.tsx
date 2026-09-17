@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
@@ -81,13 +82,17 @@ function Checkout() {
     try{
       if(paymentMethod === "cod"){
         const result = await axios.post("/api/order/cod", payload)
-        router.push("/orders")
-        console.log(result)
+        router.push("/order-success")
+    
         setLoading(false)
+      }else{
+        const result = await axios.post("/api/order/online-pay", payload)
+        window.location.href = result.data.url
       }
     }catch(error){
       console.log(error)
       alert("checkout failed")
+      router.push("/order-failed")
       setLoading(false)
     }
   }

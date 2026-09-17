@@ -5,10 +5,11 @@ import { motion } from "motion/react"
 import { FaBox, FaCheckCircle } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 
-function OrderSuccess() {
-  const router = useRouter()
+function OrderFailed() {
+   const router = useRouter()
+
   return (
-    <div className='min-h-screen bg-gradient-to-br from-[#00684D] via-black
+  <div className='min-h-screen bg-gradient-to-br from-red-400 via-black
      to-gray-900 flex items-center justify-center text-white'>
       <motion.div
         initial={{ opacity: 0, y:40 }}
@@ -21,19 +22,17 @@ function OrderSuccess() {
           animate={{rotate: 0, opacity: 1}}
           transition={{duration:0.7}}
           className='flex justify-center'>
-            <FaCheckCircle className='text-[#00684D]' size={120}/>
+            <FaCheckCircle className='text-red-500' size={120}/>
         </motion.div>
-        <h1 className='text-3xl font-bold text-white mt-6'>Order Placed Successfully</h1>
-        <div className='flex flex-col items-center gap-2 mt-4 text-gray-300'>
-          <FaBox size={32} className='text-[#00684D]'/>
-          <p>Your order has been recived and is now being processed</p>
-        </div>
+        <h1 className='text-3xl font-bold text-white mt-6'>Order Failed</h1>
+       <p className='text-gray-400 mt-3'>Something went wrong</p>
+       <p className='text-gray-400 mt-3'>Please try again or choose another payment method.</p>
 
         <motion.div
         onClick={()=>router.push("/orders")}
         whileHover={{scale: 1.05}}
         whileTap={{ scale: 0.96 }}
-        className='mt-8 w-full py-3 rounded-lg bg-[#00684D] hover:bg-[#09c08f]
+        className='mt-8 w-full py-3 rounded-lg bg-white/20 hover:bg-white-30
          text-white font-semibold'>
           Go to Order Page
         </motion.div>
@@ -42,4 +41,4 @@ function OrderSuccess() {
   )
 }
 
-export default OrderSuccess
+export default OrderFailed
