@@ -34,7 +34,8 @@ export async function POST(req: NextRequest){
         const category = formData.get("category") as string;
         const isWearable = formData.get("isWearable") === "true"
         const sizes = formData.getAll("sizes")
-        const replacementDays = Number(formData.get("replacementDays") || 0);
+        const replacementDaysRaw = Number(formData.get("replacementDays"));
+        const replacementDays = Number.isFinite(replacementDaysRaw) ? replacementDaysRaw : 0;
         const freeDelivey = formData.get("freeDelivey") === "true";
         const warranty = formData.get("warranty") as string || "No Warranty";
         const payOnDelivey = formData.get("payOnDelivey") === "true";

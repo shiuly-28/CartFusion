@@ -231,11 +231,15 @@ const handleAddPoint = () => {
     </div>}
 
     <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6'>
-      <input type="text" className='p-3 bg-white/10 border border-white/20 rounded
-      focus:outline-none focus:ring-2 focus:ring-[#00684D]'
-       placeholder='Replacements(e.g. 7 days)'
-       onChange={(e)=>setReplacementDays(e.target.value)}
-       value={replacementDays}/>
+      <input 
+  type="number" 
+  min={0}
+  className='p-3 bg-white/10 border border-white/20 rounded
+  focus:outline-none focus:ring-2 focus:ring-[#00684D]'
+  placeholder='Replacement Days (e.g. 7)'
+  onChange={(e) => setReplacementDays(e.target.value)}
+  value={replacementDays}
+/>
 
       <input type="text" className='p-3 bg-white/10 border border-white/20 rounded
       focus:outline-none focus:ring-2 focus:ring-[#00684D]'
