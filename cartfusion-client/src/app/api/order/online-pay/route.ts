@@ -5,6 +5,9 @@ import Order from "@/model/order.model";
 import Product from "@/model/product.model";
 import User from "@/model/user.model";
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest){
     try{
@@ -109,7 +112,7 @@ export async function POST(req: NextRequest){
             serviceCharge,
             totalAmount: amount,
 
-            paymentMethod: "cod",
+            paymentMethod: "stripe",
             isPaid: false,
             orderStatus: "pending",
             returnAmount: 0,
@@ -127,14 +130,26 @@ export async function POST(req: NextRequest){
 
          user.orders.push(order._id)
           await user.save()
-
-          return NextResponse.json(
-            {
-               message: "✅ COD Order placed successfully",
-               order,
-            },
-            {status: 201}
-          )
+        
+          const strpeSession = await stripe.checkout.sessions.create({
+            mode: "payment",
+            payment_method_types: ["card"],
+            success_url: `${process.env.NEXT_BASE_URL}/order-success`,
+            cancel_url: `${process.env.NEXT_BASE_URL}/order-failed`,
+            line_items: [
+                {
+                    price_data: {
+                        currency: "inr",
+                        product_data: {
+                            name: product.title
+                        },
+                        unit_amount: Math.round(amount * 100),
+                    },
+                    quantity: 1,
+                },
+            ],
+          })
+         
     }catch(error){
          return NextResponse.json({message: `failed to create order in cod ${error}`},
             {status:500})

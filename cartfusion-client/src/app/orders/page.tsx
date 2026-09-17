@@ -190,34 +190,35 @@ const returnOrder = async (orderId:string) => {
             <span className='text-2xl'>৳</span>{order.totalAmount}
           </td>
           <td className='px-4 py-4 flex justify-center'>
-            <div className='flex gap-2'>
+  <div className='flex gap-2'>
 
-              {order.orderStatus === "cancelled" && (
-                <span className='text-red-500 font-semibold'>Cancelled</span>
-              )}
-              {order.orderStatus === "returned" && (
-                <span className='text-orange-500 flex flex-col gap-1
-                 font-semibold'>Returned<span className='text-white'>Returned Amount: {order.returnAmount}</span></span>
-              )}
+    {order.orderStatus === "cancelled" && (
+      <span className='text-red-500 font-semibold'>Cancelled</span>
+    )}
+    {order.orderStatus === "returned" && (
+      <span className='text-orange-500 flex flex-col gap-1
+       font-semibold'>Returned<span className='text-white'>Returned Amount: {order.returnAmount}</span></span>
+    )}
 
-              {order.orderStatus !== "cancelled" && order.orderStatus !== "returned" &&  
-                 <button onClick={()=>setSelectedOrder(order)}
-              className='px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-nowrap'>
-                Check Details
-              </button>
-              }
-            <button disabled={order.orderStatus === "delivered"}
-              onClick={()=>setTrackOrderModel(order)}
-              className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
-              ${order.orderStatus === "delivered"
-              ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
-              :"bg-white/10 hover:bg-white/20"
-               }`}>
-                {order.orderStatus === "delivered" ? "Delivered" :
-                "Track Order"}
-              </button>
-            </div>
-          </td>
+    {order.orderStatus !== "cancelled" && order.orderStatus !== "returned" && (
+      <>
+        <button onClick={()=>setSelectedOrder(order)}
+          className='px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-nowrap'>
+          Check Details
+        </button>
+        <button disabled={order.orderStatus === "delivered"}
+          onClick={()=>setTrackOrderModel(order)}
+          className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
+          ${order.orderStatus === "delivered"
+          ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
+          :"bg-white/10 hover:bg-white/20"
+           }`}>
+          {order.orderStatus === "delivered" ? "Delivered" : "Track Order"}
+        </button>
+      </>
+    )}
+  </div>
+</td>
         </tr>
       ))
     ) : (
