@@ -14,8 +14,11 @@ import {
   Gift,
   BookOpen
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-// 🌟 categories অ্যারে কম্পোনেন্টের বাইরে রাখা ভালো (re-render এ আবার তৈরি হবে না)
+
+function CategorySlider() {
+  const router = useRouter()
 const categories = [
   { label: "Fashion & LifeStyle", icon: Shirt },
   { label: "Electronics & Gadgets", icon: Smartphone },
@@ -29,7 +32,7 @@ const categories = [
   { label: "Books & Stationery", icon: BookOpen },
 ];
 
-// 🌟 direction অনুযায়ী slide animation variants
+
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 100 : -100,
@@ -45,9 +48,8 @@ const slideVariants = {
   }),
 };
 
-function CategorySlider() {
   const [startIndex, setStartIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // 🌟 1 = next (ডান থেকে আসবে), -1 = prev (বাম থেকে আসবে)
+  const [direction, setDirection] = useState(0); 
 
   const NextSlice = () => {
     setDirection(1);
@@ -96,8 +98,8 @@ function CategorySlider() {
                 <motion.div
                   key={index}
                   whileHover={{ scale: 1.03 }}
-                  className='bg-white/10 border border-white/20 p-6 rounded-xl cursor-pointer text-white flex flex-col items-center justify-center'
-                >
+                  onClick={()=>router.push(`/category?category=${encodeURIComponent(item.label)}`)}
+                  className='bg-white/10 border border-white/20 p-6 rounded-xl cursor-pointer text-white flex flex-col items-center justify-center'>
                   <Icon className='w-9 h-9 mb-2 text-[#049770]' />
                   <p className='text-sm font-medium'>{item.label}</p>
                 </motion.div>

@@ -10,6 +10,7 @@ export async function GET(req:NextRequest){
         const {searchParams} = new URL(req.url)
         const query = searchParams.get("query") || "";
         const category = searchParams.get("category")
+        const shop = searchParams.get("shop")
 
         const filter :any = {
             isActive: true,
@@ -27,6 +28,9 @@ export async function GET(req:NextRequest){
 
         if(category && category !== "all"){
             filter.category = category;
+        }
+        if(shop && shop !== "all"){
+            filter.merchant = category;
         }
 
         const products = await Product.find(filter)

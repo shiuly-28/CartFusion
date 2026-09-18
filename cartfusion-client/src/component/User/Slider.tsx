@@ -6,10 +6,12 @@ import slider1 from '@/assets/slider1.png'
 import slider2 from '@/assets/slider2.png'
 import { motion, AnimatePresence } from 'motion/react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 
 function Slider() {
   const [current, setCurrent] = useState(0)
+  const router = useRouter()
     const slides = [
         {
             image:slider1,
@@ -81,6 +83,7 @@ function Slider() {
             </motion.p>
             <motion.button className='px-6 py-3 bg-[#00684D] hover:bg-[#037455] text-white font-medium
             rounded-lg shadow-lg transition'
+            onClick={()=>router.push("/category")}
             whileHover={{scale: 1.05}}
              whileTap={{scale:0.95}}
             >

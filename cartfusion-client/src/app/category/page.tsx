@@ -27,6 +27,14 @@ function CategoriesPage() {
     const [search, setSearch] = useState("");
     const [shopSearch, setShopSearch] = useState("");
     const [displayProducts, setDisplayProducts] = useState<any[]>([])
+    const [isReady, setIsReady] = useState(false)
+
+    useEffect(()=>{
+        const params = new URLSearchParams(window.location.search)
+        const cat = params.get("category")
+        if(cat) {setSelectedCategory(cat)}
+        setIsReady(true)
+    }, [])
 
     const fetchProduct = async () => {
         try{
@@ -34,6 +42,9 @@ function CategoriesPage() {
             if(search) param.append("query", search);
             if(selectedCategory !== "all"){
                 param.append("category", selectedCategory)
+            }
+            if(selectedShop!== "all"){
+                 param.append("shop", selectedShop)
             }
             const  result = await axios.get(`/api/search?${param.toString()}`);
             console.log(result.data.products)
@@ -44,8 +55,9 @@ function CategoriesPage() {
     }
 
     useEffect(() =>{
+        if(!isReady)return
         fetchProduct()
-    }, [selectedCategory, search])
+    }, [selectedCategory, search, selectedShop, isReady])
 
     const filterShop = !shopSearch ? [] : AllMerchantData.filter((v:any)=>v.shopName.toLowerCase().includes
     (shopSearch.toLowerCase()))
