@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import React, { useState } from 'react'
 import { Baby,
@@ -11,15 +12,20 @@ import { Baby,
       Smartphone, 
       Sparkles
      } from 'lucide-react'
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 
 function CategoriesPage() {
+    const {AllMerchantData} = useSelector((state:RootState)=>state.merchant)
 
     const [selectedCategory,setSelectedCategory] = useState("all");
     const [selectedShop,setSelectedShop] = useState("all");
     const [search, setSearch] = useState("");
     const [shopSearch, setShopSearch] = useState("");
 
+    const filterShop = !shopSearch ? [] : AllMerchantData.filter((v:any)=>v.shopName.toLowerCase().includes
+    (shopSearch.toLowerCase()))
     const categoryList = [
           { label: "Fashion & LifeStyle", icon: Shirt },
           { label: "Electronics & Gadgets", icon: Smartphone },
@@ -48,6 +54,49 @@ function CategoriesPage() {
             <input type="text" placeholder='Search Product...' 
             className='w-full px-3 py-2 rounded bg-black border border-white/20'
             onChange={(e)=>setSearch(e.target.value)} value={search} />
+
+           <div className='space-y-2 max-h-64 overflow-auto'>
+            {
+    categoryList.map((cat) => {
+        const Icon = cat.icon;   
+        return (
+            <button
+                key={cat.label}
+                className={`w-full flex gap-2 px-3 py-2 rounded ${
+                    selectedCategory === cat.label
+                    ? "bg-[#00684D]"
+                    : "bg-white/10 hover:bg-white/20"
+                }`}
+                onClick={() => {setSelectedCategory(cat.label)
+                    setSelectedShop("all"); setShopSearch("")
+                }} 
+            >
+                <Icon size={18} /> {cat.label}   
+            </button>
+            );
+            })
+            }
+           </div>
+           <input 
+             type="text" placeholder="Search Shop...." 
+            className="w-full px-3 py-2 rounded bg-black border border-white/20"
+            onChange={(e) => setShopSearch(e.target.value)} 
+            value={shopSearch}/>
+
+            {shopSearch && 
+            <div className='bg-black border border-white/20 rounded max-h-48 overflow-auto'>
+                {
+                    filterShop.map((v:any) =>(
+                        <button key={v._id} className='block w-full px-3 py-2 text-left hover:bg-white/10'
+                        onClick={()=>{
+                            setShopSearch(v.shopName);
+                            setSelectedShop(v._id)
+                        }}>
+                            {v.shopName}
+                        </button>
+                    ))
+                }
+         </div>}
         </div>
        </div>
     </div>
