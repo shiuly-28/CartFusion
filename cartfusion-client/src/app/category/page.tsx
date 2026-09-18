@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Baby,
      BookOpen,
      Car, 
@@ -14,6 +15,8 @@ import { Baby,
      } from 'lucide-react'
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import axios from 'axios';
+import ProductCard from '@/component/ProductCard';
 
 
 function CategoriesPage() {
@@ -23,6 +26,26 @@ function CategoriesPage() {
     const [selectedShop,setSelectedShop] = useState("all");
     const [search, setSearch] = useState("");
     const [shopSearch, setShopSearch] = useState("");
+    const [displayProducts, setDisplayProducts] = useState<any[]>([])
+
+    const fetchProduct = async () => {
+        try{
+            const param = new URLSearchParams()
+            if(search) param.append("query", search);
+            if(selectedCategory !== "all"){
+                param.append("category", selectedCategory)
+            }
+            const  result = await axios.get(`/api/search?${param.toString()}`);
+            console.log(result.data.products)
+            setDisplayProducts(result.data.products)
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    useEffect(() =>{
+        fetchProduct()
+    }, [selectedCategory, search])
 
     const filterShop = !shopSearch ? [] : AllMerchantData.filter((v:any)=>v.shopName.toLowerCase().includes
     (shopSearch.toLowerCase()))
@@ -97,6 +120,24 @@ function CategoriesPage() {
                     ))
                 }
          </div>}
+        </div>
+
+        <div className='md:col-span-3'>
+            {
+                displayProducts.length=== 0 ?(
+                    <div className='text-center mt--20 sm:grid-cols-3'>
+                        No products found
+                    </div>
+                    ):
+                (
+                <div className='grid grid-cols-2 sm:grid-cols-3 gap-5'>
+                    {displayProducts.map((p:any)=>(
+                        <ProductCard key={p._id} product={p}/>
+                    ))}
+                </div>
+            )
+                    
+            }
         </div>
        </div>
     </div>
