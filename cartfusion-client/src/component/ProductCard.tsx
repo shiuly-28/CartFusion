@@ -54,6 +54,7 @@ function ProductCard({product} : {product:IProduct}) {
       initial={{opacity: 0, y: 60 }}
       whileInView={{opacity: 1, y: 0}}   
       transition={{type: "spring", stiffness:70, damping: 18}}
+      viewport={{once:true, amount: 0.2}}
       whileHover={{scale: 1.03}}
       className='bg-white rounded-xl shadow-md overflow-hidden
       border hover:shadow-xl transition cursor-pointer'>

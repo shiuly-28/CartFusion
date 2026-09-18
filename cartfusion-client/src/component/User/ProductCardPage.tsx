@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client"
 import { RootState } from '@/redux/store'
@@ -12,9 +13,17 @@ function ProductCardPage() {
     const products = Array.isArray(allProductData) ? 
     allProductData.filter((p:any)=>p.isActive === true && p.verificationStatus === "approved") : []
     // console.log(products)
+
+    if(!products || products.length===0){
+        return(
+            <div className='min-h-[30vh] flex items-center justify-center text-white bg-black'>
+                No Products found
+            </div>
+        )
+    }
     
   return (
-    <div className='min-h-screen w-full bg-gradient-to-br from-gray-900 
+    <div className='min-h-[30vh] w-full bg-gradient-to-br from-gray-900 
     via-black to-gray-900 text-white px-4 p-6'>
         <div className='max-w-7xl mx-auto mb-13 text-center'>
             <h1 className='text-2xl sm:text-3xl font-bold text-white'>

@@ -20,7 +20,7 @@ export default function RootLayout({
       lang="en"
       
     >
-      <body className="">
+      <body cz-shortcut-listen="true">
        
           <Provider>
             <StoreProvider>

@@ -33,7 +33,8 @@ export async function GET(req:NextRequest){
             filter.merchant = category;
         }
 
-        const products = await Product.find(filter)
+        const products = await Product.find(filter).populate("merchant", "shopName image")
+        .sort({createAt:-1})
         return NextResponse.json(
             {
                 success: true,
