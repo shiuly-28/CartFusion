@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try{
         await connectDb()
-        const merchants = await User.find({role : "merchant"}).sort({createdAt:-1})
+        const merchants = await User.find({role : "merchant"}).sort({createdAt:-1}).populate("merchantProducts")
         if(!merchants){
              return NextResponse.json({message: "Merchant are  not found"},{status:400})
         }

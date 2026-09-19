@@ -80,10 +80,12 @@ return (
                     <span className='text-red-500 font-semibold capitalize'
                     >Cancelled</span>
                   )}
-                  {order.orderStatus === "pending" && (
-                    <span className='text-red-500 font-semibold capitalize'
-                    >Cancelled</span>
+           
+                   {order.orderStatus === "pending" && (
+                    <span className='text-yellow-500 font-semibold capitalize'
+                    >Pending</span>
                   )}
+                  
                   {order.orderStatus === "confirmed" && (
                     <span className='text-pink-300 font-semibold capitalize'
                     >Confirmed</span>
@@ -150,6 +152,7 @@ return (
                     <span className='text-red-500 font-semibold capitalize'
                     >Cancelled</span>
                   )}
+               
                   {order.orderStatus === "delivered" && (
                     <span className='text-[#00684D] font-semibold capitalize'
                     >delivered</span>
@@ -166,6 +169,10 @@ return (
                   {order.orderStatus === "shipped" && (
                     <span className='text-indigo-300 font-semibold capitalize'
                     >Shipped</span>
+                  )}
+                  {order.orderStatus === "pending" && (
+                    <span className='text-yellow-500 font-semibold capitalize'
+                    >Pending</span>
                   )}
                  <div className='mt-1.5 text-sm'>{formateDate(String(order.cancelledAt))}</div>
                
