@@ -21,14 +21,15 @@ function ShopPage() {
 
     if(!allVerifiedMerchant || allVerifiedMerchant.length === 0){
         return(
-            <div className='min-h-[30vh] flex items-center justify-center text-white bg-black'>
+            <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 
+    py-6 px-4 text-white text-3xl text-center'>
                 No Shop found
             </div>
         )
     }
   return (
-    <div className='min-h-[30vh] w-full bg-gradient-to-br from-black via-gray-900 
-    via-black py-6 px-4'>
+    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 
+    py-6 px-4 text-white'>
       <div className='max-w-7xl mx-auto mb-13 text-center'>
         <h1 className='text-2xl sm:text-3xl font-bold text-white'>Explore Trusted Shop & Verified Sellers</h1>
         <p className='text-gray-300 text-sm'>Discover Verified Merchant, authentication stores & their exclusive products.</p>
