@@ -5,8 +5,14 @@ import { RootState } from '@/redux/store'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { FaUserCircle } from 'react-icons/fa'
+import { FaPaperPlane, FaUserCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
+
+interface Message {
+  sender: string;
+  text: string;
+  createAt: string;
+}
 
 function SupportChats() {
   const { userData } = useSelector((state: RootState) => state.user)
@@ -14,6 +20,7 @@ function SupportChats() {
   const [users, setUsers] = useState<IUser[]>()
   const [activeUser, setActiveUser] = useState<IUser>()
   const [text, setText] = useState("")
+  const [messages, setMessages] = useState<Message[]>([])
 
   useEffect(() => {
     const fetchChatUsers = async () => {
@@ -28,6 +35,20 @@ function SupportChats() {
     }
     fetchChatUsers()
   }, [])
+  useEffect(() => {
+    if (!activeUser?._id) return; 
+    const fetchChatMessages = async () => {
+      try {
+        const result = await axios.post("/api/support/get",{withUserId:activeUser?._id})
+        console.log(result.data)
+        setMessages(result.data)
+      } catch (error) {
+        console.log(error)
+     
+      }
+    }
+    fetchChatMessages()
+  }, [activeUser])
 
   if (!myId) {
     return (
@@ -37,13 +58,24 @@ function SupportChats() {
     )
   }
 
-  const sendMessage = async () =>{
-    try{
+ const sendMessage = async () => {
+  if (!text.trim() || !activeUser) return;
 
-    }catch(error){
-
-    }
+  const newMessage: Message = { 
+    sender: myId, 
+    text, 
+    createAt: new Date().toISOString() 
   }
+  
+  setMessages((prev) => [...prev, newMessage])
+  setText("")
+
+  try {
+    await axios.post("/api/support/send", { reciverId: activeUser._id, text })
+  } catch (error) {
+    console.log(error)
+  }
+}
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900 p-3 sm:p-6'>
       <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 h-[90vh]'>
@@ -126,17 +158,74 @@ function SupportChats() {
         ):(
             <>
             <div className='flex-1 p-4 space-y-4 overflow-y-auto'>
+              {messages.map((msg, i)=>{
+                const isMe = msg.sender === myId;
+                const avatarUser = isMe ? userData : activeUser;
 
+                return(
+                  <div key={i}
+                  className={`flex items-end gap-3 ${
+                    isMe ? "justify-end" : "justify-start"
+                  }`}>
+                    {!isMe && (
+                      <div className='w-9 h-9 rounded-full overflow-hidden border-white/20'>
+                        {avatarUser?.image ? (
+                          <Image
+                          src={avatarUser.image}
+                          alt='user'
+                          width={36}
+                          height={36}
+                          className='object-cover'/>
+                        ):(
+                          <FaUserCircle className='text-gray-400 w-9 h-9'/>
+                        )}
+                      </div>
+                    )}
+
+                    <div className={`max-w-[70%] px-4 py-2.5 text-sm rounded-2xl
+                      ${
+                        isMe
+                        ? "bg-[#00684D] text-white rounded-br-sm"
+                        : "bg-white/10 text-gray-200 rounded-bl-sm"
+                      }`}>
+                        {msg.text}
+                    </div>
+                    {isMe && (
+                      <div className='w-9 h-9 rounded-full overflow-hidden border-white/20'>
+                        {avatarUser?.image ? (
+                          <Image
+                          src={avatarUser.image}
+                          alt='user'
+                          width={36}
+                          height={36}
+                          className='object-cover'/>
+                        ) : (
+                           <FaUserCircle className='text-gray-400 w-9 h-9'/>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
             <div className='px-4 pb-2'>
-                <button className='text-xs px-4 py-1.5 rounded-full
+                <button className='relative inline-block text-xs px-4 py-1.5 rounded-full
             bg-purple-600/20 text-purple-300 border border-purple-500/30
             hover:bg-purple-500/30 disabled:opacity-50 transition z-50'>
                 Get AI Suggestions
             </button>
             </div>
-            <div>
-              
+            <div className='p-3 border-t border-white/10 bg-black/60 flex gap-2'>
+            <input value={text} 
+            onChange={(e)=> setText(e.target.value)}
+            placeholder='Type your message....'
+            className='flex-1 bg-black/80 text-white border border-white rounded-full px-5 py-2.5
+            outline-none focus:border-[#00684D]' />
+            <button 
+  onClick={sendMessage}
+  className='bg-[#00684D] hover:bg-[#0ec997] w-11 h-11 rounded-full flex items-center justify-center'>
+  <FaPaperPlane className='text-white text-sm'/>
+</button>
             </div>
             </>
             )}

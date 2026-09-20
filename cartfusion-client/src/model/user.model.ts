@@ -1,156 +1,160 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
-export interface IUser{
-_id?:mongoose.Types.ObjectId;
-
-name:string;
-email:string;
-password?:string;
-phone?:string;
-image?:string;
-role: "user" | "merchant" | "admin"
-
-shopName?:string;
-shopAddress?:string;
-gstNumber?:string;
-isApproved?:boolean;
-verificationStatus? : "pending" | "approved" | "rejected"
-requestedAt?: Date;
-approvedAt?:Date;
-rejectedReason?:string
-
-merchantProducts?:mongoose.Types.ObjectId[];
-orders?:mongoose.Types.ObjectId[];
-
-
-cart?:{
-   product:mongoose.Types.ObjectId;
-   quantity:number 
-}[];
-
-chats?:{
-    with: mongoose.Types.ObjectId;
-    message: {
-        sender:mongoose.Types.ObjectId;
-        text: string;
-        createdAt: Date
-    }
+export interface IMessage {
+  _id?: mongoose.Types.ObjectId;
+  sender: mongoose.Types.ObjectId;
+  text: string;
+  createdAt?: Date;
 }
 
-createdAt?:Date;
-updatedAt?:Date;
-
+export interface IChat {
+  _id?: mongoose.Types.ObjectId;
+  with: mongoose.Types.ObjectId;
+  message: IMessage[]; // FIX: Array of 
 }
 
-const userSchema = new mongoose.Schema<IUser>({
+export interface IUser {
+  _id?: mongoose.Types.ObjectId;
+  name: string;
+  email: string;
+  password?: string;
+  phone?: string;
+  image?: string;
+  role: "user" | "merchant" | "admin";
 
-    name:{
-        type:String,
-        required:true
-    },
+  shopName?: string;
+  shopAddress?: string;
+  gstNumber?: string;
+  isApproved?: boolean;
+  verificationStatus?: "pending" | "approved" | "rejected";
+  requestedAt?: Date;
+  approvedAt?: Date;
+  rejectedReason?: string;
 
-    email:{
-        type:String,
-        required:true,
-        unique:true
+  merchantProducts?: mongoose.Types.ObjectId[];
+  orders?: mongoose.Types.ObjectId[];
+
+  cart?: {
+    product: mongoose.Types.ObjectId;
+    quantity: number;
+  }[];
+
+  chats?: IChat[]; // FIX: Array of Chat objects
+
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const userSchema = new mongoose.Schema<IUser>(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    password:{
-        type:String
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    image:{
-        type:String
+    password: {
+      type: String,
     },
-    phone:{
-        type:String
+    image: {
+      type: String,
+    },
+    phone: {
+      type: String,
     },
     role: {
-        type:String,
-        enum:["user", "merchant", "admin"],
-        default:"user"
+      type: String,
+      enum: ["user", "merchant", "admin"],
+      default: "user",
     },
 
-    shopName:{
-        type:String
+    shopName: {
+      type: String,
     },
-    gstNumber:{
-        type:String
+    gstNumber: {
+      type: String,
     },
-    shopAddress:{
-        type:String
+    shopAddress: {
+      type: String,
     },
-    isApproved:{
-        type:Boolean,
-        default: false
+    isApproved: {
+      type: Boolean,
+      default: false,
     },
-    verificationStatus:{
-        type:String,
-        enum:["pending", "approved", "rejected"],
-        default: "pending"
+    verificationStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
-    approvedAt:{
-        type: Date
+    approvedAt: {
+      type: Date,
     },
-    requestedAt:{
-        type:Date
+    requestedAt: {
+      type: Date,
     },
-    rejectedReason:{
-        type:String
+    rejectedReason: {
+      type: String,
     },
 
-    merchantProducts:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Product"
-    }
-],
-    orders:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Orders"
-    }
-],
-cart:[
-    {
-       product:{
-         type:mongoose.Schema.Types.ObjectId,
-        ref:"Product"
-       },
-       quantity:{
-        type:Number,
-        default:1
-       }
-    }
-],
-
-chats: [
-    {
-        with: {
-           type:mongoose.Schema.Types.ObjectId,
-           ref: "User",
-           required: true, 
+    merchantProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Orders",
+      },
+    ],
+    cart: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
         },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+      },
+    ],
 
-        message: [
-            {
-                sender:{
-                    type:mongoose.Schema.Types.ObjectId,
-                    ref:"user",
-                    required: true,
-                },
-                text: {
-                   type: String,
-                   required:true,
-                },
-                createdAt: {
-                    type: Date,
-                    default: Date.now,
-
-                },
-            },
-        ],
+    chats: [
+  {
+    with: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
+    message: [                    
+      {
+        sender: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
 ],
+  },
+  { timestamps: true }
+);
 
-},{timestamps:true})
+const User =
+  mongoose.models?.User || mongoose.model<IUser>("User", userSchema);
 
-const User = mongoose.models?.User || mongoose.model<IUser>("User", userSchema)
-
-export default User
+export default User;
