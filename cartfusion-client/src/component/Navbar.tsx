@@ -143,7 +143,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
           </div>
 
           {/* Dynamic Cart Badge (Desktop) */}
-          {user?.role === "user" && <CartBtn router={router} count={finalCartCount}/>}
+          {user?.role === "user" && <CartBtn router={router} count={user.cart?.length ?? 0} />}
         </div>
 
         {/* MOBILE SECTION */}
@@ -152,7 +152,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
             <>
               <IconBtn Icon={AiOutlineSearch} onClick={() => router.push("/category")}/>
               {/* Dynamic Cart Badge (Mobile) */}
-              <CartBtn router={router} count={finalCartCount}/>
+              <CartBtn router={router} count={user.cart?.length ?? 0} />
             </>
           )}
 

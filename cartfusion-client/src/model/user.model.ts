@@ -28,6 +28,15 @@ cart?:{
    quantity:number 
 }[];
 
+chats?:{
+    with: mongoose.Types.ObjectId;
+    message: {
+        sender:mongoose.Types.ObjectId;
+        text: string;
+        createdAt: Date
+    }
+}
+
 createdAt?:Date;
 updatedAt?:Date;
 
@@ -109,7 +118,36 @@ cart:[
         default:1
        }
     }
-]
+],
+
+chats: [
+    {
+        with: {
+           type:mongoose.Schema.Types.ObjectId,
+           ref: "User",
+           required: true, 
+        },
+
+        message: [
+            {
+                sender:{
+                    type:mongoose.Schema.Types.ObjectId,
+                    ref:"user",
+                    required: true,
+                },
+                text: {
+                   type: String,
+                   required:true,
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+
+                },
+            },
+        ],
+    },
+],
 
 },{timestamps:true})
 
