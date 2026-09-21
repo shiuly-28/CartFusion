@@ -7,6 +7,7 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { FaPaperPlane, FaUserCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
+import { ClipLoader } from 'react-spinners'
 
 interface Message {
   sender: string;
@@ -21,6 +22,8 @@ function SupportChats() {
   const [activeUser, setActiveUser] = useState<IUser>()
   const [text, setText] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
   useEffect(() => {
     const fetchChatUsers = async () => {
@@ -60,19 +63,38 @@ function SupportChats() {
 
  const sendMessage = async () => {
   if (!text.trim() || !activeUser) return;
-
-  const newMessage: Message = { 
-    sender: myId, 
-    text, 
-    createAt: new Date().toISOString() 
-  }
-  
-  setMessages((prev) => [...prev, newMessage])
-  setText("")
-
-  try {
+try {
     await axios.post("/api/support/send", { reciverId: activeUser._id, text })
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: myId,
+        text,
+        createAt: new Date().toISOString()
+      },
+    ]);
+    setText("");
+
   } catch (error) {
+    console.log(error)
+  }
+}
+
+const getSuggestions = async () => {
+  if (!messages.length || !activeUser || !userData?.role) return;
+
+  const lastMessage = messages[messages.length - 1];
+
+  setLoadingSuggestions(true)
+  try{
+    const result = await axios.post("/api/support/aiSuggestions", {
+      message:lastMessage.text,
+      role: userData.role,
+      targetRole:activeUser.role
+    })
+    console.log(result.data.suggestions)
+    setSuggestions(result.data.suggestions)
+  }catch(error){
     console.log(error)
   }
 }
@@ -209,12 +231,27 @@ function SupportChats() {
               })}
             </div>
             <div className='px-4 pb-2'>
-                <button className='relative inline-block text-xs px-4 py-1.5 rounded-full
+                <button 
+                onClick={getSuggestions} 
+                disabled={loadingSuggestions}
+                className='relative inline-block text-xs px-4 py-1.5 rounded-full
             bg-purple-600/20 text-purple-300 border border-purple-500/30
             hover:bg-purple-500/30 disabled:opacity-50 transition z-50'>
-                Get AI Suggestions
+                {loadingSuggestions ? <ClipLoader size={20} color='white'/> : "Get AI Suggestions"}
             </button>
             </div>
+
+              {suggestions.length > 0 && <div className='px-4 pb-2 flex flex-wrap gap-2'>{
+                suggestions.map((s,i)=>(
+                  <div key={i} onClick={()=>setText(s)}
+                   className='text-xs px-3 py-1 rounded-full 
+                  bg-[#00684D] text-[#12dfa8] hover:bg-[#00684D] border
+                   border-[#00684D] transition'>{s}</div>
+                ))
+                }
+                
+                </div>}
+
             <div className='p-3 border-t border-white/10 bg-black/60 flex gap-2'>
             <input value={text} 
             onChange={(e)=> setText(e.target.value)}

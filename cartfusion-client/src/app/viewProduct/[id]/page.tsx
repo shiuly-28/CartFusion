@@ -267,16 +267,16 @@ function ViewProduct() {
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10'>
            
-       {product?.reviews?.map((r, i) => {
-  const reviewUser = r.user as IUser;   // 👈 এখানে type assert করো
+{product?.reviews?.map((r, i) => {
+  const reviewUser = r.user as IUser;
   return (
     <div key={i} className='bg-white w-[250px] border border-black/10 rounded-lg p-5'>
       <div className='flex items-center gap-3 mb-2'>
         <div className='w-10 h-10 rounded-full flex items-center justify-center bg-black'>
-          {reviewUser.image ? (
+          {reviewUser?.image ? (
             <Image 
               src={reviewUser.image} 
-              alt={reviewUser.name || "User"}
+              alt={reviewUser?.name || "User"}
               width={40}
               height={40}
               className='rounded-full object-cover'
@@ -286,22 +286,25 @@ function ViewProduct() {
           )}
         </div>
         <div>
-          <p className='text-black font-semibold text-sm'>{reviewUser.name}</p>
+          <p className='text-black font-semibold text-sm'>{reviewUser?.name || "Deleted User"}</p>
           <div className='flex text-yellow-400 text-sm mt-1.5'>
             {[1, 2, 3, 4, 5].map((i) => (
               i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i}/>
             ))}
           </div>
         </div>
-
       </div>
 
       <p className='text-gray-900 text-sm mb-3'> {r.comment}</p>
-      {r.image  ? <div className='w-[180px] h-[180px] border border-white/10 
-      rounded-lg overflow-hidden bg-black'>
-        <Image src={r.image} alt='Review Image' width={140} height={180}
-        className='object-contain'/></div> : <div className='w-[180px] h-[180px] border border-white/10 
-      rounded-lg overflow-hidden bg-gray-400 flex items-center justify-center text-white text-xl'>No Review Image</div>}
+      {r.image ? (
+        <div className='w-[180px] h-[180px] border border-white/10 rounded-lg overflow-hidden bg-black'>
+          <Image src={r.image} alt='Review Image' width={140} height={180} className='object-contain'/>
+        </div>
+      ) : (
+        <div className='w-[180px] h-[180px] border border-white/10 rounded-lg overflow-hidden bg-gray-400 flex items-center justify-center text-white text-xl'>
+          No Review Image
+        </div>
+      )}
     </div>
   );
 })}
