@@ -52,8 +52,7 @@ const verifyOtp = async () =>{
         o._id == otpModel._id ? {...o, orderStatus:"delivered"}: o
       ))
     ))
- 
-
+    alert("Order Status successfully")
     }catch(error){
       console.log(error)
       alert("order Delivered successfully")

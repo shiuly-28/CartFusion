@@ -78,7 +78,6 @@ useEffect(() => {
   try {
     await axios.post("/api/order/cancelOrder", { orderId });
 
-    // orderStatus এর পাশাপাশি isPaid কে false করে দিন
     const updatedOrder = allOrdersData.map((o: any) =>
       o._id === orderId
         ? { ...o, orderStatus: "cancelled", isPaid: false }

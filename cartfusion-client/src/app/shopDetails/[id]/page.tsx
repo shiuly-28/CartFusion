@@ -29,10 +29,8 @@ function ShopDetails() {
             </div>
         )
     }
-
-    const merchantProducts = Array.isArray(allProductData)?
-     allProductData.filter((p:any) =>p.merchant._id === merchant._id) : []
-     console.log(merchantProducts)
+    const merchantProducts = Array.isArray(allProductData) && merchant?._id ?
+    allProductData.filter((p:any) => p.merchant?._id && String(p.merchant._id) === String(merchant._id)) : []
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 

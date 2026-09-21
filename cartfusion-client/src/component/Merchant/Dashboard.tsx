@@ -7,7 +7,7 @@ import { IUser } from '@/model/user.model';
 import { RootState } from '@/redux/store';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 
 interface StatboxProps {
@@ -73,7 +73,7 @@ function AdminDashboard() {
 
     const ordersDateMap: Record<string, number> = {};
     validOrders.forEach((o:any)=> {
-      const d = new Date(o.createAt).toLocaleDateString("en-IN");
+      const d = new Date(o.createdAt).toLocaleDateString("en-IN");
       ordersDateMap[d] = (ordersDateMap[d] || 0) + 1;
     });
     const ordersByDate = Object.keys(ordersDateMap).map((d) => ({
@@ -115,7 +115,7 @@ function AdminDashboard() {
       
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           {/* Bar graph */}
-          <div className='bg-white/5 border border-white/10 rounded-xl p-4 h-[280px] sm:h-[350px]'>
+          <div className='bg-white/5 border border-white/10 rounded-xl p-4 h-[280px] sm:h-[490px]'>
           <h2 className='font-semibold mb-2 text-sm'>Order by Date</h2>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={ordersByDate}>
@@ -163,7 +163,28 @@ function AdminDashboard() {
                    </div>
         </div>
 
-        <div></div>
+        <div className='bg-white/5 border border-white/10 rounded p-4 h-[260px] sm:h-[320px]'>
+          <h2 className='text-sm font-semibold mb-2'>Product Sales</h2>
+              <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={productSales}>
+              <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+              <XAxis 
+              dataKey="product"
+              interval={0}
+              angle={-20}
+              textAnchor="end"
+              height={50}
+              tick={{ fontSize: 10 }}/>
+              <YAxis tick={{fontSize: 10 }}/>
+              <Tooltip/>
+              <Line
+              type="monotone"
+              dataKey="sold"
+              stroke='#00684D'
+              strokeWidth={2}/>
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

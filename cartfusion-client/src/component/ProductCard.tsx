@@ -5,6 +5,7 @@ import { motion } from "motion/react"
 import Image from 'next/image'
 import { FaChevronLeft, FaChevronRight, FaRegStar, FaShoppingCart, FaStar } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
+import { IUser } from '@/model/user.model' 
 import axios from 'axios'
 
 function ProductCard({product} : {product:IProduct}) {
@@ -112,8 +113,9 @@ function ProductCard({product} : {product:IProduct}) {
           <span className='text-gray-500 text-xs ml-1'>
             ({avgRating} / {totalReviews})</span>
         </div>
-        <p className='text-xs text-gray-500'><span>{product.merchant.
-        shopName}</span></p>
+        <p className='text-xs text-gray-500'>
+  <span>{(product?.merchant as IUser)?.shopName || "Unknown Shop"}</span>
+</p>
         <motion.div className='w-full mt-3 bg-[#00684D] text-white py-2 rounded-lg flex items-center
         justify-center gap-2 hover:bg-[#045f47] transition'>
           <FaShoppingCart size={14}/> Add to cart
