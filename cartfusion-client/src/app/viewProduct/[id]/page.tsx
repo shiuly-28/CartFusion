@@ -5,8 +5,7 @@ import { IProduct } from '@/model/product.model';
 import { IUser } from '@/model/user.model';
 import { RootState } from '@/redux/store';
 import axios from 'axios';
-import { AnimatePresence, motion } from "motion/react"
-import { div, p } from 'motion/react-client';
+import {motion } from "motion/react"
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react'

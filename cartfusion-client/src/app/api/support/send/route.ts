@@ -27,10 +27,9 @@ export async function POST(req: NextRequest) {
     const receiverObjectId = new mongoose.Types.ObjectId(reciverId);
 
     // ==========================================
-    // 1. SAVE FOR SENDER (প্রেরক)
+    // 1. SAVE FOR SENDER 
     // ==========================================
 
-    // যদি আগে থেকেই চ্যাট থ্রেড চালু থাকে, মেসেজ পুশ করবে
     const senderUpdated = await User.updateOne(
       {
         _id: senderObjectId,
@@ -38,16 +37,16 @@ export async function POST(req: NextRequest) {
       },
       {
         $push: {
-          "chats.$.message": { // FIX: message -> messages
+          "chats.$.message": { 
             sender: senderObjectId,
             text,
-            createdAt: new Date(), // FIX: createAt -> createdAt
+            createdAt: new Date(), 
           },
         },
       }
     );
 
-    // যদি চ্যাট থ্রেড না থাকে, নতুন চ্যাট অবজেক্ট তৈরি করবে
+    
     if (senderUpdated.matchedCount === 0) {
       await User.updateOne(
         { _id: senderObjectId },
@@ -69,18 +68,18 @@ export async function POST(req: NextRequest) {
     }
 
     // ==========================================
-    // 2. SAVE FOR RECEIVER (প্রাপক)
+    // 2. SAVE FOR RECEIVER 
     // ==========================================
 
-    // যদি প্রাপকের চ্যাট থ্রেড থাকে, মেসেজ পুশ করবে
+   
     const receiverUpdated = await User.updateOne(
       {
-        _id: receiverObjectId, // FIX: senderObjectId -> receiverObjectId
+        _id: receiverObjectId, 
         "chats.with": senderObjectId,
       },
       {
         $push: {
-          "chats.$.message": { // FIX: message -> messages
+          "chats.$.message": {
             sender: senderObjectId,
             text,
             createdAt: new Date(),

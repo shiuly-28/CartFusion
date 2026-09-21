@@ -21,9 +21,9 @@ try{
     })
     .sort({ createdAt: -1});
 
-    const validOrders = orders.filter((o) => o.buyer);   // ✅ এই লাইনটা যোগ করো
+    const validOrders = orders.filter((o) => o.buyer);   
 
-    return NextResponse.json( validOrders, {status: 200})   // ✅ orders এর বদলে validOrders পাঠাও
+    return NextResponse.json( validOrders, {status: 200})   
 
 }catch(error){
 return NextResponse.json({message: `failed to create get all orders ${error}`},
