@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '@/redux/store'
 import { setAllOrdersData } from '@/redux/userSlice'
 import axios from 'axios'
 import {motion} from 'motion/react'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -15,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux'
 function Orders() {
   UseGetAllOrdersData()
   UserGetCurrentUser()
+  const router = useRouter()
 
   const {userData} = useSelector((state:RootState) => state.user)
   const {allOrdersData} = useSelector((state:RootState) => state.user)
@@ -22,16 +24,25 @@ function Orders() {
   const [trackOrderModel, setTrackOrderModel] = useState<any | null>(null)
 
   const orders =Array.isArray(allOrdersData)?
-  allOrdersData.filter((o)=>String(o.buyer._id) === String(userData?._id)) : []
+  allOrdersData.filter((o)=>String(o.buyer?._id) === String(userData?._id)) : []
 
   const dispatch = useDispatch<AppDispatch>()
 
-  const [now, setNow] = useState<number>(() => Date.now())   // 👈 initial value সরাসরি useState এ
+  const [now, setNow] = useState<number>(() => Date.now())
 
 useEffect(() => {
   const interval = setInterval(() => setNow(Date.now()), 60000)
   return () => clearInterval(interval)
 }, [])
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
+
+  const totalPages = Math.ceil(orders.length / itemsPerPage)
+  const paginatedOrders = orders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
 
     const formateDate = (date:string)=> {
@@ -140,12 +151,20 @@ const returnOrder = async (orderId:string) => {
      to-gray-900 text-white '>
       <div className='max-w-6xl mx-auto'>
         <div className='mb-6 font-bold flex items-center justify-between'>
-          <div className='mt-5'>
-            <h1 className='text-2xl font-bold'>My Orders</h1>
-            <p>All orders placed by you</p>
-          </div>
-          <div className='text-sm text-gray-300'>{orders.length} Orders</div>
-        </div>
+  <div className='mt-5'>
+    <h1 className='text-2xl font-bold'>My Orders</h1>
+    <p>All orders placed by you</p>
+  </div>
+  <div className='flex items-center gap-4'>
+    <button
+      onClick={() => router.push("/")}
+      className='px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition'
+    >
+      🏠 Home
+    </button>
+    <div className='text-sm text-gray-300'>{orders.length} Orders</div>
+  </div>
+</div>
          {/* lg device */}
     <div className='hidden lg:block bg-white/5 border border-white/10
     rounded-xl overflow-auto shadow-xl shadow-black/40'>
@@ -165,7 +184,7 @@ const returnOrder = async (orderId:string) => {
         <tbody>
   {
     orders.length !== 0 ? (
-      orders.map((order, index) => (
+      paginatedOrders.map((order, index) => (
         <tr 
           key={index}
           className='border-t border-white/5 hover:bg-white/10 transition-all duration-200'
@@ -174,10 +193,10 @@ const returnOrder = async (orderId:string) => {
           <td className='px-4 py-4 text-sm'>{formateDate(String(order.createdAt))}</td>
           <td className='px-4 py-4 text-sm'>
             {order.products.map((p, i) => (
-              <div key={i} className='text-gray-200'>{p.product.title} * {p.quantity}</div>
+             <div key={i} className='text-gray-200'>{p.product?.title || "Product removed"} * {p.quantity}</div>
             ))}
           </td>
-          <td className='px-4 py-4 text-sm'>{order.productMerchant.shopName}</td>
+          <td className='px-4 py-4 text-sm'>{order.productMerchant?.shopName || "Unknown Shop"}</td>
           <td className='px-4 py-4 text-sm'>
             {order.paymentMethod.toUpperCase()}
             <div className={`text-xs ${order.isPaid ? "text-[#00684D]" : "text-amber-400"}`}>
@@ -234,7 +253,7 @@ const returnOrder = async (orderId:string) => {
     </div>
     <div className='lg:hidden space-y-4'>
         { orders.length !== 0 ? (
-          orders.map((order, index)=>(
+          paginatedOrders.map((order, index)=>(
             <motion.div
             initial={{scale: 0.95, opacity: 0}}
             animate={{scale: 1, opacity: 1 }}
@@ -244,7 +263,7 @@ const returnOrder = async (orderId:string) => {
                 <div>
                   <div className='text-sm text-gray-300'>#{String(order._id).slice(-8)}</div>
                   <div className='font-semibold'>{formateDate(String(order.createdAt))}</div>
-                  <div className='text-sm text-gray-300 mt-1'>{order.productMerchant.shopName}</div>
+                  <div className='text-sm text-gray-300 mt-1'>{order.productMerchant?.shopName || "Unknown Shop"}</div>
                 </div>
                 <div className='text-[#00684D] font-bold text-right'>
                   <span className='text-2xl'>৳</span>{order.totalAmount}
@@ -262,7 +281,7 @@ const returnOrder = async (orderId:string) => {
               </div>
               <div className='mt-3 space-y-1'>
                  {order.products.map((p, i) => (
-              <div key={i} className='text-gray-200 text-sm'>{p.product.title} * {p.quantity}</div>
+              <div key={i} className='text-gray-200'>{p.product?.title || "Product removed"} * {p.quantity}</div>
             ))}
               </div>
               
@@ -303,6 +322,41 @@ const returnOrder = async (orderId:string) => {
           border border-white/10 p-4 rounded-xl'>No Orders found</motion.div>)
         }
       </div>
+
+      {/* Pagination Controls */}
+      {orders.length > 0 && totalPages > 1 && (
+        <div className='flex items-center justify-center gap-2 mt-6 flex-wrap'>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className='px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
+          >
+            Prev
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1.5 rounded text-sm ${
+                currentPage === page
+                  ? "bg-[#00684D] font-semibold"
+                  : "bg-white/10 hover:bg-white/20"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className='px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
+          >
+            Next
+          </button>
+        </div>
+      )}
       </div>
    
         {selectedOrder && (
@@ -320,7 +374,7 @@ const returnOrder = async (orderId:string) => {
                    {selectedOrder.products.map((p:any, i:any) => (
               <div key={i} className='flex justify-between bg-white/5 rounded mb-2 p-3'>
                <div>
-                <div className='font-medium'>{p.product.title}</div>
+                <div className='font-medium'>{p.product?.title || "Product removed"}</div>
                 <div>Qty: {p.quantity} * Price: {p.price}</div>
                </div>
                </div>
@@ -397,7 +451,7 @@ const returnOrder = async (orderId:string) => {
   </button>
 ) : (
   selectedOrder.products.map((p:any, i: number) => {
-    const replacementDays = p?.product.replacementDays || 0;
+    const replacementDays = p?.product?.replacementDays || 0;
     const eligible = isEligibleReturn(selectedOrder.deliveryDate, replacementDays, now);
 const remaining = remainingDays(selectedOrder.deliveryDate, replacementDays, now);
     const returnEndDate = ReturnEndDate(selectedOrder.deliveryDate, replacementDays);
@@ -406,7 +460,7 @@ const remaining = remainingDays(selectedOrder.deliveryDate, replacementDays, now
     return(
       <div key={i} className='flex md:flex-row flex-col justify-between items-center bg-white/5 px-3 py-2 rounded ml-2'>
         <div>
-          <p className='text-xs text-gray-300'>{p.product?.title}</p>
+          <p className='text-xs text-gray-300'>{p.product?.title || "Product removed"}</p>
           {eligible ? (
             <>
               <p className='text-xs text-yellow-400'>

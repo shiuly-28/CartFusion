@@ -50,7 +50,7 @@ function Profile() {
       console.log(result)
       setLoading(false)
       setProfileImage(null)
-      alert("profile update error ✅")
+      alert("profile update successfully ✅")
     }catch(error){
       console.log(error)
       setLoading(false)

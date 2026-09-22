@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from "motion/react"
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,12 +20,21 @@ function MerchantProduct() {
   const currentUser = useSelector((state: RootState) => state.user.userData)
   const { allProductData } = useSelector((state: RootState) => state.merchant)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
+
   const myProducts =
     currentUser?._id && allProductData?.length
       ? allProductData.filter(
           (p: any) =>
             p.merchant === currentUser?._id ||
             p.merchant?._id === currentUser?._id) : []
+
+  const totalPages = Math.ceil(myProducts.length / itemsPerPage)
+  const paginatedProducts = myProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   const toggleIsActive = async(productId:string, currentisActive:boolean) => {
   
@@ -40,6 +50,21 @@ function MerchantProduct() {
       alert("Update isActive error")
     }
   }
+
+  const deleteProduct = async (productId: string) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this product? This action cannot be undone.")
+  if (!confirmDelete) return;
+
+  try {
+    await axios.post("/api/merchant/deleteProduct", { productId })
+    const updatedProducts = allProductData.filter((p: any) => p._id !== productId)
+    dispatch(setAllProductData(updatedProducts))
+    alert("✅ Product deleted successfully")
+  } catch (error) {
+    console.log(error)
+    alert("❌ Delete product error")
+  }
+}
 
   return (
     <div className='w-full p-4 sm:p-8 text-white'>
@@ -79,7 +104,7 @@ function MerchantProduct() {
                 </td>
               </tr>
             ) : (
-              myProducts.map((p, index) => (
+              paginatedProducts.map((p, index) => (
                 <tr key={index} className='border-t border-white/10 hover:bg-white/5'>
                   <td className='p-4'>
                     <Image
@@ -118,29 +143,38 @@ function MerchantProduct() {
                   {/* Fixed flex container layout for Action Cell */}
                   <td className='p-4 align-middle'>
                     <div className='flex items-center justify-center gap-2 flex-wrap'>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={()=>router.push(`/updateProduct/${p._id}`)}
-                        className='px-3 py-1 rounded text-sm bg-amber-500 hover:bg-amber-600 font-medium'
-                      >
-                        Edit
-                      </motion.button>
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+    onClick={()=>router.push(`/updateProduct/${p._id}`)}
+    className='px-3 py-1 rounded text-sm bg-amber-500 hover:bg-amber-600 font-medium'
+  >
+    Edit
+  </motion.button>
 
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.97 }}
-                        disabled={p.verificationStatus !== "approved"}
-                        onClick={()=>toggleIsActive(String(p._id), Boolean(p.isActive))}
-                        className={`px-3 py-1 rounded text-sm font-medium ${
-                          p.verificationStatus === "approved"
-                            ? "bg-[#00684D] hover:bg-[#045f47]"
-                            : "bg-gray-600 cursor-not-allowed opacity-70"
-                        }`}
-                      >
-                        {p.isActive ? "Disable" : "Enable"}
-                      </motion.button>
-                    </div>
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+    disabled={p.verificationStatus !== "approved"}
+    onClick={()=>toggleIsActive(String(p._id), Boolean(p.isActive))}
+    className={`px-3 py-1 rounded text-sm font-medium ${
+      p.verificationStatus === "approved"
+        ? "bg-[#00684D] hover:bg-[#045f47]"
+        : "bg-gray-600 cursor-not-allowed opacity-70"
+    }`}
+  >
+    {p.isActive ? "Disable" : "Enable"}
+  </motion.button>
+
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+    onClick={()=>deleteProduct(String(p._id))}
+    className='px-3 py-1 rounded text-sm bg-red-600 hover:bg-red-700 font-medium'
+  >
+    Remove
+  </motion.button>
+</div>
 
                    {p.verificationStatus === "rejected" && (
   <div className='mt-2 bg-red-400/10 border border-red-400/30 text-red-300 text-xs p-2 rounded text-center'>
@@ -168,7 +202,7 @@ function MerchantProduct() {
             No Merchant Product found
           </div>
         ) : (
-          myProducts.map((p, index) => (
+          paginatedProducts.map((p, index) => (
             <div
               key={index}
               className='bg-white/10 border border-white/20 rounded-xl p-4 space-y-2'
@@ -226,33 +260,76 @@ function MerchantProduct() {
               </div>
               )}
 
-              <div className='flex items-center gap-3 mt-4'>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                   onClick={()=>router.push(`/updateProduct/${p._id}`)}
-                  className='px-4 py-1.5 rounded text-sm bg-amber-500 hover:bg-amber-600 font-medium'
-                >
-                  Edit
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                   onClick={()=>toggleIsActive(String(p._id), Boolean(p.isActive))}
-                  disabled={p.verificationStatus !== "approved"}
-                  className={`px-4 py-1.5 rounded text-sm font-medium ${
-                    p.verificationStatus === "approved"
-                      ? "bg-[#00684D] hover:bg-[#045f47]"
-                      : "bg-gray-600 cursor-not-allowed opacity-70"
-                  }`}
-                >
-                  {p.isActive ? "Disable" : "Enable"}
-                </motion.button>
-              </div>
+            <div className='flex items-center gap-3 mt-4'>
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+     onClick={()=>router.push(`/updateProduct/${p._id}`)}
+    className='px-4 py-1.5 rounded text-sm bg-amber-500 hover:bg-amber-600 font-medium'
+  >
+    Edit
+  </motion.button>
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+     onClick={()=>toggleIsActive(String(p._id), Boolean(p.isActive))}
+    disabled={p.verificationStatus !== "approved"}
+    className={`px-4 py-1.5 rounded text-sm font-medium ${
+      p.verificationStatus === "approved"
+        ? "bg-[#00684D] hover:bg-[#045f47]"
+        : "bg-gray-600 cursor-not-allowed opacity-70"
+    }`}
+  >
+    {p.isActive ? "Disable" : "Enable"}
+  </motion.button>
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+    onClick={()=>deleteProduct(String(p._id))}
+    className='px-4 py-1.5 rounded text-sm bg-red-600 hover:bg-red-700 font-medium'
+  >
+    Remove
+  </motion.button>
+</div>
             </div>
           ))
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {myProducts.length > 0 && totalPages > 1 && (
+        <div className='flex items-center justify-center gap-2 mt-6 flex-wrap'>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className='px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
+          >
+            Prev
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1.5 rounded text-sm ${
+                currentPage === page
+                  ? "bg-[#00684D] font-semibold"
+                  : "bg-white/10 hover:bg-white/20"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className='px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   )
 }
