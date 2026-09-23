@@ -1,6 +1,5 @@
 import { auth } from '@/auth'
 import AdminDashBoard from '@/component/Admin/AdminDashBoard'
-import EditRoleAndPhone from '@/component/EditRoleAndPhone'
 import Footer from '@/component/Footer'
 import EditMerchantDetails from '@/component/Merchant/EditMerchantDetails'
 import MerchantPage from '@/component/Merchant/MerchantPage'
