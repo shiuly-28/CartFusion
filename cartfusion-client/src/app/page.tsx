@@ -19,10 +19,10 @@ export default async function Home() {
   if(!user){
     redirect("/login")
   }
-  const inComplete = !user.role || !user.phone || (!user.phone && user.role == "user")
-  if(inComplete){
-    return <EditRoleAndPhone/>
-  }
+  // const inComplete = !user.role || !user.phone || (!user.phone && user.role == "user")
+  // if(inComplete){
+  //   return <EditRoleAndPhone/>
+  // }
 
   if(user?.role == "merchant"){
     const isCompleteDetails = !user.shopName || !user.shopAddress || !user.gstNumber
