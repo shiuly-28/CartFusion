@@ -137,12 +137,13 @@ function CategoriesPage() {
         <div className='md:col-span-3'>
             {
                 displayProducts.length=== 0 ?(
-                    <div className='text-center mt--20 sm:grid-cols-3'>
+                    <div className='text-center mt-20 text-gray-400'>
                         No products found
                     </div>
                     ):
                 (
-                <div className='grid grid-cols-2 sm:grid-cols-3 gap-5'>
+                /* পরিবর্তন এখানে: grid-cols-1 দিয়ে মোবাইলে ১টি করে কার্ড সেট করা হয়েছে */
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5'>
                     {displayProducts.map((p:any)=>(
                         <ProductCard key={p._id} product={p}/>
                     ))}

@@ -38,7 +38,8 @@ function ProductCardPage() {
                     No products available right now.
                 </div>
             ) : (
-                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+                /* পরিবর্তন এখানে: grid-cols-1 দেওয়া হয়েছে */
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
                     {products.map((p:any)=>(
                         <ProductCard key={p._id} product={p}/>
                     ))}
