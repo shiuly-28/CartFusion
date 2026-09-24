@@ -6,10 +6,10 @@ import { IUser } from '@/model/user.model'
 import { RootState } from '@/redux/store'
 import Image from 'next/image'
 import { motion } from "motion/react"
-
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
+import { useSelector } from 'react-redux'
 
 function ShopPage() {
     UseGetAllMerchant()
@@ -22,17 +22,37 @@ function ShopPage() {
     if(!allVerifiedMerchant || allVerifiedMerchant.length === 0){
         return(
             <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 
-    py-6 px-4 text-white text-3xl text-center'>
-                No Shop found
+    py-6 px-4 text-white text-3xl text-center flex flex-col items-center justify-center gap-4'>
+                {/* Back button when no shops found */}
+                <button 
+                  onClick={() => router.push('/')}
+                  className='flex items-center gap-2 text-sm text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition'
+                >
+                  <ArrowLeft size={18} />
+                  <span>Back to Home</span>
+                </button>
+                <p>No Shop found</p>
             </div>
         )
     }
+
   return (
     <div className='min-h-[30vh] w-full bg-gradient-to-br from-gray-900 
     via-black to-gray-900 text-white px-4 p-6'>
-      <div className='max-w-7xl mx-auto mb-13 text-center'>
-        <h1 className='text-2xl sm:text-3xl font-bold text-white'>Explore Trusted Shop & Verified Sellers</h1>
-        <p className='text-gray-300 text-sm'>Discover Verified Merchant, authentication stores & their exclusive products.</p>
+      <div className='max-w-7xl mx-auto mb-8'>
+        {/* Back to Home Button */}
+        <button 
+          onClick={() => router.push('/')}
+          className='flex items-center gap-2 text-sm text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition mb-6'
+        >
+          <ArrowLeft size={18} />
+          <span>Back to Home</span>
+        </button>
+
+        <div className='text-center'>
+          <h1 className='text-2xl sm:text-3xl font-bold text-white'>Explore Trusted Shop & Verified Sellers</h1>
+          <p className='text-gray-300 text-sm mt-1'>Discover Verified Merchant, authentication stores & their exclusive products.</p>
+        </div>
       </div>
 
       <div className='max-w-7xl mx-auto'>
