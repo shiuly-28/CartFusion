@@ -54,7 +54,6 @@ interface SidebarBtnProps {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-// Navbar Props-এ cartCount যোগ করা হয়েছে
 interface NavbarProps {
   user: IUser;
   cartCount?: number;
@@ -65,7 +64,6 @@ function Navbar({ user, cartCount }: NavbarProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // user অবজেক্ট থেকে কার্ট সংখ্যা বের করা (যদি cartCount প্রোপ না দেওয়া হয়)
   const finalCartCount = cartCount ?? (user?.cart?.length || 0);
 
   return (
@@ -143,7 +141,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
           </div>
 
           {/* Dynamic Cart Badge (Desktop) */}
-          {user?.role === "user" && <CartBtn router={router} count={user.cart?.length ?? 0} />}
+          {user?.role === "user" && <CartBtn router={router} count={finalCartCount} />}
         </div>
 
         {/* MOBILE SECTION */}
@@ -152,7 +150,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
             <>
               <IconBtn Icon={AiOutlineSearch} onClick={() => router.push("/category")}/>
               {/* Dynamic Cart Badge (Mobile) */}
-              <CartBtn router={router} count={user.cart?.length ?? 0} />
+              <CartBtn router={router} count={finalCartCount} />
             </>
           )}
 
@@ -178,15 +176,15 @@ function Navbar({ user, cartCount }: NavbarProps) {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "tween", duration: 0.3 }}
-                  className='fixed top-0 right-0 h-screen w-[75%] max-w-xs bg-zinc-900 p-6 text-white z-50 shadow-2xl flex flex-col justify-between'
+                  className='fixed top-0 right-0 h-dvh max-h-screen w-[75%] max-w-xs bg-zinc-900 p-5 text-white z-50 shadow-2xl flex flex-col justify-between overflow-y-auto'
                 >
                   <div>
-                    <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-800">
+                    <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-800">
                       <h1 className='text-lg font-semibold text-[#049770]'>Menu</h1>
                       <AiOutlineClose size={24} className='cursor-pointer hover:text-red-500' onClick={() => setSidebarOpen(false)}/>
                     </div>
 
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2.5">
                       <SidebarBtn label="Home" Icon={AiOutlineHome} path="/" router={router} setSidebarOpen={setSidebarOpen}/>
                       <SidebarBtn label="Category" Icon={AiOutlineAppstore} path="/category" router={router} setSidebarOpen={setSidebarOpen}/>
                       <SidebarBtn label="Shop" Icon={AiOutlineShopping} path="/shop" router={router} setSidebarOpen={setSidebarOpen}/>
@@ -195,11 +193,11 @@ function Navbar({ user, cartCount }: NavbarProps) {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-800">
+                  <div className="pt-4 mt-6 border-t border-gray-800">
                     {user ? (
                       <button 
                         onClick={() => { signOut(); setSidebarOpen(false); }}
-                        className="flex items-center gap-3 w-full px-4 py-2.5 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600 hover:text-white transition"
+                        className="flex items-center justify-center gap-3 w-full px-4 py-2.5 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600 hover:text-white transition font-medium"
                       >
                         <AiOutlineLogout size={20}/>
                         <span>Sign Out</span>
@@ -207,7 +205,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
                     ) : (
                       <button 
                         onClick={() => { router.push("/login"); setSidebarOpen(false); }}
-                        className="flex items-center gap-3 w-full px-4 py-2.5 bg-[#049770] text-white rounded-lg hover:bg-[#037a5a] transition"
+                        className="flex items-center justify-center gap-3 w-full px-4 py-2.5 bg-[#049770] text-white rounded-lg hover:bg-[#037a5a] transition font-medium"
                       >
                         <AiOutlineLogin size={20}/>
                         <span>Sign In</span>
