@@ -1,11 +1,13 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import Google from "next-auth/providers/google"
 import connectDb from "./lib/connectDB"
 import User from "./model/user.model"
 import bcrypt from "bcryptjs"
-import Google from "next-auth/providers/google"
+import { authConfig } from "./auth.config"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -30,32 +32,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role,
-          image: user.image || null
+          image: user.image || null,
         }
-      }
+      },
     }),
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET
-    })
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
   ],
 
   callbacks: {
+    ...authConfig.callbacks,
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         await connectDb()
         let DBUser = await User.findOne({ email: user.email })
 
         if (!DBUser) {
-          
           DBUser = await User.create({
             name: user.name,
             email: user.email,
             image: user.image,
-            role: "user"
+            role: "user",
           })
         } else {
-         
           if (!DBUser.image && user.image) {
             DBUser.image = user.image
             await DBUser.save()
@@ -75,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email
         token.name = user.name
         token.role = user.role
-        token.picture = user.image 
+        token.picture = user.image
       }
       return token
     },
@@ -86,20 +87,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = token.email as string
         session.user.name = token.name as string
         session.user.role = token.role as string
-        session.user.image = token.picture as string 
+        session.user.image = token.picture as string
       }
       return session
-    }
-  },
-pages: {
-    signIn: "/login",
-    error: "/login"
+    },
   },
 
   session: {
     strategy: "jwt",
-    maxAge: 10 * 24 * 60 * 60 
+    maxAge: 10 * 24 * 60 * 60,
   },
 
-  secret: process.env.AUTH_SECRET
+  secret: process.env.AUTH_SECRET,
 })
