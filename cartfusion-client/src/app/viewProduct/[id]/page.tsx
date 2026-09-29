@@ -27,8 +27,7 @@ function ViewProduct() {
     const router = useRouter()
     
     const  product:IProduct | undefined = allProductData?.find((p:IProduct)=>String(p._id) === String(productId))
-    // console.log("PRODUCT DATA:", product)
-  
+
     const images : string[]= [
         product?.image1,
         product?.image2,
@@ -88,13 +87,12 @@ function ViewProduct() {
     }
 
   return (
-    <div className='min-h-screen bg-linear-to-br from-gray-900 
-    via-black to-gray-900 px-4 p-10'>
+    <div className='min-h-screen bg-white px-4 p-10'>
       <div className='max-w-6xl mx-auto'>
           {/* 🟢 Back Button */}
         <button 
           onClick={() => router.back()} 
-          className='flex items-center gap-2 text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg mb-6 transition-all duration-200 border border-white/10'
+          className='flex items-center gap-2 text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg mb-6 transition-all duration-200 border border-gray-200'
         >
           <FaArrowLeft className='text-sm' />
           <span className='text-sm font-medium'>Back</span>
@@ -103,8 +101,8 @@ function ViewProduct() {
             {/* left loop */}
             <div className='flex flex-col lg:flex-row gap-4'>
                 {/* main image */}
-                <div className='relative w-full lg:w-[450px] h-[420px] bg-black rounded-lg overflow-hidden
-                flex items-center justify-center border border-white/10'>
+                <div className='relative w-full lg:w-[450px] h-[420px] bg-gray-50 rounded-lg overflow-hidden
+                flex items-center justify-center border border-gray-200'>
                     {images.length > 0 && images[activeImage] &&
                         <Image  src={images[activeImage]} alt={product?.title ?? "product image"}
                     fill
@@ -123,7 +121,7 @@ function ViewProduct() {
           transition-all duration-200 ${
             activeImage === i
             ? "border-[#00684D] shadow-md"
-            : "border-gray-200 dark:border-white/20 hover:border-gray-400"  
+            : "border-gray-200 hover:border-gray-400"  
           }`}>
           <Image 
           src={img} 
@@ -136,23 +134,23 @@ function ViewProduct() {
         </div>
           {/* Right bottom */}
           {product && <div>
-            <h3 className='text-3xl text-white font-bold mb-3'>{product?.title}</h3>
+            <h3 className='text-3xl text-gray-900 font-bold mb-3'>{product?.title}</h3>
             <p className='text-gray-500 font-bold'>{product?.category}</p>
             <p className='text-2xl text-[#00684D] font-bold'>৳ {product?.price}</p>
             <div className='flex items-center gap-2 mt-1 mb-4'>
               <div className='flex text-yellow-400'>
                 {[1, 2, 3, 4, 5].map((i)=>(
                   i<= Math.round(Number(avgRating)) ?
-                  <FaStar key={i}/>: <FaRegStar key={i}/>
+                  <FaStar key={i}/>: <FaRegStar key={i} className='text-gray-300'/>
                 ))}
               </div>
-              <span className='text-sm text-gray-400'>(avgRating / {totalReviews}) Reviews</span>
+              <span className='text-sm text-gray-500'>(avgRating / {totalReviews}) Reviews</span>
             </div>
-            <p className='mb-4 text-gray-300'>{product?.description}</p>
-            <p className='mb-3 text-gray-50'>
+            <p className='mb-4 text-gray-600'>{product?.description}</p>
+            <p className='mb-3 text-gray-700'>
               Stock : {" "}<span className={product.stock > 0
                 ? "text-[#00684D]"
-                : "text-red-400"
+                : "text-red-500"
               }>
                 {product?.stock > 0 ? "In  Stock" : "Out of Stock"}
               </span>
@@ -169,15 +167,15 @@ function ViewProduct() {
           </div>}
         </div>
 
-        {product && <div className='mt-10 bg-white/5 border border-white/10 rounded-lg p-6'>
+        {product && <div className='mt-10 bg-gray-50 border border-gray-200 rounded-lg p-6'>
           {product.isWearable && (
             <div className='mb-5'>
-              <p className='font-semibold mb-2 text-white'>
+              <p className='font-semibold mb-2 text-gray-900'>
                 Available Sizes
               </p>
               <div className='flex flex-wrap gap-2'>
                 {product.size?.map((s)=>(
-                  <span key={s} className='px-3 py-1 border bg-white border-white/20 rounded'>
+                  <span key={s} className='px-3 py-1 border bg-white border-gray-300 text-gray-700 rounded'>
                     {s}
                   </span>
                 ))}
@@ -185,7 +183,7 @@ function ViewProduct() {
             </div>
           )}
 
-          <div className='space-y-2 text-gray-300'>
+          <div className='space-y-2 text-gray-600'>
             {typeof product.replacementDays == "number" && product.replacementDays > 0 && (
               <p>✅ {product.replacementDays} Days Replacement</p>
             )}
@@ -195,9 +193,9 @@ function ViewProduct() {
              <p>✅ warranty: {product.warranty}</p>}
           </div>
           {Array.isArray(product.detailsPoint) && product.detailsPoint.length > 0 && (
-            <div className='mb-6'>
-              <h3 className='font-semibold mb-2 text-white'>Hightlights</h3>
-              <ul className='list-disc pl-5 space-y-1 text-gray-300'>
+            <div className='mb-6 mt-4'>
+              <h3 className='font-semibold mb-2 text-gray-900'>Highlights</h3>
+              <ul className='list-disc pl-5 space-y-1 text-gray-600'>
                 {product.detailsPoint.map((p,i)=>(
                   <li key={i}>{p}</li>
                 ))}
@@ -207,8 +205,8 @@ function ViewProduct() {
         </div>}
 
         {Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
-          <div className='mt-12 bg-white/5 border border-white/10 rounded-lg p-6'>
-            <h3 className='text-2xl font-bold mb-5 text-white'>Related Products</h3>
+          <div className='mt-12 bg-gray-50 border border-gray-200 rounded-lg p-6'>
+            <h3 className='text-2xl font-bold mb-5 text-gray-900'>Related Products</h3>
            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5'>
              {relatedProducts.slice(0.8).map((rp)=>(
             <ProductCard key={rp._id?.toString()} product={rp}/>
@@ -217,16 +215,16 @@ function ViewProduct() {
           </div>
         )}
 
-        <div className='mt-16 bg-white/5 border border-white/10 rounded-lg p-6'>
-          <h2 className='text-white text-2xl font-bold mb-6'>Custom Reviews</h2>
+        <div className='mt-16 bg-gray-50 border border-gray-200 rounded-lg p-6'>
+          <h2 className='text-gray-900 text-2xl font-bold mb-6'>Customer Reviews</h2>
           <div className='mb-8'>
-            <p className='text-white font-semibold mb-2'>Add your Review</p>
+            <p className='text-gray-900 font-semibold mb-2'>Add your Review</p>
             <div className='flex gap-2 mb-3 text-yellow-400'>
               {
                 [1, 2, 3, 4, 5].map((i)=>(
                   <span className='cursor-pointer'
                    onClick={()=>setReviewsRating(i)} key={i}>
-                    {i<= reviewsRating ? <FaStar/> : <FaRegStar/>}
+                    {i<= reviewsRating ? <FaStar/> : <FaRegStar className='text-gray-300'/>}
                   </span>
                 ))
               }
@@ -234,14 +232,14 @@ function ViewProduct() {
 
             <textarea
             onChange={(e)=>setReviewsComment(e.target.value)} value={reviewsComment}
-            placeholder='Write a reveiw...' className='w-full p-3 focus:ring-[#00684D] focus:outline-none 
-            focus:ring-2 rounded bg-black text-white
-            border border-white/20 mb-3' rows={3}/>
+            placeholder='Write a review...' className='w-full p-3 focus:ring-[#00684D] focus:outline-none 
+            focus:ring-2 rounded bg-white text-gray-900
+            border border-gray-300 mb-3' rows={3}/>
 
            <div className='flex flex-col'>
-            <label className='text-white font-semibold mb-2'
+            <label className='text-gray-900 font-semibold mb-2'
             htmlFor='img'>Select Image for Review</label>
-            <input type="file" accept='image/*' className='mb-3 bg-white text-black p-2 w-[200px] rounded-lg' id='img'
+            <input type="file" accept='image/*' className='mb-3 bg-white text-black p-2 w-[200px] rounded-lg border border-gray-300' id='img'
             onChange={(e)=>{
               const file = e.target.files?.[0]
               if(file){
@@ -265,10 +263,10 @@ function ViewProduct() {
           </div>
 
               {product?.reviews && product.reviews.length > 0 ? (
-               <h2 className='text-white font-semibold mb-2 text-2xl'>All Reviews</h2>
+               <h2 className='text-gray-900 font-semibold mb-2 text-2xl'>All Reviews</h2>
             
             ):(
-              <h2 className='text-white font-semibold mb-2 text-2xl'>No Reviews found</h2>
+              <h2 className='text-gray-900 font-semibold mb-2 text-2xl'>No Reviews found</h2>
             )
           }
 
@@ -277,9 +275,9 @@ function ViewProduct() {
 {product?.reviews?.map((r, i) => {
   const reviewUser = r.user as IUser;
   return (
-    <div key={i} className='bg-white w-[250px] border border-black/10 rounded-lg p-5'>
+    <div key={i} className='bg-white w-[250px] border border-gray-200 shadow-sm rounded-lg p-5'>
       <div className='flex items-center gap-3 mb-2'>
-        <div className='w-10 h-10 rounded-full flex items-center justify-center bg-black'>
+        <div className='w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 text-gray-500'>
           {reviewUser?.image ? (
             <Image 
               src={reviewUser.image} 
@@ -293,22 +291,22 @@ function ViewProduct() {
           )}
         </div>
         <div>
-          <p className='text-black font-semibold text-sm'>{reviewUser?.name || "Deleted User"}</p>
+          <p className='text-gray-900 font-semibold text-sm'>{reviewUser?.name || "Deleted User"}</p>
           <div className='flex text-yellow-400 text-sm mt-1.5'>
             {[1, 2, 3, 4, 5].map((i) => (
-              i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i}/>
+              i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i} className='text-gray-300'/>
             ))}
           </div>
         </div>
       </div>
 
-      <p className='text-gray-900 text-sm mb-3'> {r.comment}</p>
+      <p className='text-gray-700 text-sm mb-3'> {r.comment}</p>
       {r.image ? (
-        <div className='w-[180px] h-[180px] border border-white/10 rounded-lg overflow-hidden bg-black'>
+        <div className='w-[180px] h-[180px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50'>
           <Image src={r.image} alt='Review Image' width={140} height={180} className='object-contain'/>
         </div>
       ) : (
-        <div className='w-[180px] h-[180px] border border-white/10 rounded-lg overflow-hidden bg-gray-400 flex items-center justify-center text-white text-xl'>
+        <div className='w-[180px] h-[180px] border border-gray-200 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center text-gray-400 text-xl'>
           No Review Image
         </div>
       )}

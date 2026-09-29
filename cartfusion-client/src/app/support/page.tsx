@@ -57,7 +57,7 @@ function SupportChats() {
 
   if (!myId) {
     return (
-      <div className='min-h-screen flex items-center bg-black justify-center text-white'>
+      <div className='min-h-screen flex items-center bg-white justify-center text-gray-500'>
         Loading support...
       </div>
     )
@@ -103,25 +103,25 @@ function SupportChats() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900 p-3 sm:p-6'>
+    <div className='min-h-screen bg-white p-3 sm:p-6'>
       <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 h-[90vh]'>
-        <div className='bg-black/50 border border-white/10 rounded-2xl p-4 overflow-y-auto'>
+        <div className='bg-white border border-gray-200 shadow-sm rounded-2xl p-4 overflow-y-auto'>
           
           {/* Header with Back Button */}
           <div className='flex items-center gap-3 mb-4'>
             <button
               onClick={() => router.back()}
-              className='p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition flex items-center justify-center'
+              className='p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition flex items-center justify-center'
               title="Go Back"
             >
               <FaArrowLeft className='text-sm' />
             </button>
-            <h2 className='text-white font-semibold text-lg'>Support Chats</h2>
+            <h2 className='text-gray-900 font-semibold text-lg'>Support Chats</h2>
           </div>
 
           {/* Role specific Notice */}
           {userData?.role && (
-            <p className='text-xs text-[#90e0cb] bg-[#03684d] p-3 my-1 rounded-xl leading-relaxed'>
+            <p className='text-xs text-[#00684D] bg-[#00684D]/10 p-3 my-1 rounded-xl leading-relaxed'>
               {userData.role === "user" && (
                 <>
                   Note: The merchant response may take 1-2 hours.
@@ -143,7 +143,7 @@ function SupportChats() {
           )}
 
           {users?.length === 0 ? (
-            <p className='text-gray-400 text-sm text-center mt-4'>No Active User Found</p>
+            <p className='text-gray-500 text-sm text-center mt-4'>No Active User Found</p>
           ) : (
             <div className='space-y-3 mt-3'>
               {users?.map((u, i) => (
@@ -152,12 +152,12 @@ function SupportChats() {
                   onClick={() => setActiveUser(u)}
                   className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition ${
                     activeUser?._id === u._id
-                      ? "bg-[#00684D] border border-[#045f47] shadow-lg"
-                      : "hover:bg-white/5 border border-gray-700/50"
+                      ? "bg-[#00684D] border border-[#045f47] shadow-md"
+                      : "hover:bg-gray-50 border border-gray-100"
                   }`}
                 >
                   {/* User Avatar Circle */}
-                  <div className='w-12 h-12 rounded-full overflow-hidden border border-white/20 shrink-0'>
+                  <div className='w-12 h-12 rounded-full overflow-hidden border border-gray-200 shrink-0 bg-gray-100'>
                     {u.image ? (
                       <Image
                         src={u.image}
@@ -167,16 +167,16 @@ function SupportChats() {
                         className='object-cover w-full h-full'
                       />
                     ) : (
-                      <FaUserCircle className='text-gray-400 w-12 h-12' />
+                      <FaUserCircle className={`w-12 h-12 ${activeUser?._id === u._id ? "text-white/70" : "text-gray-400"}`} />
                     )}
                   </div>
 
                   {/* User Details Section */}
                   <div className='min-w-0 flex-1'>
-                    <p className='text-white text-sm font-medium truncate'>
+                    <p className={`text-sm font-medium truncate ${activeUser?._id === u._id ? "text-white" : "text-gray-900"}`}>
                       {u.name}
                     </p>
-                    <p className='text-xs text-gray-400 truncate capitalize'>
+                    <p className={`text-xs truncate capitalize ${activeUser?._id === u._id ? "text-white/80" : "text-gray-500"}`}>
                       {u.role === "admin"
                         ? "Admin Support"
                         : u.shopName || u.role}
@@ -188,14 +188,14 @@ function SupportChats() {
           )}
         </div>
 
-        <div className='md:col-span-2 bg-black/50 border border-white/10 rounded-2xl flex flex-col overflow-hidden'>
+        <div className='md:col-span-2 bg-white border border-gray-200 shadow-sm rounded-2xl flex flex-col overflow-hidden'>
           {!activeUser ? (
             <div className='flex-1 flex items-center justify-center text-gray-400'>
               Select a chat to start conversation
             </div>
           ) : (
             <>
-              <div className='flex-1 p-4 space-y-4 overflow-y-auto'>
+              <div className='flex-1 p-4 space-y-4 overflow-y-auto bg-gray-50'>
                 {messages.map((msg, i) => {
                   const isMe = msg.sender === myId;
                   const avatarUser = isMe ? userData : activeUser;
@@ -206,7 +206,7 @@ function SupportChats() {
                         isMe ? "justify-end" : "justify-start"
                       }`}>
                       {!isMe && (
-                        <div className='w-9 h-9 rounded-full overflow-hidden border-white/20'>
+                        <div className='w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-gray-100 shrink-0'>
                           {avatarUser?.image ? (
                             <Image
                               src={avatarUser.image}
@@ -223,13 +223,13 @@ function SupportChats() {
                       <div className={`max-w-[70%] px-4 py-2.5 text-sm rounded-2xl ${
                         isMe
                           ? "bg-[#00684D] text-white rounded-br-sm"
-                          : "bg-white/10 text-gray-200 rounded-bl-sm"
+                          : "bg-white text-gray-800 border border-gray-200 rounded-bl-sm"
                       }`}>
                         {msg.text}
                       </div>
 
                       {isMe && (
-                        <div className='w-9 h-9 rounded-full overflow-hidden border-white/20'>
+                        <div className='w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-gray-100 shrink-0'>
                           {avatarUser?.image ? (
                             <Image
                               src={avatarUser.image}
@@ -247,36 +247,36 @@ function SupportChats() {
                 })}
               </div>
 
-              <div className='px-4 pb-2'>
+              <div className='px-4 pt-2 bg-white'>
                 <button
                   onClick={getSuggestions}
                   disabled={loadingSuggestions}
-                  className='relative inline-block text-xs px-4 py-1.5 rounded-full bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 disabled:opacity-50 transition z-50'>
-                  {loadingSuggestions ? <ClipLoader size={20} color='white' /> : "Get AI Suggestions"}
+                  className='relative inline-block text-xs px-4 py-1.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 disabled:opacity-50 transition z-50'>
+                  {loadingSuggestions ? <ClipLoader size={16} color='#7e22ce' /> : "Get AI Suggestions"}
                 </button>
               </div>
 
               {suggestions.length > 0 && (
-                <div className='px-4 pb-2 flex flex-wrap gap-2'>
+                <div className='px-4 pb-2 pt-2 flex flex-wrap gap-2 bg-white'>
                   {suggestions.map((s, i) => (
                     <div key={i} onClick={() => setText(s)}
-                      className='text-xs px-3 py-1 rounded-full bg-[#00684D] text-[#12dfa8] hover:bg-[#00684D] border border-[#00684D] cursor-pointer transition'>
+                      className='text-xs px-3 py-1 rounded-full bg-[#00684D]/10 text-[#00684D] hover:bg-[#00684D]/20 border border-[#00684D]/20 cursor-pointer transition'>
                       {s}
                     </div>
                   ))}
                 </div>
               )}
 
-              <div className='p-3 border-t border-white/10 bg-black/60 flex gap-2'>
+              <div className='p-3 border-t border-gray-200 bg-white flex gap-2'>
                 <input
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   placeholder='Type your message....'
-                  className='flex-1 bg-black/80 text-white border border-white/20 rounded-full px-5 py-2.5 outline-none focus:border-[#00684D]'
+                  className='flex-1 bg-gray-50 text-gray-900 border border-gray-200 rounded-full px-5 py-2.5 outline-none focus:border-[#00684D] focus:bg-white'
                 />
                 <button
                   onClick={sendMessage}
-                  className='bg-[#00684D] hover:bg-[#0ec997] w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition'>
+                  className='bg-[#00684D] hover:bg-[#045f47] w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition'>
                   <FaPaperPlane className='text-white text-sm' />
                 </button>
               </div>
