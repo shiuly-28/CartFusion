@@ -67,22 +67,22 @@ function CategoriesPage() {
     ]
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white py-6 px-4'>
+    <div className='min-h-screen bg-white text-gray-900 py-6 px-4'>
       <div className='max-w-7xl mx-auto mb-6'>
-        <h1 className='text-2xl sm:text-3xl font-bold'>Browse Products by Categories</h1>
-        <p className='text-gray-300 text-sm'>
+        <h1 className='text-2xl sm:text-3xl font-bold tracking-tight'>Browse Products by Categories</h1>
+        <p className='text-gray-500 text-sm mt-1'>
             Filter by category or search your favorite product or shop
         </p>
       </div>
 
       <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6'>
         {/* Left Sidebar */}
-        <div className='md:col-span-1 bg-white/10 border border-white/20 rounded-xl p-4 space-y-4'>
+        <div className='md:col-span-1 bg-white border border-gray-200 shadow-sm rounded-2xl p-4 space-y-4 h-fit'>
           
           {/* Back to Home Button */}
           <button 
             onClick={() => router.push('/')}
-            className='flex items-center gap-2 text-sm text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition w-full'
+            className='flex items-center gap-2 text-sm text-gray-700 hover:text-[#00684D] bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition w-full'
           >
             <ArrowLeft size={18} />
             <span>Back to Home</span>
@@ -94,21 +94,21 @@ function CategoriesPage() {
             <input 
               type="text" 
               placeholder='Search product or shop...' 
-              className='w-full pl-9 pr-3 py-2 rounded bg-black border border-white/20 text-sm focus:outline-none focus:ring-2 focus:ring-[#00684D]'
+              className='w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] focus:bg-white'
               onChange={(e) => setSearch(e.target.value)} 
               value={search} 
             />
           </div>
 
-          <hr className='border-white/10' />
+          <hr className='border-gray-200' />
 
           {/* Categories List */}
           <div className='space-y-2 max-h-64 overflow-auto pr-1'>
             <button
-              className={`w-full flex gap-2 px-3 py-2 text-sm rounded ${
+              className={`w-full flex gap-2 px-3 py-2 text-sm rounded-lg transition ${
                 selectedCategory === "all"
-                ? "bg-[#00684D]"
-                : "bg-white/10 hover:bg-white/20"
+                ? "bg-[#00684D] text-white"
+                : "bg-gray-50 text-gray-700 hover:bg-gray-100"
               }`}
               onClick={() => setSelectedCategory("all")} 
             >
@@ -120,10 +120,10 @@ function CategoriesPage() {
               return (
                 <button
                   key={cat.label}
-                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded ${
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition ${
                     selectedCategory === cat.label
-                    ? "bg-[#00684D]"
-                    : "bg-white/10 hover:bg-white/20"
+                    ? "bg-[#00684D] text-white"
+                    : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                   }`}
                   onClick={() => setSelectedCategory(cat.label)} 
                 >
@@ -139,7 +139,7 @@ function CategoriesPage() {
         {/* Product Display Area */}
         <div className='md:col-span-3'>
           {displayProducts.length === 0 ? (
-            <div className='text-center mt-20 text-gray-400'>
+            <div className='text-center mt-20 text-gray-500'>
               No products found
             </div>
           ) : (

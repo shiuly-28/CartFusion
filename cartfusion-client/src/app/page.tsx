@@ -14,7 +14,7 @@ export default async function Home() {
   await connectDb()
   const session = await auth()
   
-  // ইউজার লগইন অবস্থায় থাকলে DB থেকে ডাটা আনা হবে
+  // ইউজার লগইন অবস্থায় থাকলে DB থেকে ডাটা আনা হবে
   let user = null
   if (session?.user?.id) {
     user = await User.findById(session.user.id)
@@ -31,16 +31,16 @@ export default async function Home() {
   const plainUser = user ? JSON.parse(JSON.stringify(user)) : null
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans flex-col'>
+    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-100 via-white to-gray-100 dark:from-gray-900 dark:via-black dark:to-gray-900 font-sans flex-col transition-colors'>
       <Navbar user={plainUser} />
       
-      {/* ইউজার না থাকলে বা লগইন না থাকলেও ডিফল্ট Dashboard/Landing Page দেখাবে */}
+      
       {user?.role === "merchant" ? (
         <MerchantPage user={plainUser} />
       ) : user?.role === "admin" ? (
         <AdminDashBoard />
       ) : (
-        <UserDashBoard /> // অথবা লগইন ছাড়া কোনো গেস্ট ল্যান্ডিং পেজ থাকলে সেটা
+        <UserDashBoard /> 
       )}
 
       <Footer user={plainUser} />

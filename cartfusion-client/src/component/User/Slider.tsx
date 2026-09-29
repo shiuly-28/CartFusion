@@ -4,111 +4,180 @@ import React, { useEffect, useState } from 'react'
 import slider from '@/assets/slider.png'
 import slider1 from '@/assets/slider1.png'
 import slider2 from '@/assets/slider2.png'
+
+import banner1 from '@/assets/banner1.jpeg'
+import banner2 from '@/assets/banner2.jpeg'
+
 import { motion, AnimatePresence } from 'motion/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-
 function Slider() {
   const [current, setCurrent] = useState(0)
   const router = useRouter()
-    const slides = [
-        {
-            image:slider1,
-            title: "RUN ON AIR",
-            subtitle: "DO IT NOW",
-            description: "Runing Shoes",
-            button: "DISCOVER"
-        },
-        
-        {
-            image:slider,
-            title: "STYLE & COMFORT",
-            subtitle: "NEW COLECTIOPN",
-            description: "Women's Fashion Accessories",
-            button: "DISCOVER"
-        },
-        {
-            image:slider2,
-            title: "STEP INTO POWER",
-            subtitle: "FEEL THE SPEED",
-            description: "Smart Gadgets for Smart People",
-            button: "DISCOVER"
-        },
 
-    ]
+  const slides = [
+    {
+      image: slider1,
+      subtitle: "DO IT NOW",
+      description: "Running Shoes",
+      title: "RUN ON AIR",
+      button: "DISCOVER"
+    },
+    {
+      image: slider,
+      subtitle: "NEW COLLECTION",
+      description: "Women's Fashion Accessories",
+      title: "STYLE & COMFORT",
+      button: "DISCOVER"
+    },
+    {
+      image: slider2,
+      subtitle: "FEEL THE SPEED",
+      description: "Smart Gadgets for Smart People",
+      title: "STEP INTO POWER",
+      button: "DISCOVER"
+    },
+  ]
 
-    useEffect(()=>{
-      const interval = setInterval(()=>{
-        setCurrent((prev)=>(prev + 1)% slides.length)
-      }, 5000)
-      return ()=>clearInterval(interval)
-    }, [])
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [slides.length])
 
   return (
-    <div className='relative w-full min-h-[90vh] mt-0 overflow-hidden rounded-2xl bg-black
-     text-white md:mt-[60px] pt-0 top-0 '>
-      <AnimatePresence>
-        <motion.div
-        key={current}
-        initial = {{ opacity: 0, scale: 1.05}}
-        animate={{opacity: 1, scale: 1}}
-        exit={{opacity: 0, scale: 0.95}}
-        transition={{duration: 0.8 }}
-         className='absolute inset-0 flex justify-center items-center'>
-          <Image src={slides[current].image} alt={slides[current].title}
-          className='object-cover opacity-70 fill'/>
-          <div className='absolute inset-0 flex flex-col justify-center items-start px-10 md:px-24
-          bg-gradient-to-r from-black/70 to-transparent '>
-            <motion.h3
-            initial = {{ y: 20, opacity: 0}}
-            animate={{ y: 0, opacity: 1}}
-            transition={{delay: 0.2 }} 
-            className='text-sm md:text-base uppercase tracking-widest text-gray-300'>
+    <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 md:mt-[80px] px-4 md:px-10 font-sans'>
+      
+      {/* 🟢 Bam Pasher Dynamic Slider */}
+      <div className='relative md:col-span-2 min-h-[50vh] md:min-h-[75vh] overflow-hidden rounded-2xl bg-gray-100 text-white'>
+        <AnimatePresence mode='wait'>
+          <motion.div
+            key={current}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className='absolute inset-0'
+          >
+            <Image 
+              src={slides[current].image} 
+              alt={slides[current].title}
+              fill
+              priority
+              className='object-cover'
+            />
+            
+            {/* হালকা gradient — শুধু টেক্সট পড়ার সুবিধার জন্য */}
+            <div className='absolute inset-0 flex flex-col justify-end items-start px-8 md:px-12 pb-10 md:pb-16 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>
+              <motion.h3
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className='text-[10px] md:text-xs uppercase tracking-widest text-white/90 font-semibold'
+              >
                 {slides[current].subtitle}
-            </motion.h3>
-            <motion.h1
-            initial = {{ y: 40, opacity: 0}}
-            animate={{ y: 0, opacity: 1}}
-            transition={{delay: 0.4 }} 
-            className='text-4xl md:text-6xl font-bold mb-4'>
+              </motion.h3>
+              
+              <motion.h1
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className='text-2xl md:text-5xl font-bold mb-2 mt-1'
+              >
                 {slides[current].description}
-            </motion.h1>
-            <motion.p
-            initial = {{ y: 40, opacity: 0}}
-            animate={{ y: 0, opacity: 1}}
-            transition={{delay: 0.6 }} 
-            className='text-lg md:text-xl text-gray-300 mb-6'>
+              </motion.h1>
+
+              <motion.p
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className='text-sm md:text-lg text-white/90 mb-5'
+              >
                 {slides[current].title}
-            </motion.p>
-            <motion.button className='px-6 py-3 bg-[#00684D] hover:bg-[#037455] text-white font-medium
-            rounded-lg shadow-lg transition'
-            onClick={()=>router.push("/category")}
-            whileHover={{scale: 1.05}}
-             whileTap={{scale:0.95}}
-            >
-             {slides[current].button}
-            </motion.button>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-      <div className='absolute bottom-6 right-4 md:right-10 flex gap-4'>
-        {
-          slides.map((slide, index) =>(
+              </motion.p>
+              
+              <motion.button 
+                className='px-6 py-2.5 bg-[#00684D] text-white hover:bg-[#045f47] text-xs font-bold uppercase tracking-widest rounded-full shadow-md transition'
+                onClick={() => router.push("/category")}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {slides[current].button}
+              </motion.button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* স্লাইড counter (01 / 03) */}
+        <div className='absolute top-4 right-6 z-10 text-white/80 text-sm'>
+          <span className='text-xl md:text-2xl font-semibold text-white'>0{current + 1}</span> / 0{slides.length}
+        </div>
+
+        {/* থাম্বনেইল প্রিভিউ */}
+        <div className='absolute bottom-4 right-4 md:right-8 flex gap-3 z-10'>
+          {slides.map((slide, index) => (
             <motion.div 
-            key={index}
-            whileHover={{scale: 1.1}}
-            onClick={() => setCurrent(index)}
-            className={`relative w-20 h-12 cursor-pointer rounded-lg overflow-hidden
-               border-2 transition-all duration-300 ${index === current
-                ? "border-gray-100 shadow-[0_0_10px_rgba(59, 130, 246, 0.8)]"
-                :"border-gray-500 hover:border-[#00684D]"
-               }`}>
-                <Image src={slide.image} alt={slide.title} fill
-                className='object-cover opacity-90'/>
+              key={index}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setCurrent(index)}
+              className={`relative w-16 h-10 md:w-20 md:h-12 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                index === current
+                  ? "border-white shadow-md"
+                  : "border-white/40 hover:border-white"
+              }`}
+            >
+              <Image 
+                src={slide.image} 
+                alt={slide.title} 
+                fill 
+                className='object-cover'
+              />
             </motion.div>
-          ))
-        }
+          ))}
+        </div>
+      </div>
+
+      {/* 🔵 Dhan Pasher Fixed Banners */}
+      <div className='flex flex-col gap-4'>
+        
+        {/* 1st Fixed Banner */}
+        <div 
+          onClick={() => router.push("/shop")}
+          className='relative flex-1 min-h-[16vh] md:min-h-0 rounded-2xl overflow-hidden bg-gray-100 text-white group cursor-pointer'
+        >
+          <Image 
+            src={banner1} 
+            alt="Exclusive Deal" 
+            fill 
+            className='object-cover object-center group-hover:scale-105 transition-transform duration-500' 
+          />
+          <div className='absolute inset-0 flex flex-col justify-end px-6 pb-5 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>
+            <p className='text-[10px] uppercase text-white/90 font-semibold tracking-widest'>Exclusive Deal</p>
+            <h2 className='text-xl md:text-2xl font-bold my-1'>UP TO <span className='text-red-400'>40%</span> OFF</h2>
+            <p className='text-xs md:text-sm text-white/90'>NEXT-GEN TECH</p>
+          </div>
+        </div>
+
+        {/* 2nd Fixed Banner */}
+        <div 
+          onClick={() => router.push("/shop")}
+          className='relative flex-1 min-h-[16vh] md:min-h-0 rounded-2xl overflow-hidden bg-gray-100 text-white group cursor-pointer'
+        >
+          <Image 
+            src={banner2} 
+            alt="Free Shipping" 
+            fill 
+            className='object-cover group-hover:scale-105 transition-transform duration-500' 
+          />
+          <div className='absolute inset-0 flex flex-col justify-end px-6 pb-5 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>
+            <p className='text-[10px] uppercase text-white/90 font-semibold tracking-widest'>Limited Time</p>
+            <h2 className='text-xl md:text-2xl font-bold my-1'>FREE SHIPPING</h2>
+            <p className='text-xs md:text-sm text-white/90'>PREMIUM AUDIO</p>
+          </div>
+        </div>
+
       </div>
     </div>
   )

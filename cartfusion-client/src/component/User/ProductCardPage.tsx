@@ -12,39 +12,30 @@ function ProductCardPage() {
 
     const products = Array.isArray(allProductData) ? 
     allProductData.filter((p:any)=>p.isActive === true && p.verificationStatus === "approved") : []
-    // console.log(products)
 
     if(!products || products.length===0){
         return(
-            <div className='min-h-[30vh] flex items-center justify-center text-white bg-black'>
+            <div className='min-h-[30vh] flex items-center justify-center text-gray-500 bg-white'>
                 No Products found
             </div>
         )
     }
     
   return (
-    <div className='min-h-[30vh] w-full bg-gradient-to-br from-gray-900 
-    via-black to-gray-900 text-white px-4 p-6'>
-        <div className='max-w-7xl mx-auto mb-13 text-center'>
-            <h1 className='text-2xl sm:text-3xl font-bold text-white'>
-                Explore Verified & Trending Products
+    <div className='min-h-[30vh] w-full bg-white text-gray-900 px-4 md:px-10 py-8'>
+        <div className='max-w-7xl mx-auto mb-8'>
+            <h1 className='text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight'>
+                Trending Products
             </h1>
-            <p className='text-sm text-gray-200'>Shop Only from aprroved sellers with guaranteed quality</p>
+            <p className='text-sm text-gray-500 mt-1'>Shop only from approved sellers with guaranteed quality</p>
         </div>
 
         <div className='max-w-7xl mx-auto'>
-            {products.length === 0 ? (
-                <div className='text-center text-gray-500 mt-20'>
-                    No products available right now.
-                </div>
-            ) : (
-                /* পরিবর্তন এখানে: grid-cols-1 দেওয়া হয়েছে */
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    {products.map((p:any)=>(
-                        <ProductCard key={p._id} product={p}/>
-                    ))}
-                </div>
-            )}
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
+                {products.map((p:any)=>(
+                    <ProductCard key={p._id} product={p}/>
+                ))}
+            </div>
         </div>
       
     </div>

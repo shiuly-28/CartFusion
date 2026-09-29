@@ -67,8 +67,8 @@ function Navbar({ user, cartCount }: NavbarProps) {
   const finalCartCount = cartCount ?? (user?.cart?.length || 0);
 
   return (
-    <div className='fixed top-0 left-0 w-full bg-black text-white z-50 shadow-lg'>
-      <div className='max-w-7xl mx-auto px-6 py-3 flex justify-between items-center'>
+    <div className='fixed top-0 left-0 w-full bg-white text-gray-900 z-50 border-b border-gray-100'>
+      <div className='max-w-7xl mx-auto px-6 py-4 flex justify-between items-center'>
         
         {/* LOGO */}
         <div 
@@ -76,7 +76,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
           onClick={() => router.push("/")}
         >
           <Image src={logo} width={30} height={30} alt='logo' className='rounded-full'/>
-          <span className='text-xl font-semibold hidden sm:inline hover:text-[#049770] transition'>
+          <span className='text-xl font-bold hidden sm:inline tracking-tight'>
             CartFusion
           </span>
         </div>
@@ -106,13 +106,13 @@ function Navbar({ user, cartCount }: NavbarProps) {
                 alt='user' 
                 width={32} 
                 height={32}
-                className='w-8 h-8 rounded-full object-cover border border-gray-700 cursor-pointer' 
+                className='w-8 h-8 rounded-full object-cover border border-gray-200 cursor-pointer' 
                 onClick={() => setOpenMenu(!openMenu)}
               />
             ) : user?.name ? (
               <div 
                 onClick={() => setOpenMenu(!openMenu)} 
-                className='w-8 h-8 rounded-full bg-[#049770] text-white font-semibold flex items-center justify-center cursor-pointer uppercase'
+                className='w-8 h-8 rounded-full bg-[#00684D] text-white font-semibold flex items-center justify-center cursor-pointer uppercase'
               >
                 {user.name.trim()[0]}
               </div>
@@ -127,7 +127,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className='absolute right-0 mt-3 w-48 backdrop-blur-lg rounded-xl shadow-lg border border-gray-800 bg-black/90 p-2 z-50'
+                  className='absolute right-0 mt-3 w-48 rounded-xl shadow-lg border border-gray-100 bg-white p-2 z-50'
                 >
                   <DropDownBtn Icon={AiOutlineUser} label="Profile" onClick={() => { router.push("/profile"); setOpenMenu(false); }}/>
                   {!user ? (
@@ -157,7 +157,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
           <IconBtn Icon={AiOutlinePhone} onClick={() => router.push("/support")}/>
           
           {/* HAMBURGER MENU BUTTON */}
-          <AiOutlineMenu size={26} className='cursor-pointer hover:text-[#049770]' onClick={() => setSidebarOpen(true)}/>
+          <AiOutlineMenu size={26} className='cursor-pointer text-gray-700 hover:text-[#00684D]' onClick={() => setSidebarOpen(true)}/>
 
           {/* MOBILE SIDEBAR & OVERLAY */}
           <AnimatePresence>
@@ -168,7 +168,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setSidebarOpen(false)}
-                  className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
+                  className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
                 />
 
                 <motion.div 
@@ -176,12 +176,12 @@ function Navbar({ user, cartCount }: NavbarProps) {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "tween", duration: 0.3 }}
-                  className='fixed top-0 right-0 h-dvh max-h-screen w-[75%] max-w-xs bg-zinc-900 p-5 text-white z-50 shadow-2xl flex flex-col justify-between overflow-y-auto'
+                  className='fixed top-0 right-0 h-dvh max-h-screen w-[75%] max-w-xs bg-white p-5 text-gray-900 z-50 shadow-2xl flex flex-col justify-between overflow-y-auto'
                 >
                   <div>
-                    <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-800">
-                      <h1 className='text-lg font-semibold text-[#049770]'>Menu</h1>
-                      <AiOutlineClose size={24} className='cursor-pointer hover:text-red-500' onClick={() => setSidebarOpen(false)}/>
+                    <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
+                      <h1 className='text-lg font-semibold text-[#00684D]'>Menu</h1>
+                      <AiOutlineClose size={24} className='cursor-pointer text-gray-500 hover:text-red-500' onClick={() => setSidebarOpen(false)}/>
                     </div>
 
                     <div className="flex flex-col gap-2.5">
@@ -193,11 +193,11 @@ function Navbar({ user, cartCount }: NavbarProps) {
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-6 border-t border-gray-800">
+                  <div className="pt-4 mt-6 border-t border-gray-100">
                     {user ? (
                       <button 
                         onClick={() => { signOut(); setSidebarOpen(false); }}
-                        className="flex items-center justify-center gap-3 w-full px-4 py-2.5 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600 hover:text-white transition font-medium"
+                        className="flex items-center justify-center gap-3 w-full px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition font-medium"
                       >
                         <AiOutlineLogout size={20}/>
                         <span>Sign Out</span>
@@ -205,7 +205,7 @@ function Navbar({ user, cartCount }: NavbarProps) {
                     ) : (
                       <button 
                         onClick={() => { router.push("/login"); setSidebarOpen(false); }}
-                        className="flex items-center justify-center gap-3 w-full px-4 py-2.5 bg-[#049770] text-white rounded-lg hover:bg-[#037a5a] transition font-medium"
+                        className="flex items-center justify-center gap-3 w-full px-4 py-2.5 bg-[#00684D] text-white rounded-lg hover:bg-[#045f47] transition font-medium"
                       >
                         <AiOutlineLogin size={20}/>
                         <span>Sign In</span>
@@ -230,14 +230,14 @@ const NavItem = ({ label, path, router }: NavItemProps) => (
   <motion.button 
     whileHover={{ scale: 1.05 }}
     onClick={() => router.push(path)} 
-    className='hover:text-[#049770] font-medium transition cursor-pointer'
+    className='text-gray-700 hover:text-[#00684D] font-medium transition cursor-pointer'
   >
     {label}
   </motion.button>
 )
 
 const IconBtn = ({ Icon, onClick }: IconBtnProps) => (
-  <motion.button whileHover={{ scale: 1.1 }} onClick={onClick} className="cursor-pointer">
+  <motion.button whileHover={{ scale: 1.1 }} onClick={onClick} className="cursor-pointer text-gray-700 hover:text-[#00684D]">
     <Icon size={24}/>
   </motion.button>
 )
@@ -245,7 +245,7 @@ const IconBtn = ({ Icon, onClick }: IconBtnProps) => (
 const DropDownBtn = ({ Icon, label, onClick }: DropDownBtnProps) => (
   <button 
     onClick={onClick} 
-    className='flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-white/10 rounded-md transition cursor-pointer'
+    className='flex items-center gap-2 w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-50 rounded-md transition cursor-pointer'
   >
     {Icon && <Icon size={18}/>}
     {label && <span>{label}</span>}
@@ -256,7 +256,7 @@ const CartBtn = ({ router, count }: CartBtnProps) => (
   <motion.button 
     whileHover={{ scale: 1.1 }} 
     onClick={() => router.push("/cart")}
-    className="relative cursor-pointer"
+    className="relative cursor-pointer text-gray-700 hover:text-[#00684D]"
   >
     <AiOutlineShoppingCart size={24}/>
     {count > 0 && (
@@ -269,7 +269,7 @@ const CartBtn = ({ router, count }: CartBtnProps) => (
 
 const SidebarBtn = ({ label, path, router, Icon, setSidebarOpen }: SidebarBtnProps) => (
   <button 
-    className='flex items-center gap-3 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-[#049770] hover:text-white text-left transition w-full' 
+    className='flex items-center gap-3 px-4 py-2.5 rounded-lg bg-gray-50 hover:bg-[#00684D] hover:text-white text-left transition w-full' 
     onClick={() => {
       router.push(path);
       setSidebarOpen(false);

@@ -65,17 +65,17 @@ function Orders() {
   const renderTrackStep = (currentStatus: string) => {
     return (
       <div className='relative pl-6'>
-        <div className='absolute top left-8 w-fullw-[1px] h-full  bg-gray-600'></div>
+        <div className='absolute top left-8 w-fullw-[1px] h-full  bg-gray-200'></div>
         {status.map((s, i) => {
           const active = currentStatus === s
           return (
             <div key={i} className='relative mb-6 flex items-start'>
               {/* dot */}
               <div className={`w-4 h-4 rounded-full ${active ?
-                "bg-[#00684D] shadow-lg shadow-[#00684D]" : "bg-gray-500"
+                "bg-[#00684D] shadow-lg shadow-[#00684D]/40" : "bg-gray-300"
 
                 }`}></div>
-              <div className='ml-4 text-sm'>{s.toUpperCase()}</div>
+              <div className='ml-4 text-sm text-gray-700'>{s.toUpperCase()}</div>
             </div>
           )
         })}
@@ -147,38 +147,33 @@ function Orders() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-6'>
+    <div className='min-h-screen bg-white text-gray-900 p-4 md:p-6'>
       <div className='max-w-6xl mx-auto'>
         <div className='mb-6 font-bold flex items-center justify-between'>
           <div className='mt-5 flex items-center gap-3'>
             {/* Back Button */}
             <button
               onClick={() => router.back()}
-              className='p-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition flex items-center gap-1'
+              className='p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition flex items-center gap-1'
               title="Go Back"
             >
               ← Back
             </button>
             <div>
-              <h1 className='text-2xl font-bold'>My Orders</h1>
-              <p className='text-xs text-gray-400 font-normal'>All orders placed by you</p>
+              <h1 className='text-2xl font-bold text-gray-900'>My Orders</h1>
+              <p className='text-xs text-gray-500 font-normal'>All orders placed by you</p>
             </div>
           </div>
           <div className='flex items-center gap-4'>
-            <button
-              onClick={() => router.push("/")}
-              className='px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition'
-            >
-              🏠 Home
-            </button>
-            <div className='text-sm text-gray-300'>{orders.length} Orders</div>
+           
+            <div className='text-sm text-gray-500'>{orders.length} Orders</div>
           </div>
         </div>
 
         {/* lg device */}
-        <div className='hidden lg:block bg-white/5 border border-white/10 rounded-xl overflow-auto shadow-xl shadow-black/40'>
+        <div className='hidden lg:block bg-white border border-gray-200 rounded-xl overflow-auto shadow-sm'>
           <table className='w-full text-left'>
-            <thead className='text-xs bg-white/5 border border-white/10 text-gray-300 uppercase tracking-wide'>
+            <thead className='text-xs bg-gray-50 border-b border-gray-200 text-gray-500 uppercase tracking-wide'>
               <tr>
                 <th className='px-4 py-4'>Orders ID</th>
                 <th className='px-4 py-4'>Date</th>
@@ -196,23 +191,23 @@ function Orders() {
                   paginatedOrders.map((order, index) => (
                     <tr
                       key={index}
-                      className='border-t border-white/5 hover:bg-white/10 transition-all duration-200'
+                      className='border-t border-gray-100 hover:bg-gray-50 transition-all duration-200'
                     >
-                      <td className='px-4 py-4 text-sm'>#{String(order._id).slice(-8)}</td>
-                      <td className='px-4 py-4 text-sm'>{formateDate(String(order.createdAt))}</td>
+                      <td className='px-4 py-4 text-sm text-gray-700'>#{String(order._id).slice(-8)}</td>
+                      <td className='px-4 py-4 text-sm text-gray-700'>{formateDate(String(order.createdAt))}</td>
                       <td className='px-4 py-4 text-sm'>
                         {order.products.map((p, i) => (
-                          <div key={i} className='text-gray-200'>{p.product?.title || "Product removed"} * {p.quantity}</div>
+                          <div key={i} className='text-gray-700'>{p.product?.title || "Product removed"} * {p.quantity}</div>
                         ))}
                       </td>
-                      <td className='px-4 py-4 text-sm'>{order.productMerchant?.shopName || "Unknown Shop"}</td>
+                      <td className='px-4 py-4 text-sm text-gray-700'>{order.productMerchant?.shopName || "Unknown Shop"}</td>
                       <td className='px-4 py-4 text-sm'>
-                        {order.paymentMethod.toUpperCase()}
-                        <div className={`text-xs ${order.isPaid ? "text-[#00684D]" : "text-amber-400"}`}>
+                        <span className='text-gray-700'>{order.paymentMethod.toUpperCase()}</span>
+                        <div className={`text-xs ${order.isPaid ? "text-[#00684D]" : "text-amber-500"}`}>
                           {order.isPaid ? "paid" : "pending"}
                         </div>
                       </td>
-                      <td className='px-4 py-4 text-sm'>{order.orderStatus.toUpperCase()}</td>
+                      <td className='px-4 py-4 text-sm text-gray-700'>{order.orderStatus.toUpperCase()}</td>
                       <td className='px-4 py-4 text-right text-[#00684D] font-semibold'>
                         <span className='text-2xl'>৳</span>{order.totalAmount}
                       </td>
@@ -224,22 +219,22 @@ function Orders() {
                           )}
                           {order.orderStatus === "returned" && (
                             <span className='text-orange-500 flex flex-col gap-1 font-semibold'>
-                              Returned<span className='text-white'>Returned Amount: {order.returnAmount}</span>
+                              Returned<span className='text-gray-700'>Returned Amount: {order.returnAmount}</span>
                             </span>
                           )}
 
                           {order.orderStatus !== "cancelled" && order.orderStatus !== "returned" && (
                             <>
                               <button onClick={() => setSelectedOrder(order)}
-                                className='px-3 py-1 bg-white/10 rounded hover:bg-white/20 text-nowrap'>
+                                className='px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-nowrap'>
                                 Check Details
                               </button>
                               <button disabled={order.orderStatus === "delivered"}
                                 onClick={() => setTrackOrderModel(order)}
                                 className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
                                   ${order.orderStatus === "delivered"
-                                    ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
-                                    : "bg-white/10 hover:bg-white/20"
+                                    ? "bg-[#00684D]/10 text-[#00684D] cursor-not-allowed"
+                                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                                   }`}>
                                 {order.orderStatus === "delivered" ? "Delivered" : "Track Order"}
                               </button>
@@ -251,7 +246,7 @@ function Orders() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className='text-center py-6 text-gray-400'>
+                    <td colSpan={8} className='text-center py-6 text-gray-500'>
                       No orders found
                     </td>
                   </tr>
@@ -269,12 +264,12 @@ function Orders() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                key={index} className='bg-white/5 border border-white/10 p-4 rounded-xl'>
+                key={index} className='bg-white border border-gray-200 shadow-sm p-4 rounded-xl'>
                 <div className='flex justify-between'>
                   <div>
-                    <div className='text-sm text-gray-300'>#{String(order._id).slice(-8)}</div>
-                    <div className='font-semibold'>{formateDate(String(order.createdAt))}</div>
-                    <div className='text-sm text-gray-300 mt-1'>{order.productMerchant?.shopName || "Unknown Shop"}</div>
+                    <div className='text-sm text-gray-500'>#{String(order._id).slice(-8)}</div>
+                    <div className='font-semibold text-gray-900'>{formateDate(String(order.createdAt))}</div>
+                    <div className='text-sm text-gray-500 mt-1'>{order.productMerchant?.shopName || "Unknown Shop"}</div>
                   </div>
                   <div className='text-[#00684D] font-bold text-right'>
                     <span className='text-2xl'>৳</span>{order.totalAmount}
@@ -282,17 +277,17 @@ function Orders() {
                 </div>
                 <div>
                   <div>
-                    <div className='text-sm text-gray-400'>Payment Method: {" "}{order.paymentMethod.toUpperCase()}</div>
-                    <div className={`text-xs ${order.isPaid ? "text-[#00684D]" : "text-amber-400"}`}>{order.isPaid ? "paid" : "pending"}</div>
+                    <div className='text-sm text-gray-500'>Payment Method: {" "}{order.paymentMethod.toUpperCase()}</div>
+                    <div className={`text-xs ${order.isPaid ? "text-[#00684D]" : "text-amber-500"}`}>{order.isPaid ? "paid" : "pending"}</div>
                   </div>
                   <div className='text-right'>
-                    <div className='text-xs text-gray-400'>Status</div>
-                    <div className='text-sm font-semibold'>{order.orderStatus.toUpperCase()}</div>
+                    <div className='text-xs text-gray-500'>Status</div>
+                    <div className='text-sm font-semibold text-gray-900'>{order.orderStatus.toUpperCase()}</div>
                   </div>
                 </div>
                 <div className='mt-3 space-y-1'>
                   {order.products.map((p, i) => (
-                    <div key={i} className='text-gray-200'>{p.product?.title || "Product removed"} * {p.quantity}</div>
+                    <div key={i} className='text-gray-700'>{p.product?.title || "Product removed"} * {p.quantity}</div>
                   ))}
                 </div>
 
@@ -301,7 +296,7 @@ function Orders() {
                 )}
                 {order.orderStatus === "returned" && (
                   <span className='text-orange-500 flex flex-col gap-1 font-semibold'>
-                    Returned<span className='text-white'>Returned Amount: {order.returnAmount}</span>
+                    Returned<span className='text-gray-700'>Returned Amount: {order.returnAmount}</span>
                   </span>
                 )}
 
@@ -309,13 +304,13 @@ function Orders() {
                   <div className='mt-3 flex gap-2'>
                     <button
                       onClick={() => setSelectedOrder(order)}
-                      className='flex-1 py-2 bg-white/10 rounded'>Check Details</button>
+                      className='flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded'>Check Details</button>
                     <button disabled={order.orderStatus === "delivered"}
                       onClick={() => setTrackOrderModel(order)}
                       className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
                         ${order.orderStatus === "delivered"
-                          ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
-                          : "bg-white/10 hover:bg-white/20"
+                          ? "bg-[#00684D]/10 text-[#00684D] cursor-not-allowed"
+                          : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                         }`}>
                       {order.orderStatus === "delivered" ? "Delivered" : "Track Order"}
                     </button>
@@ -327,7 +322,7 @@ function Orders() {
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className='text-xl text-center text-white bg-white/5 border border-white/10 p-4 rounded-xl'>
+            className='text-xl text-center text-gray-500 bg-white border border-gray-200 shadow-sm p-4 rounded-xl'>
             No Orders found
           </motion.div>)
           }
@@ -339,7 +334,7 @@ function Orders() {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className='px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
+              className='px-3 py-1.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
             >
               Prev
             </button>
@@ -349,8 +344,8 @@ function Orders() {
                 key={page}
                 onClick={() => setCurrentPage(page)}
                 className={`px-3 py-1.5 rounded text-sm ${currentPage === page
-                    ? "bg-[#00684D] font-semibold"
-                    : "bg-white/10 hover:bg-white/20"
+                    ? "bg-[#00684D] text-white font-semibold"
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   }`}
               >
                 {page}
@@ -360,7 +355,7 @@ function Orders() {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className='px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
+              className='px-3 py-1.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed text-sm'
             >
               Next
             </button>
@@ -369,27 +364,27 @@ function Orders() {
       </div>
 
       {selectedOrder && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className='relative z-0 w-full max-w-3xl bg-[#061526] border border-white/10 p-6 rounded-xl shadow-2xl shadow-black/40'>
+            className='relative z-0 w-full max-w-3xl bg-white border border-gray-200 p-6 rounded-xl shadow-2xl text-gray-900 max-h-[90vh] overflow-y-auto'>
             <h2 className='text-lg font-semibold'>Order Details: #{String(selectedOrder._id).slice(-8)}</h2>
-            <p>{formateDate(String(selectedOrder.createdAt))}</p>
-            <hr className='my-4 border-white/10' />
+            <p className='text-gray-500 text-sm'>{formateDate(String(selectedOrder.createdAt))}</p>
+            <hr className='my-4 border-gray-200' />
             <h3 className='font-semibold mb-2'>Product</h3>
             {selectedOrder.products.map((p: any, i: any) => (
-              <div key={i} className='flex justify-between bg-white/5 rounded mb-2 p-3'>
+              <div key={i} className='flex justify-between bg-gray-50 rounded mb-2 p-3'>
                 <div>
                   <div className='font-medium'>{p.product?.title || "Product removed"}</div>
-                  <div>Qty: {p.quantity} * Price: {p.price}</div>
+                  <div className='text-sm text-gray-500'>Qty: {p.quantity} * Price: {p.price}</div>
                 </div>
               </div>
             ))}
-            <hr className='my-4 border-white/10' />
+            <hr className='my-4 border-gray-200' />
             <h3 className='font-semibold mb-2'>Invoice</h3>
-            <div className='text-sm space-y-1'>
+            <div className='text-sm space-y-1 text-gray-700'>
               <div className='flex justify-between'>
                 <span>Product Total</span>
                 <span>{selectedOrder.productsTotal}</span>
@@ -405,7 +400,7 @@ function Orders() {
                 <span>৳ {selectedOrder.serviceCharge ?? 0}</span>
               </div>
             </div>
-            <hr className='my-4 border-white/10' />
+            <hr className='my-4 border-gray-200' />
             <div className='flex justify-between font-semibold text-[#00684D]'>
               <span>Final Total</span>
               <span>৳{selectedOrder.totalAmount}</span>
@@ -419,7 +414,7 @@ function Orders() {
                 </div>
               )}
             {selectedOrder.isPaid == true && selectedOrder.paymentMethod == "stripe" &&
-              <div className='bg-yellow-500/10 border border-yellow-500/30 text-xs rounded-lg p-3 mt-4'>
+              <div className='bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs rounded-lg p-3 mt-4'>
                 <p>Important Note:</p>
                 <ul>
                   <li>
@@ -431,17 +426,17 @@ function Orders() {
                 </ul>
               </div>}
 
-            <div className='mt-6 flex justify-end gap-3 '>
+            <div className='mt-6 flex justify-end gap-3 flex-wrap'>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className='px-4 py-2 bg-white/10 rounded'>Cancel</button>
+                className='px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded'>Cancel</button>
 
               <button disabled={selectedOrder.orderStatus === "delivered"}
                 onClick={() => setTrackOrderModel(selectedOrder)}
                 className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
                   ${selectedOrder.orderStatus === "delivered"
-                    ? "bg-[#00684D] text-[#39e9ba] cursor-not-allowed"
-                    : "bg-white/10 hover:bg-white/20"
+                    ? "bg-[#00684D]/10 text-[#00684D] cursor-not-allowed"
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   }`}>
                 {selectedOrder.orderStatus === "delivered" ? "Delivered" : "Track Order"}
               </button>
@@ -451,8 +446,8 @@ function Orders() {
                   onClick={() => handleCancel(selectedOrder._id)}
                   disabled={isCanceldDisable(selectedOrder)}
                   className={`px-4 py-2 rounded ${isCanceldDisable(selectedOrder)
-                      ? "bg-white/10 text-gray-400 cursor-not-allowed"
-                      : "bg-red-600 hover:bg-red-700"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-700 text-white"
                     }`}>
                   Cancel Order
                 </button>
@@ -465,28 +460,28 @@ function Orders() {
 
 
                   return (
-                    <div key={i} className='flex md:flex-row flex-col justify-between items-center bg-white/5 px-3 py-2 rounded ml-2'>
+                    <div key={i} className='flex md:flex-row flex-col justify-between items-center bg-gray-50 px-3 py-2 rounded ml-2'>
                       <div>
-                        <p className='text-xs text-gray-300'>{p.product?.title || "Product removed"}</p>
+                        <p className='text-xs text-gray-700'>{p.product?.title || "Product removed"}</p>
                         {eligible ? (
                           <>
-                            <p className='text-xs text-yellow-400'>
+                            <p className='text-xs text-amber-600'>
                               Return available for {remaining} day{remaining > 1 ? "s" : ""}
                             </p>
                             {returnEndDate && (
-                              <p className='text-[11px] text-gray-400'>
+                              <p className='text-[11px] text-gray-500'>
                                 Return till: {returnEndDate.toLocaleDateString("en-IN")}
                               </p>
                             )}
                           </>
                         ) : (
-                          <p className='text-xs text-red-400'>Return window closed</p>
+                          <p className='text-xs text-red-500'>Return window closed</p>
                         )}
                       </div>
                       {eligible && (
                         <button
                           onClick={() => returnOrder(selectedOrder._id)}
-                          className='mx-3 px-3 py-1 bg-yellow-600 rounded text-sm'>
+                          className='mx-3 px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded text-sm'>
                           Return
                         </button>
                       )}
@@ -500,15 +495,15 @@ function Orders() {
       )}
 
       {trackOrderModel && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className='relative z-10  w-full max-w-md bg-[#061526] border border-white/10 p-6 rounded-xl'>
+            className='relative z-10 w-full max-w-md bg-white border border-gray-200 p-6 rounded-xl text-gray-900 shadow-xl'>
             <h2 className='text-lg font-semibold'>Track Order</h2>
-            <div className='text-sm text-gray-300 mb-4 leading-relaxed'>
-              <span className='text-md font-semibold mb-2'>Delivery Complete Address</span>
+            <div className='text-sm text-gray-600 mb-4 leading-relaxed'>
+              <span className='text-md font-semibold mb-2 text-gray-900'>Delivery Complete Address</span>
               <div className='flex justify-start gap-2'>
                 <span>Buyer Name: </span>
                 <span>{trackOrderModel.address.name}</span>
@@ -537,7 +532,7 @@ function Orders() {
             {renderTrackStep(trackOrderModel.orderStatus)}
             <button
               onClick={() => setTrackOrderModel(null)}
-              className='px-4 py-2 bg-white/10 rounded'>Cancel</button>
+              className='px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded'>Cancel</button>
           </motion.div>
 
         </div>

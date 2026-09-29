@@ -1,4 +1,3 @@
-
 "use client"
 import React from 'react'
 import Slider from './Slider'
@@ -8,9 +7,7 @@ import ShopPage from '@/app/shop/page'
 
 function UserDashBoard() {
   return (
-    <div className='w-full flex min-h-screen items-center justify-center
-     bg-linear-to-br from-gray-900 
-    via-black to-gray-900 font-sens flex-col'>
+    <div className='flex min-h-screen items-center justify-center bg-white font-sans flex-col'>
       <Slider/>
       <CategorySlider/>
       <ProductCardPage/>

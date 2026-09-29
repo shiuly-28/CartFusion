@@ -9,7 +9,7 @@ import {motion } from "motion/react"
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
-import { FaRegStar, FaStar, FaUserCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaRegStar, FaStar, FaUserCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { ClipLoader } from 'react-spinners';
 
@@ -91,6 +91,14 @@ function ViewProduct() {
     <div className='min-h-screen bg-linear-to-br from-gray-900 
     via-black to-gray-900 px-4 p-10'>
       <div className='max-w-6xl mx-auto'>
+          {/* 🟢 Back Button */}
+        <button 
+          onClick={() => router.back()} 
+          className='flex items-center gap-2 text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg mb-6 transition-all duration-200 border border-white/10'
+        >
+          <FaArrowLeft className='text-sm' />
+          <span className='text-sm font-medium'>Back</span>
+        </button>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
             {/* left loop */}
             <div className='flex flex-col lg:flex-row gap-4'>
