@@ -57,7 +57,7 @@ function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white text-xl font-semibold">
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-500 text-xl font-semibold">
         Loading Cart...
       </div>
     );
@@ -65,16 +65,16 @@ function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-6 text-3xl font-bold">
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-900 p-6 text-3xl font-bold">
         Cart is Empty
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-6">
+    <div className="min-h-screen bg-white text-gray-900 p-6">
       <div className="max-w-5xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
+        <h1 className="text-3xl font-bold mb-6 tracking-tight">Shopping Cart</h1>
 
         {cart.map((item) => {
           if (!item.product) return null; // Safety check
@@ -82,9 +82,9 @@ function CartPage() {
           return (
             <div
               key={item.product._id || item._id}
-              className="bg-white/10 p-4 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-between border border-white/10"
+              className="bg-white p-4 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-between border border-gray-200 shadow-sm"
             >
-              <div className="relative w-24 h-24 shrink-0 rounded overflow-hidden bg-black/20">
+              <div className="relative w-24 h-24 shrink-0 rounded overflow-hidden bg-gray-50">
                 <Image
                   src={item.product.image1 || "/placeholder.png"}
                   alt={item.product.title || "Product"}
@@ -95,7 +95,7 @@ function CartPage() {
               </div>
 
               <div className="flex-1 space-y-1 w-full">
-                <h3 className="font-bold text-xl">{item.product.title}</h3>
+                <h3 className="font-bold text-xl text-gray-900">{item.product.title}</h3>
                 <p className="text-[#00684D] font-semibold text-lg">
                   ৳ {item.product.price}
                 </p>
@@ -105,16 +105,16 @@ function CartPage() {
                     onClick={() =>
                       handleUpdateCart(item.product._id, item.quantity - 1)
                     }
-                    className="border border-gray-400 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 transition text-lg"
+                    className="border border-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition text-lg"
                   >
                     -
                   </button>
-                  <span className="font-semibold text-lg">{item.quantity}</span>
+                  <span className="font-semibold text-lg text-gray-900">{item.quantity}</span>
                   <button
                     onClick={() =>
                       handleUpdateCart(item.product._id, item.quantity + 1)
                     }
-                    className="border border-gray-400 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 transition text-lg"
+                    className="border border-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition text-lg"
                   >
                     +
                   </button>
@@ -128,14 +128,14 @@ function CartPage() {
                   </button>
                   <button
                     onClick={() => handleRemove(item.product._id)}
-                    className="bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded text-red-400 border border-red-500/30 transition"
+                    className="bg-red-50 hover:bg-red-100 px-4 py-2 rounded text-red-600 border border-red-200 transition"
                   >
                     Remove
                   </button>
                 </div>
               </div>
 
-              <div className="font-bold text-xl  md:self-start">
+              <div className="font-bold text-xl text-gray-900 md:self-start">
                 ৳ {(item.product.price || 0) * item.quantity}
               </div>
             </div>

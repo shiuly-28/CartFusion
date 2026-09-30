@@ -87,18 +87,18 @@ function Profile() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white px-4 sm:px-6 pt-20 sm:pt-24 pb-10'>
+    <div className='min-h-screen bg-white text-gray-900 px-4 sm:px-6 pt-20 sm:pt-24 pb-10'>
       <motion.div
         initial={{scale: 0.95, opacity: 0}}
         animate={{scale: 1, opacity: 1 }}
         transition={{duration: 0.4}}
-        className='max-w-3xl mx-auto bg-white/10 backdrop-blur-md p-5 sm:p-10 rounded-2xl border border-white/20 shadow-xl'
+        className='max-w-3xl mx-auto bg-white p-5 sm:p-10 rounded-2xl border border-gray-200 shadow-md'
       >
         {/* Back Button (Hidden on Home Page & Fully Responsive) */}
         {!isHomePage && (
           <button 
             onClick={() => router.push('/')}
-            className='flex items-center gap-2 text-xs sm:text-sm text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition mb-6'
+            className='flex items-center gap-2 text-xs sm:text-sm text-gray-700 hover:text-[#00684D] bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition mb-6'
           >
             <ArrowLeft size={16} className='sm:w-[18px] sm:h-[18px]' />
             <span>Back to Home</span>
@@ -108,7 +108,7 @@ function Profile() {
         <div className='flex flex-col items-center text-center'>
           <motion.div
             whileHover={{scale:1.05}}
-            className='w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-white/30 hover:border-[#00684D]'
+            className='w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-gray-200 hover:border-[#00684D]'
           >
             {user?.image ? (
               <Image 
@@ -119,26 +119,26 @@ function Profile() {
                 className='w-full h-full object-cover'
               />
             ) : (
-              <div className='w-full h-full flex items-center justify-center bg-gray-700'>
-                <AiOutlineUser size={48} className='text-white'/>
+              <div className='w-full h-full flex items-center justify-center bg-gray-100'>
+                <AiOutlineUser size={48} className='text-gray-400'/>
               </div>
             )}
           </motion.div>
-          <h2 className='text-2xl sm:text-3xl font-bold mt-4'>{user?.name}</h2>
-          <p className='text-gray-400 text-sm sm:text-base'>{user?.email}</p>
-          <p className='text-gray-400 text-xs sm:text-sm mt-1'>
+          <h2 className='text-2xl sm:text-3xl font-bold mt-4 text-gray-900'>{user?.name}</h2>
+          <p className='text-gray-500 text-sm sm:text-base'>{user?.email}</p>
+          <p className='text-gray-500 text-xs sm:text-sm mt-1'>
             Role: <span className='text-[#00684D] uppercase font-semibold'>{user?.role}</span>
           </p>
         </div>
 
-        <div className='mt-5 space-y-3 text-sm sm:text-base'>
-          <p><b>Phone : </b>{user?.phone || "-"}</p>
+        <div className='mt-5 space-y-3 text-sm sm:text-base text-gray-700'>
+          <p><b className='text-gray-900'>Phone : </b>{user?.phone || "-"}</p>
 
           {user?.role === "merchant" && (
             <>
-              <p><b>Shop Name : </b>{user?.shopName || "-"}</p>
-              <p><b>Shop Address : </b>{user?.shopAddress || "-"}</p>
-              <p><b>GSTIN : </b>{user?.gstNumber || "-"}</p>
+              <p><b className='text-gray-900'>Shop Name : </b>{user?.shopName || "-"}</p>
+              <p><b className='text-gray-900'>Shop Address : </b>{user?.shopAddress || "-"}</p>
+              <p><b className='text-gray-900'>GSTIN : </b>{user?.gstNumber || "-"}</p>
             </>
           )}
         </div>
@@ -148,7 +148,7 @@ function Profile() {
             <motion.button
               onClick={() => router.push("/orders")}
               whileHover={{scale:1.02}}
-              className='bg-gray-600 hover:bg-gray-700 py-3 rounded-lg font-semibold text-sm sm:text-base'
+              className='bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold text-sm sm:text-base transition'
             >
               My Orders
             </motion.button>
@@ -157,7 +157,7 @@ function Profile() {
           <motion.button
             onClick={() => {setShowEditProfile(!showEditProfile); setShowEditShop(false)}}
             whileHover={{scale:1.02}}
-            className='bg-[#00684D] hover:bg-[#045f47] py-3 rounded-lg font-semibold text-sm sm:text-base'
+            className='bg-[#00684D] hover:bg-[#045f47] text-white py-3 rounded-lg font-semibold text-sm sm:text-base transition'
           >
             Edit Profile
           </motion.button>
@@ -166,7 +166,7 @@ function Profile() {
             <motion.button
               onClick={() => {setShowEditShop(!showEditShop); setShowEditProfile(false)}}
               whileHover={{scale:1.02}}
-              className='bg-gray-600 hover:bg-gray-700 py-3 rounded-lg font-semibold text-sm sm:text-base'
+              className='bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold text-sm sm:text-base transition'
             >
               Edit Shop Details
             </motion.button>
@@ -179,17 +179,17 @@ function Profile() {
               initial={{opacity : 0, y: 30}}
               animate={{opacity: 1, y: 0 }}
               exit={{opacity: 0 , y: 30 }}
-              className='mt-8 bg-white/5 p-5 sm:p-6 rounded-xl border border-white/20'
+              className='mt-8 bg-gray-50 p-5 sm:p-6 rounded-xl border border-gray-200'
             >
-              <h3 className='text-xl font-bold mb-3'>Edit Profile</h3>
+              <h3 className='text-xl font-bold mb-3 text-gray-900'>Edit Profile</h3>
               <div className='flex flex-col items-center mb-6'>
                 <motion.div 
                   whileHover={{scale: 1.05}}
-                  className='w-24 h-24 rounded-full overflow-hidden border-2 border-white/30 hover:border-[#00684D] mb-3'
+                  className='w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 hover:border-[#00684D] mb-3'
                 >
                   <Image src={previewImage} alt='select Image' width={120} height={120} className='object-cover w-full h-full'/>
                 </motion.div>
-                <label className='cursor-pointer bg-[#00684D] hover:bg-[#045f47] px-4 py-2 rounded-lg text-sm transition'>
+                <label className='cursor-pointer bg-[#00684D] hover:bg-[#045f47] text-white px-4 py-2 rounded-lg text-sm transition'>
                   Select Image
                   <input type="file" hidden accept='image/*' onChange={handlePreviewImage}/>
                 </label>
@@ -197,14 +197,14 @@ function Profile() {
               <div className='space-y-4'>
                 <input 
                   type="text" 
-                  className='w-full p-3 bg-white/10 border border-white/20 rounded outline-none focus:border-[#00684D] text-sm sm:text-base'
+                  className='w-full p-3 bg-white border border-gray-300 text-gray-900 rounded outline-none focus:border-[#00684D] focus:ring-1 focus:ring-[#00684D] text-sm sm:text-base'
                   placeholder='Full Name'
                   onChange={(e) => setName(e.target.value)} 
                   value={name} 
                 />
                 <input 
                   type="text" 
-                  className='w-full p-3 bg-white/10 border border-white/20 rounded outline-none focus:border-[#00684D] text-sm sm:text-base'
+                  className='w-full p-3 bg-white border border-gray-300 text-gray-900 rounded outline-none focus:border-[#00684D] focus:ring-1 focus:ring-[#00684D] text-sm sm:text-base'
                   placeholder='Phone'
                   onChange={(e) => setPhone(e.target.value)} 
                   value={phone} 
@@ -212,9 +212,9 @@ function Profile() {
                 <motion.button
                   whileHover={{scale: 1.02}}
                   onClick={handleUpdateProfile}
-                  className='hover:bg-[#045f47] bg-[#00684D] w-full py-3 rounded-lg font-semibold flex items-center justify-center text-sm sm:text-base'
+                  className='hover:bg-[#045f47] bg-[#00684D] text-white w-full py-3 rounded-lg font-semibold flex items-center justify-center text-sm sm:text-base transition'
                 >
-                  {loading ? <ClipLoader size={20} color='white'/> : "Updated Profile"}
+                  {loading ? <ClipLoader size={20} color='white'/> : "Update Profile"}
                 </motion.button>
               </div>
             </motion.div>
@@ -227,27 +227,27 @@ function Profile() {
               initial={{opacity : 0, y: 30}}
               animate={{opacity: 1, y: 0 }}
               exit={{opacity: 0 , y: 30 }}
-              className='mt-8 bg-white/5 p-5 sm:p-6 rounded-xl border border-white/20'
+              className='mt-8 bg-gray-50 p-5 sm:p-6 rounded-xl border border-gray-200'
             >
-              <h3 className='text-xl font-bold mb-3'>Edit Shop Details</h3>
+              <h3 className='text-xl font-bold mb-3 text-gray-900'>Edit Shop Details</h3>
               <div className='space-y-4'>
                 <input 
                   type="text" 
-                  className='w-full p-3 bg-white/10 border border-white/20 rounded outline-none focus:border-[#00684D] text-sm sm:text-base'
+                  className='w-full p-3 bg-white border border-gray-300 text-gray-900 rounded outline-none focus:border-[#00684D] focus:ring-1 focus:ring-[#00684D] text-sm sm:text-base'
                   placeholder='Shop Name'
                   onChange={(e) => setShopName(e.target.value)} 
                   value={shopName} 
                 />
                 <input 
                   type="text" 
-                  className='w-full p-3 bg-white/10 border border-white/20 rounded outline-none focus:border-[#00684D] text-sm sm:text-base'
+                  className='w-full p-3 bg-white border border-gray-300 text-gray-900 rounded outline-none focus:border-[#00684D] focus:ring-1 focus:ring-[#00684D] text-sm sm:text-base'
                   placeholder='Shop Address'
                   onChange={(e) => setShopAddress(e.target.value)} 
                   value={shopAddress} 
                 />
                 <input 
                   type="text" 
-                  className='w-full p-3 bg-white/10 border border-white/20 rounded outline-none focus:border-[#00684D] text-sm sm:text-base'
+                  className='w-full p-3 bg-white border border-gray-300 text-gray-900 rounded outline-none focus:border-[#00684D] focus:ring-1 focus:ring-[#00684D] text-sm sm:text-base'
                   placeholder='GSTIN'
                   onChange={(e) => setGstNumber(e.target.value)} 
                   value={gstNumber} 
@@ -256,9 +256,9 @@ function Profile() {
                   onClick={handleVerifyAgain}
                   disabled={loading}
                   whileHover={{scale: 1.02}}
-                  className='hover:bg-[#045f47] bg-[#00684D] w-full py-3 rounded-lg font-semibold flex items-center justify-center text-sm sm:text-base'
+                  className='hover:bg-[#045f47] bg-[#00684D] text-white w-full py-3 rounded-lg font-semibold flex items-center justify-center text-sm sm:text-base transition'
                 >
-                  {loading ? <ClipLoader size={22} color='white'/> : "Updated Shop Profile"}
+                  {loading ? <ClipLoader size={22} color='white'/> : "Update Shop Profile"}
                 </motion.button>
               </div>
             </motion.div>

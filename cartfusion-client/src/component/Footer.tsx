@@ -4,24 +4,25 @@ import { IUser } from '@/model/user.model'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
-function Footer({ user }: { user?: IUser }) { // user optional রাখা ভালো
+function Footer({ user }: { user?: IUser }) {
     const role = user?.role
-    // 🟢 লগইন না থাকলে (!user) অথবা role "user" হলে কাস্টমার ভিউ দেখাবে
     const isCustomer = !user || role === "user" 
     const isAdminOrMerchant = role === "admin" || role === "merchant"
     const router = useRouter()
 
   return (
     <div className='bg-gray-50 w-full text-gray-600 z-40 py-12 border-t border-gray-200'>
+      {/* 🟢 dynamic grid-cols: Customer হলে 4 কলাম, Admin/Merchant হলে 3 কলাম */}
       <div className={`max-w-7xl mx-auto px-6 grid gap-10 text-center md:text-left
-        ${isCustomer ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" : 
-            "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"}`}>
+        ${isCustomer 
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" 
+            : "grid-cols-1 md:grid-cols-3"}`}>
             
             {/* Logo & Info */}
             <div className='space-y-3'>
                 <h1 className='text-gray-900 text-3xl font-bold cursor-pointer
                 tracking-wide hover:text-[#00684D] transition' onClick={() => router.push("/")}>CartFusion</h1>
-                <p className='text-sm leading-relaxed text-gray-500'>Smart, secure & scalable cart-merchant eCommerce platform built for
+                <p className='text-sm leading-relaxed text-gray-500'>Smart, secure & scalable cart-merchant e-Commerce platform built for
                     performance and growth.</p>
                      {isAdminOrMerchant && <span className={`inline-block mt-2 text-[11px] px-3 py-1
                         rounded-full text-white
@@ -51,8 +52,8 @@ function Footer({ user }: { user?: IUser }) { // user optional রাখা ভ�
             </div>}
 
             {/* Admin / Merchant Panel Card */}
-            {isAdminOrMerchant && <div className='bg-white border border-gray-200 rounded-2xl p-6 shadow-sm'>
-                <h3 className='text-gray-900 text-lg font-semibold mb-3'>{role === "admin" ? "System Access" : "Vendor Dashboard"}</h3>
+            {isAdminOrMerchant && <div>
+                <h3 className='text-gray-900 text-lg font-semibold mb-3'>{role === "admin" ? "System Access" : "Merchant Dashboard"}</h3>
                 <ul className='space-y-2 text-sm text-gray-500 mb-4'>
                     {role === "admin" ? (
                         <>
