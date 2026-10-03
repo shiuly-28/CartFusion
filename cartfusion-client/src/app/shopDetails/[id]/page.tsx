@@ -26,7 +26,7 @@ function ShopDetails() {
     // Home page এ থাকলে Back বাটন দেখাবে না
     const isHomePage = pathname === '/'
 
-    const merchant = AllMerchantData.find((v: any) => String(v._id) === merchantId)
+    const merchant = AllMerchantData?.find((v: any) => String(v._id) === merchantId)
 
     if (!merchant) {
         return (
@@ -34,6 +34,7 @@ function ShopDetails() {
                 {!isHomePage && (
                     <button 
                         onClick={() => router.push('/shop')}
+                        aria-label="Back to Shops"
                         className='flex items-center gap-2 text-xs sm:text-sm text-gray-700 hover:text-[#00684D] bg-gray-100 hover:bg-gray-200 px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition'
                     >
                         <ArrowLeft size={18} />
@@ -54,6 +55,7 @@ function ShopDetails() {
                 {!isHomePage && (
                     <button 
                         onClick={() => router.back()}
+                        aria-label="Go Back"
                         className='flex items-center gap-2 text-xs sm:text-sm text-gray-700 hover:text-[#00684D] bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition mb-4 sm:mb-6'
                     >
                         <ArrowLeft size={16} className='sm:w-[18px] sm:h-[18px]' />
@@ -64,7 +66,13 @@ function ShopDetails() {
                 <div className='bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 grid md:grid-cols-2 gap-6 shadow-md'>
                     <div className='relative w-full h-52 sm:h-60 overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center'>
                         {merchant.image ? (
-                            <Image src={merchant.image} alt="img" fill className="object-cover"/>
+                            <Image 
+                                src={merchant.image} 
+                                alt={merchant.shopName || 'Shop Banner'} 
+                                fill 
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover"
+                            />
                         ) : (
                             <span className='text-gray-400 text-sm sm:text-base'>No image found</span>
                         )}
@@ -81,15 +89,17 @@ function ShopDetails() {
             </div>
 
             <div className='max-w-6xl mx-auto'>
-                <h2 className='text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8'>Products By: {merchant.shopName}</h2>
-                {merchantProducts?.length === 0 ? (
+                <h2 className='text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8'>
+                    Products By: {merchant.shopName}
+                </h2>
+                {merchantProducts.length === 0 ? (
                     <p className='text-gray-500 text-sm sm:text-base'>
                         No products added by this shop yet.
                     </p>
                 ) : (
                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
-                        {merchantProducts?.map((p: any, i: number) => (
-                            <ProductCard key={i} product={p}/>
+                        {merchantProducts.map((p: any) => (
+                            <ProductCard key={p._id || p.id} product={p}/>
                         ))}
                     </div>
                 )}
