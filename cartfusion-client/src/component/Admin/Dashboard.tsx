@@ -88,9 +88,9 @@ function AdminDashboard() {
     const COLORS = ["#00684D", "#3b82f6", "#ef4444", "#f97316"];
  
   return (
-    <div className='min-h-screen w-full px-4 sm:px-6 py-6 text-white'>
+    <div className='min-h-screen w-full px-4 sm:px-6 py-6 bg-white text-gray-900'>
       <div className='max-w-full mx-auto space-y-8'>
-        <h1 className='text-xl sm:text-2xl font-bold'>Admin Dashboard</h1>
+        <h1 className='text-xl sm:text-2xl font-bold text-gray-900'>Admin Dashboard</h1>
 
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
           <Statbox title="Total Merchant" value={merchant.length}/>
@@ -106,7 +106,7 @@ function AdminDashboard() {
             merchant.map((v:IUser,i:number)=>{
               const merchantProducts = allProductData.filter(
                 (p:any) =>
-                  String(p.merchant?._id || merchant) === String(v._id)
+                  String(p.merchant?._id || p.merchant) === String(v._id)
               )
               const merchantOrders = allOrdersData.filter(
                 (o:any) =>
@@ -128,19 +128,19 @@ function AdminDashboard() {
                 }
               });
               return(
-                <div key={i} className='bg-white/5 border border-white/10 rounded-xl p-4'>
-                  <h2 className='font-semibold text-base truncate'>{v.shopName}</h2>
-                  <p className='text-xs text-gray-400 mbv-2'>Status: <span className={` capitalize ${
+                <div key={i} className='bg-white border border-gray-200 shadow-sm rounded-xl p-4'>
+                  <h2 className='font-semibold text-base truncate text-gray-900'>{v.shopName}</h2>
+                  <p className='text-xs text-gray-500 mb-2'>Status: <span className={` capitalize ${
                    v.verificationStatus === "approved"
                     ? "text-[#00684D]"
-                  : "text-yellow-400" 
+                  : "text-amber-500" 
                   }`}>{v.verificationStatus}</span> </p>
-                  <div className='text-sm space-y-1'>
+                  <div className='text-sm space-y-1 text-gray-700'>
                     <p>Products: {merchantProducts.length}</p>
                     <p>Orders: {merchantOrders.length}</p>
-                    <p className='text-red-400'>Cancelled: {cancelled}</p>
+                    <p className='text-red-500'>Cancelled: {cancelled}</p>
                     <p className='text-[#00684D]'>Delivered: {delivered}</p>
-                    <p className='text-orange-400'>Returned: {returned}</p>
+                    <p className='text-orange-500'>Returned: {returned}</p>
                     <p className='text-[#00684D] font-semibold'>Earning: ৳ {merchantEarning}</p>
                   </div>
                 </div>
@@ -148,34 +148,34 @@ function AdminDashboard() {
             })
           }
         </div>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gsp-6'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           {/* Bar graph */}
-          <div className='bg-white/5 border border-white/10 rounded-xl p-4 h-[280px] sm:h-[350px]'>
-          <h2 className='font-semibold mb-2 text-sm'>Merchant-wise Orders</h2>
+          <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-4 h-[280px] sm:h-[350px]'>
+          <h2 className='font-semibold mb-2 text-sm text-gray-900'>Merchant-wise Orders</h2>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={merchantOrderGraph}>
-              <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis 
               dataKey="merchant"
               interval={0}
               angle={-20}
               textAnchor="end"
               height={50}
-              tick={{ fontSize: 10 }}/>
-              <YAxis tick={{fontSize: 10 }}/>
+              tick={{ fontSize: 10, fill: '#6b7280' }}/>
+              <YAxis tick={{fontSize: 10, fill: '#6b7280' }}/>
               <Tooltip/>
               <Bar dataKey="orders" fill='#00684D'/>
             </BarChart>
           </ResponsiveContainer>
 
           </div>
-          <div className='bg-white/5 border border-white/10 rounded-xl p-4'>
-          <h2 className='font-semibold mb-2 text-sm'>Order Status Distribution</h2>
+          <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-4'>
+          <h2 className='font-semibold mb-2 text-sm text-gray-900'>Order Status Distribution</h2>
           <div className='grid grid-cols-2 gap-2 mb-4'>
-           <Statusbox label='Delivered' value={deliveredOrders.length} color='text-[#045f47]'/>
-           <Statusbox label='Pending' value={remainingOrders.length} color='text-white'/>
+           <Statusbox label='Delivered' value={deliveredOrders.length} color='text-[#00684D]'/>
+           <Statusbox label='Pending' value={remainingOrders.length} color='text-gray-800'/>
            <Statusbox label='Cancelled' value={cancelledOrders.length} color='text-red-500'/>
-           <Statusbox label='Returned' value={returnOrders.length} color='text-yellow-500'/>
+           <Statusbox label='Returned' value={returnOrders.length} color='text-amber-500'/>
           </div >
 
           <div className='h-[220px] sm:h-[260px]'>
@@ -206,9 +206,9 @@ export default AdminDashboard;
 
 function Statbox({ title, value }: StatboxProps) {
   return (
-    <div className='bg-white/5 border border-white/10 rounded-xl p-4'>
-      <p className='text-xs uppercase text-gray-400'>{title}</p>
-      <p className='text-lg sm:text-2xl font-bold mt-1'>{value}</p>
+    <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-4'>
+      <p className='text-xs uppercase text-gray-500'>{title}</p>
+      <p className='text-lg sm:text-2xl font-bold mt-1 text-gray-900'>{value}</p>
     </div>
   );
 }
@@ -223,8 +223,8 @@ function Statusbox({
   color: string;
 }){
   return(
-    <div className='bg-black/40 border border-white/10 rounded-lg p-3 text-center'>
-      <p className='text-xs text-gray-400'>{label}</p>
+    <div className='bg-gray-50 border border-gray-200 rounded-lg p-3 text-center'>
+      <p className='text-xs text-gray-500'>{label}</p>
       <p className={`text-lg font-bold ${color}`}>{value}</p>
     </div>
   );
