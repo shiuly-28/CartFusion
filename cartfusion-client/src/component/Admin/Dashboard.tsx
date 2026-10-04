@@ -8,10 +8,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-
 interface StatboxProps {
   title: string;
   value: React.ReactNode;
+  bgColor?: string;
+  textColor?: string;
 }
 
 function AdminDashboard() {
@@ -19,122 +20,152 @@ function AdminDashboard() {
   UseGetAllProducts()
   UseGetAllMerchant()
 
-  const {AllMerchantData, allProductData} = useSelector((state:RootState)=>state.merchant)
-  const {allOrdersData} = useSelector((state:RootState)=>state.user)
+  const { AllMerchantData, allProductData } = useSelector((state: RootState) => state.merchant)
+  const { allOrdersData } = useSelector((state: RootState) => state.user)
 
-   const merchant = AllMerchantData || []
-    const pendingMerchant = AllMerchantData.filter((v)=> v.verificationStatus === "pending")
-   const products = allProductData || []
+  const merchant = AllMerchantData || []
+  const pendingMerchant = AllMerchantData.filter((v) => v.verificationStatus === "pending")
+  const products = allProductData || []
 
-    const pendingProducts = allProductData.filter((p)=> p.verificationStatus === "pending")
+  const pendingProducts = allProductData.filter((p) => p.verificationStatus === "pending")
 
-    const orders = allOrdersData|| []
+  const orders = allOrdersData || []
 
-    const deliveredOrders = allOrdersData.filter((o)=>o.orderStatus === "delivered")
+  const deliveredOrders = allOrdersData.filter((o) => o.orderStatus === "delivered")
 
-    let totalEarning = 0
-    deliveredOrders.forEach((o)=>{
-      if(o.isPaid){
-        totalEarning += o.totalAmount
-      }
-    })
+  let totalEarning = 0
+  deliveredOrders.forEach((o) => {
+    if (o.isPaid) {
+      totalEarning += o.totalAmount
+    }
+  })
 
-    const merchantOrderGraph: {merchant: string; orders:number}[] = [];
+  const merchantOrderGraph: { merchant: string; orders: number }[] = [];
 
-    for(let i = 0; i < allOrdersData.length; i++){
-      const order = allOrdersData[i]
+  for (let i = 0; i < allOrdersData.length; i++) {
+    const order = allOrdersData[i]
 
-      let merchantName = order.productMerchant?.shopName || "Unknown";
+    let merchantName = order.productMerchant?.shopName || "Unknown";
 
-      if(merchantName.length > 14){
-        merchantName = merchantName.slice(0, 14) + "...";
-      }
-      let found = false;
+    if (merchantName.length > 14) {
+      merchantName = merchantName.slice(0, 14) + "...";
+    }
+    let found = false;
 
-      for (let j = 0; j < merchantOrderGraph.length; j++){
-        if(merchantOrderGraph[j].merchant === merchantName){
-          merchantOrderGraph[j].orders = merchantOrderGraph[j].orders + 1;
-          found = true;
-          break;
-        }
-      }
-
-      if(!found){
-        merchantOrderGraph.push({
-          merchant: merchantName,
-          orders: 1,
-        });
+    for (let j = 0; j < merchantOrderGraph.length; j++) {
+      if (merchantOrderGraph[j].merchant === merchantName) {
+        merchantOrderGraph[j].orders = merchantOrderGraph[j].orders + 1;
+        found = true;
+        break;
       }
     }
 
-    const cancelledOrders = allOrdersData.filter(
-      (o: any) => o.orderStatus === "cancelled"
-    );
-    const returnOrders = allOrdersData.filter(
-      (o: any) => o.orderStatus === "returned"
-    );
-    const remainingOrders = allOrdersData.filter(
-      (o:any)=>
-        !["delivered", "cancelled", "returned"].includes(o.orderStatus)
-    )
+    if (!found) {
+      merchantOrderGraph.push({
+        merchant: merchantName,
+        orders: 1,
+      });
+    }
+  }
 
-    const orderProgress = [
-      {name:"Delivered", value:deliveredOrders.length},
-      {name:"Pending", value:remainingOrders.length},
-      {name:"Cancelled", value:cancelledOrders.length},
-      {name:"Returned", value:returnOrders.length},
-    ];
+  const cancelledOrders = allOrdersData.filter(
+    (o: any) => o.orderStatus === "cancelled"
+  );
+  const returnOrders = allOrdersData.filter(
+    (o: any) => o.orderStatus === "returned"
+  );
+  const remainingOrders = allOrdersData.filter(
+    (o: any) =>
+      !["delivered", "cancelled", "returned"].includes(o.orderStatus)
+  )
 
-    const COLORS = ["#00684D", "#3b82f6", "#ef4444", "#f97316"];
- 
+  const orderProgress = [
+    { name: "Delivered", value: deliveredOrders.length },
+    { name: "Pending", value: remainingOrders.length },
+    { name: "Cancelled", value: cancelledOrders.length },
+    { name: "Returned", value: returnOrders.length },
+  ];
+
+  const COLORS = ["#00684D", "#3b82f6", "#ef4444", "#f97316"];
+
   return (
     <div className='min-h-screen w-full px-4 sm:px-6 py-6 bg-white text-gray-900'>
       <div className='max-w-full mx-auto space-y-8'>
         <h1 className='text-xl sm:text-2xl font-bold text-gray-900'>Admin Dashboard</h1>
 
+        {/* 6 Stat Cards with Soft Colors */}
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
-          <Statbox title="Total Merchant" value={merchant.length}/>
-          <Statbox title="Pending Merchant" value={pendingMerchant.length}/>
-          <Statbox title="Total Products" value={products.length} />
-          <Statbox title="Pending Products" value={pendingProducts.length}/>
-          <Statbox title="Total Orders" value={orders.length} />
-          <Statbox title="Total Earnings" value={`৳ ${totalEarning}`} />
+          <Statbox 
+            title="Total Merchant" 
+            value={merchant.length} 
+            bgColor="bg-emerald-50 border-emerald-100" 
+            textColor="text-[#00684D]"
+          />
+          <Statbox 
+            title="Pending Merchant" 
+            value={pendingMerchant.length} 
+            bgColor="bg-amber-50 border-amber-100" 
+            textColor="text-amber-600"
+          />
+          <Statbox 
+            title="Total Products" 
+            value={products.length} 
+            bgColor="bg-blue-50 border-blue-100" 
+            textColor="text-blue-600"
+          />
+          <Statbox 
+            title="Pending Products" 
+            value={pendingProducts.length} 
+            bgColor="bg-purple-50 border-purple-100" 
+            textColor="text-purple-600"
+          />
+          <Statbox 
+            title="Total Orders" 
+            value={orders.length} 
+            bgColor="bg-indigo-50 border-indigo-100" 
+            textColor="text-indigo-600"
+          />
+          <Statbox 
+            title="Total Earnings" 
+            value={`৳ ${totalEarning}`} 
+            bgColor="bg-teal-50 border-teal-100" 
+            textColor="text-teal-700"
+          />
         </div>
 
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 '>
           {
-            merchant.map((v:IUser,i:number)=>{
+            merchant.map((v: IUser, i: number) => {
               const merchantProducts = allProductData.filter(
-                (p:any) =>
+                (p: any) =>
                   String(p.merchant?._id || p.merchant) === String(v._id)
               )
               const merchantOrders = allOrdersData.filter(
-                (o:any) =>
+                (o: any) =>
                   String(o.productMerchant?._id || o.productMerchant) === String(v._id)
               );
               const cancelled = merchantOrders.filter(
-                (o:any) => o.orderStatus === "cancelled"
+                (o: any) => o.orderStatus === "cancelled"
               ).length;
               const returned = merchantOrders.filter(
-                (o:any) => o.orderStatus === "returned"
+                (o: any) => o.orderStatus === "returned"
               ).length;
               const delivered = merchantOrders.filter(
-                (o:any) => o.orderStatus === "delivered"
+                (o: any) => o.orderStatus === "delivered"
               ).length;
               let merchantEarning = 0;
-              merchantOrders.forEach((o: any)=>{
-                if(o.orderStatus === "delivered" && o.isPaid){
+              merchantOrders.forEach((o: any) => {
+                if (o.orderStatus === "delivered" && o.isPaid) {
                   merchantEarning += o.totalAmount;
                 }
               });
-              return(
+              return (
                 <div key={i} className='bg-white border border-gray-200 shadow-sm rounded-xl p-4'>
                   <h2 className='font-semibold text-base truncate text-gray-900'>{v.shopName}</h2>
-                  <p className='text-xs text-gray-500 mb-2'>Status: <span className={` capitalize ${
-                   v.verificationStatus === "approved"
-                    ? "text-[#00684D]"
-                  : "text-amber-500" 
-                  }`}>{v.verificationStatus}</span> </p>
+                  <p className='text-xs text-gray-500 mb-2'>Status: <span className={` capitalize ${v.verificationStatus === "approved"
+                      ? "text-[#00684D]"
+                      : "text-amber-500"
+                    }`}>{v.verificationStatus}</span> </p>
                   <div className='text-sm space-y-1 text-gray-700'>
                     <p>Products: {merchantProducts.length}</p>
                     <p>Orders: {merchantOrders.length}</p>
@@ -151,50 +182,70 @@ function AdminDashboard() {
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           {/* Bar graph */}
           <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-4 h-[280px] sm:h-[350px]'>
-          <h2 className='font-semibold mb-2 text-sm text-gray-900'>Merchant-wise Orders</h2>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={merchantOrderGraph}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-              dataKey="merchant"
-              interval={0}
-              angle={-20}
-              textAnchor="end"
-              height={50}
-              tick={{ fontSize: 10, fill: '#6b7280' }}/>
-              <YAxis tick={{fontSize: 10, fill: '#6b7280' }}/>
-              <Tooltip/>
-              <Bar dataKey="orders" fill='#00684D'/>
-            </BarChart>
-          </ResponsiveContainer>
+            <h2 className='font-semibold mb-2 text-sm text-gray-900'>Merchant-wise Orders</h2>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={merchantOrderGraph}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="merchant"
+                  interval={0}
+                  angle={-20}
+                  textAnchor="end"
+                  height={50}
+                  tick={{ fontSize: 10, fill: '#6b7280' }} />
+                <YAxis tick={{ fontSize: 10, fill: '#6b7280' }} />
+                <Tooltip />
+                <Bar dataKey="orders" fill='#00684D' />
+              </BarChart>
+            </ResponsiveContainer>
 
           </div>
           <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-4'>
-          <h2 className='font-semibold mb-2 text-sm text-gray-900'>Order Status Distribution</h2>
-          <div className='grid grid-cols-2 gap-2 mb-4'>
-           <Statusbox label='Delivered' value={deliveredOrders.length} color='text-[#00684D]'/>
-           <Statusbox label='Pending' value={remainingOrders.length} color='text-gray-800'/>
-           <Statusbox label='Cancelled' value={cancelledOrders.length} color='text-red-500'/>
-           <Statusbox label='Returned' value={returnOrders.length} color='text-amber-500'/>
-          </div >
+            <h2 className='font-semibold mb-2 text-sm text-gray-900'>Order Status Distribution</h2>
+            <div className='grid grid-cols-2 gap-2 mb-4'>
+              <Statusbox 
+                label='Delivered' 
+                value={deliveredOrders.length} 
+                color='text-[#00684D]' 
+                bgColor='bg-emerald-50 border-emerald-100'
+              />
+              <Statusbox 
+                label='Pending' 
+                value={remainingOrders.length} 
+                color='text-blue-600' 
+                bgColor='bg-blue-50 border-blue-100'
+              />
+              <Statusbox 
+                label='Cancelled' 
+                value={cancelledOrders.length} 
+                color='text-red-500' 
+                bgColor='bg-red-50 border-red-100'
+              />
+              <Statusbox 
+                label='Returned' 
+                value={returnOrders.length} 
+                color='text-orange-500' 
+                bgColor='bg-orange-50 border-orange-100'
+              />
+            </div>
 
-          <div className='h-[220px] sm:h-[260px]'>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                data={orderProgress}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={80}
-                label>
-                  {orderProgress.map((_, i)=>(
-                    <Cell key={i} fill={COLORS[i]}/>
-                  ))}
-              </Pie>
-              <Tooltip/>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+            <div className='h-[220px] sm:h-[260px]'>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={orderProgress}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={80}
+                    label>
+                    {orderProgress.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
@@ -204,11 +255,11 @@ function AdminDashboard() {
 
 export default AdminDashboard;
 
-function Statbox({ title, value }: StatboxProps) {
+function Statbox({ title, value, bgColor = "bg-white border-gray-200", textColor = "text-gray-900" }: StatboxProps) {
   return (
-    <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-4'>
-      <p className='text-xs uppercase text-gray-500'>{title}</p>
-      <p className='text-lg sm:text-2xl font-bold mt-1 text-gray-900'>{value}</p>
+    <div className={`${bgColor} border rounded-xl p-4 transition-all duration-200`}>
+      <p className='text-xs uppercase font-medium text-gray-600'>{title}</p>
+      <p className={`text-lg sm:text-2xl font-bold mt-1 ${textColor}`}>{value}</p>
     </div>
   );
 }
@@ -217,15 +268,17 @@ function Statusbox({
   label,
   value,
   color,
-} : {
+  bgColor,
+}: {
   label: string;
-   value: string | number; 
+  value: string | number;
   color: string;
-}){
-  return(
-    <div className='bg-gray-50 border border-gray-200 rounded-lg p-3 text-center'>
-      <p className='text-xs text-gray-500'>{label}</p>
-      <p className={`text-lg font-bold ${color}`}>{value}</p>
+  bgColor: string;
+}) {
+  return (
+    <div className={`${bgColor} border rounded-xl p-3 text-center transition-all duration-200`}>
+      <p className='text-xs text-gray-600 font-medium'>{label}</p>
+      <p className={`text-lg sm:text-xl font-bold mt-0.5 ${color}`}>{value}</p>
     </div>
   );
 }

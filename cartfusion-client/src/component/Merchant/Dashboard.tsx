@@ -3,7 +3,6 @@ import UseGetAllMerchant from '@/hooks/UseGetAllMerchant';
 import UseGetAllOrdersData from '@/hooks/UseGetAllOrdersData';
 import UseGetAllProducts from '@/hooks/UseGetAllProductsData';
 import UserGetCurrentUser from '@/hooks/UserGetCurrentUser';
-import { IUser } from '@/model/user.model';
 import { RootState } from '@/redux/store';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -12,6 +11,8 @@ import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, Res
 interface StatboxProps {
   title: string;
   value: React.ReactNode;
+  bgColor?: string;
+  textColor?: string;
 }
 
 function AdminDashboard() {
@@ -95,26 +96,46 @@ function AdminDashboard() {
 
   return (
     <div className='min-h-screen w-full px-4 sm:px-6 py-6 bg-slate-50/50 text-gray-900'>
-      <div className='max-w-full mx-auto space-y-8'>
+      <div className='max-w-full mx-auto space-y-5'>
 
         {/* Header Card */}
-        <div className='bg-slate-50/70 border border-gray-200/80 shadow-xs rounded-xl p-5'>
+        <div className='bg-white border border-gray-200 shadow-xs rounded-xl p-5'>
           <h1 className='text-xl sm:text-2xl font-bold text-gray-900'>{userData?.shopName}</h1>
           <p className='text-xs sm:text-sm text-gray-500 break-all'>{userData?.email}</p>
         </div>
 
-        {/* Top Stat Cards */}
+        {/* Top Stat Cards with Soft Colors */}
         <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
-          <Statbox title="Customers" value={customers.size} />
-          <Statbox title="Products" value={merchantProducts.length} />
-          <Statbox title="Orders" value={validOrders.length} />
-          <Statbox title="Sales" value={`৳ ${totalSales}`} />
+          <Statbox 
+            title="Customers" 
+            value={customers.size} 
+            bgColor="bg-indigo-50 border-indigo-100" 
+            textColor="text-indigo-600"
+          />
+          <Statbox 
+            title="Products" 
+            value={merchantProducts.length} 
+            bgColor="bg-blue-50 border-blue-100" 
+            textColor="text-blue-600"
+          />
+          <Statbox 
+            title="Orders" 
+            value={validOrders.length} 
+            bgColor="bg-emerald-50 border-emerald-100" 
+            textColor="text-[#00684D]"
+          />
+          <Statbox 
+            title="Sales" 
+            value={`৳ ${totalSales}`} 
+            bgColor="bg-teal-50 border-teal-100" 
+            textColor="text-teal-700"
+          />
         </div>
 
         {/* Charts Grid */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           {/* Bar Chart Card */}
-          <div className='bg-slate-50/70 border border-gray-200/80 shadow-xs rounded-xl p-4 h-[280px] sm:h-[490px]'>
+          <div className='bg-white border border-gray-200 shadow-xs rounded-xl p-4 h-[280px] sm:h-[490px]'>
             <h2 className='font-semibold mb-2 text-sm text-gray-900'>Order by Date</h2>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={ordersByDate}>
@@ -135,13 +156,33 @@ function AdminDashboard() {
           </div>
 
           {/* Pie Chart Card */}
-          <div className='bg-slate-50/70 border border-gray-200/80 shadow-xs rounded-xl p-4'>
+          <div className='bg-white border border-gray-200 shadow-xs rounded-xl p-4'>
             <h2 className='font-semibold mb-2 text-sm text-gray-900'>Order Status Distribution</h2>
             <div className='grid grid-cols-2 gap-2 mb-4'>
-              <Statusbox label='Delivered' value={deliveredOrders.length} color='text-[#00684D]' />
-              <Statusbox label='Pending' value={remainingOrders.length} color='text-gray-800' />
-              <Statusbox label='Cancelled' value={cancelledOrders.length} color='text-red-500' />
-              <Statusbox label='Returned' value={returnOrders.length} color='text-amber-500' />
+              <Statusbox 
+                label='Delivered' 
+                value={deliveredOrders.length} 
+                color='text-[#00684D]' 
+                bgColor='bg-emerald-50 border-emerald-100'
+              />
+              <Statusbox 
+                label='Pending' 
+                value={remainingOrders.length} 
+                color='text-blue-600' 
+                bgColor='bg-blue-50 border-blue-100'
+              />
+              <Statusbox 
+                label='Cancelled' 
+                value={cancelledOrders.length} 
+                color='text-red-500' 
+                bgColor='bg-red-50 border-red-100'
+              />
+              <Statusbox 
+                label='Returned' 
+                value={returnOrders.length} 
+                color='text-orange-500' 
+                bgColor='bg-orange-50 border-orange-100'
+              />
             </div>
 
             <div className='h-[220px] sm:h-[260px]'>
@@ -166,7 +207,7 @@ function AdminDashboard() {
         </div>
 
         {/* Line Chart Card */}
-        <div className='bg-slate-50/70 border border-gray-200/80 shadow-xs rounded-xl p-4 h-[260px] sm:h-[320px]'>
+        <div className='bg-white border border-gray-200 shadow-xs rounded-xl p-4 h-[260px] sm:h-[320px]'>
           <h2 className='text-sm font-semibold mb-2 text-gray-900'>Product Sales</h2>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={productSales}>
@@ -197,11 +238,16 @@ function AdminDashboard() {
 
 export default AdminDashboard;
 
-function Statbox({ title, value }: StatboxProps) {
+function Statbox({ 
+  title, 
+  value, 
+  bgColor = "bg-white border-gray-200", 
+  textColor = "text-gray-900" 
+}: StatboxProps) {
   return (
-    <div className='bg-slate-50/80 border border-gray-200/80 shadow-xs rounded-xl p-4'>
-      <p className='text-xs uppercase text-gray-500'>{title}</p>
-      <p className='text-lg sm:text-2xl font-bold mt-1 text-gray-900'>{value}</p>
+    <div className={`${bgColor} border rounded-xl p-4 transition-all duration-200`}>
+      <p className='text-xs uppercase font-medium text-gray-600'>{title}</p>
+      <p className={`text-lg sm:text-2xl font-bold mt-1 ${textColor}`}>{value}</p>
     </div>
   );
 }
@@ -210,15 +256,17 @@ function Statusbox({
   label,
   value,
   color,
+  bgColor,
 }: {
   label: string;
   value: string | number;
   color: string;
+  bgColor: string;
 }) {
   return (
-    <div className='bg-white/80 border border-gray-200/70 rounded-lg p-3 text-center shadow-2xs'>
-      <p className='text-xs text-gray-500'>{label}</p>
-      <p className={`text-lg font-bold ${color}`}>{value}</p>
+    <div className={`${bgColor} border rounded-xl p-3 text-center transition-all duration-200`}>
+      <p className='text-xs text-gray-600 font-medium'>{label}</p>
+      <p className={`text-lg sm:text-xl font-bold mt-0.5 ${color}`}>{value}</p>
     </div>
   );
 }
