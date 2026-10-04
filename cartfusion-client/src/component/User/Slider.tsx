@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import slider from '@/assets/slider.png'
 import slider1 from '@/assets/slider1.png'
 import slider2 from '@/assets/slider2.png'
@@ -8,7 +8,7 @@ import slider2 from '@/assets/slider2.png'
 import banner1 from '@/assets/banner1.jpeg'
 import banner2 from '@/assets/banner2.jpeg'
 
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
@@ -16,7 +16,7 @@ function Slider() {
   const [current, setCurrent] = useState(0)
   const router = useRouter()
 
-  const slides = [
+  const slides = useMemo(() => [
     {
       image: slider1,
       subtitle: "DO IT NOW",
@@ -38,7 +38,7 @@ function Slider() {
       title: "STEP INTO POWER",
       button: "DISCOVER"
     },
-  ]
+  ], [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,41 +58,42 @@ function Slider() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
             className='absolute inset-0'
           >
             <Image 
               src={slides[current].image} 
               alt={slides[current].title}
               fill
-              priority
+              priority={current === 0} // ⚡ ১ম স্লাইডেই শুধু priority লোড হবে যা LCP দ্রুত করবে
+              sizes="(max-width: 768px) 100vw, 66vw"
               className='object-cover'
             />
             
-            {/* হালকা gradient — শুধু টেক্সট পড়ার সুবিধার জন্য */}
+            {/* হালকা gradient — শুধু টেক্সট পড়ার সুবিধার জন্য */}
             <div className='absolute inset-0 flex flex-col justify-end items-start px-8 md:px-12 pb-10 md:pb-16 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>
               <motion.h3
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1 }}
                 className='text-[10px] md:text-xs uppercase tracking-widest text-white/90 font-semibold'
               >
                 {slides[current].subtitle}
               </motion.h3>
               
               <motion.h1
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
                 className='text-2xl md:text-5xl font-bold mb-2 mt-1'
               >
                 {slides[current].description}
               </motion.h1>
 
               <motion.p
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
                 className='text-sm md:text-lg text-white/90 mb-5'
               >
                 {slides[current].title}
@@ -118,9 +119,8 @@ function Slider() {
         {/* থাম্বনেইল প্রিভিউ */}
         <div className='absolute bottom-4 right-4 md:right-8 flex gap-3 z-10'>
           {slides.map((slide, index) => (
-            <motion.div 
+            <div 
               key={index}
-              whileHover={{ scale: 1.05 }}
               onClick={() => setCurrent(index)}
               className={`relative w-16 h-10 md:w-20 md:h-12 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${
                 index === current
@@ -132,9 +132,10 @@ function Slider() {
                 src={slide.image} 
                 alt={slide.title} 
                 fill 
+                sizes="80px"
                 className='object-cover'
               />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -151,6 +152,7 @@ function Slider() {
             src={banner1} 
             alt="Exclusive Deal" 
             fill 
+            sizes="(max-width: 768px) 100vw, 33vw"
             className='object-cover object-center group-hover:scale-105 transition-transform duration-500' 
           />
           <div className='absolute inset-0 flex flex-col justify-end px-6 pb-5 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>
@@ -169,6 +171,7 @@ function Slider() {
             src={banner2} 
             alt="Free Shipping" 
             fill 
+            sizes="(max-width: 768px) 100vw, 33vw"
             className='object-cover group-hover:scale-105 transition-transform duration-500' 
           />
           <div className='absolute inset-0 flex flex-col justify-end px-6 pb-5 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>

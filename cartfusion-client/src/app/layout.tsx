@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap", 
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "CartFusion",
@@ -16,16 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        
-          <Provider>
-            <StoreProvider>
-              <InitUser />
-              {children}
-            </StoreProvider>
-          </Provider>
-        
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className={inter.className}>
+        <Provider>
+          <StoreProvider>
+            <InitUser />
+            {children}
+          </StoreProvider>
+        </Provider>
       </body>
     </html>
   );

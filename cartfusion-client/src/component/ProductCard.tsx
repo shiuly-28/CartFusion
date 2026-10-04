@@ -48,7 +48,7 @@ function ProductCard({product} : {product:IProduct}) {
             alt={product.title}
             fill
             className='object-contain rounded-lg'
-            sizes='(max-width: 768px) 100vw, 300px'
+            sizes='(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw'
           />
         </div>
 
