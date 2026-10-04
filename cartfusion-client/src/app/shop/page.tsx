@@ -69,7 +69,7 @@ function ShopPage() {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
                     {allVerifiedMerchant.map((v: IUser, i: number) => (
                         <motion.div 
-                            key={v._id || i}
+                             key={v._id ? String(v._id) : i}
                             onClick={() => router.push(`/shopDetails/${v._id}`)}
                             whileHover={{ y: -4 }}
                             className='bg-white text-gray-900 rounded-2xl p-4 cursor-pointer border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between'
