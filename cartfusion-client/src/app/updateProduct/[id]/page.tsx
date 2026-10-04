@@ -220,7 +220,7 @@ function UpdateProduct() {
           <span className='text-sm'>This is wearable / clothing product</span>
         </div>
 
-        {isWearable && (
+        {/* {isWearable && (
           <div className='mt-4'>
             <p className='mb-2 text-sm font-semibold'>Select Sizes</p>
             <div className='flex flex-wrap gap-2'>
@@ -240,7 +240,7 @@ function UpdateProduct() {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6'>
           <input
