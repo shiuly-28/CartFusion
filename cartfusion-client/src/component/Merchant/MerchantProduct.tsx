@@ -75,17 +75,17 @@ function MerchantProduct() {
   return (
     <div className='w-full min-h-screen px-3 sm:px-6 lg:px-10 py-6 bg-gray-50 text-gray-900'>
       {/* header */}
-      <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl sm:text-3xl font-bold'>My Products</h1>
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => router.push("/addMerchantProduct")}
-          className='bg-[#00684D] hover:bg-[#045f47] px-5 py-2 rounded-lg font-semibold text-sm sm:text-base text-white'
-        >
-          + Add Product
-        </motion.button>
-      </div>
+      <div className='flex justify-between items-center gap-2 mb-6'>
+  <h1 className='text-xl sm:text-3xl font-bold whitespace-nowrap'>My Products</h1>
+  <motion.button
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.9 }}
+    onClick={() => router.push("/addMerchantProduct")}
+    className='bg-[#00684D] hover:bg-[#045f47] px-3 sm:px-5 py-2 rounded-lg font-semibold text-xs sm:text-base text-white whitespace-nowrap shrink-0'
+  >
+    + Add Product
+  </motion.button>
+</div>
 
       {/* desktop table */}
       <div className='hidden md:block overflow-auto bg-white rounded-xl border border-gray-200 shadow-sm'>

@@ -61,6 +61,8 @@ function MerchantOrders() {
         ))
       ))
       alert("Order Delivered successfully")
+      setOtpModel(null)
+       setOtp("")
     } catch (error) {
       console.log(error)
       alert("Failed to verify OTP")
@@ -251,26 +253,34 @@ function MerchantOrders() {
         </div>
       )}
 
-      {otpModel && (
-        <div className='fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50'>
-          <div className='bg-white p-6 rounded-xl w-full max-w-md shadow-xl border border-gray-200'>
-            <h2 className='text-lg font-semibold mb-3 text-gray-900'>Enter Delivery OTP</h2>
-            <input
-              type="text"
-              className='w-full bg-white border border-gray-300 text-gray-900 px-4 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#00684D]'
-              onChange={(e) => setOtp(e.target.value)}
-              value={otp}
-              placeholder='Enter OTP'
-            />
-            <button
-              onClick={verifyOtp}
-              className='w-full bg-[#00684D] hover:bg-[#045f47] text-white py-2 rounded flex items-center justify-center gap-2 transition'
-            >
-              Verify & Deliver
-            </button>
-          </div>
-        </div>
-      )}
+     {otpModel && (
+  <div className='fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50'>
+    <div className='bg-white p-6 rounded-xl w-full max-w-md shadow-xl border border-gray-200'>
+      <h2 className='text-lg font-semibold mb-3 text-gray-900'>Enter Delivery OTP</h2>
+      <input
+        type="text"
+        className='w-full bg-white border border-gray-300 text-gray-900 px-4 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#00684D]'
+        onChange={(e) => setOtp(e.target.value)}
+        value={otp}
+        placeholder='Enter OTP'
+      />
+      <div className='flex gap-2'>
+        <button
+          onClick={() => { setOtpModel(null); setOtp("") }}
+          className='flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded transition'
+        >
+          Cancel
+        </button>
+        <button
+          onClick={verifyOtp}
+          className='flex-1 bg-[#00684D] hover:bg-[#045f47] text-white py-2 rounded flex items-center justify-center gap-2 transition'
+        >
+          Verify & Deliver
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   )
 }
