@@ -48,7 +48,8 @@ function Slider() {
   }, [slides.length])
 
   return (
-    <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 md:mt-[80px] px-4 md:px-10 font-sans'>
+    // 🟢 mt-[70px] যোগ করা হয়েছে যাতে মোবাইলেও নেভবারের নিচে স্পেস থাকে
+    <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 mt-[70px] md:mt-[80px] px-4 md:px-10 font-sans'>
       
       {/* 🟢 Bam Pasher Dynamic Slider */}
       <div className='relative md:col-span-2 min-h-[50vh] md:min-h-[75vh] overflow-hidden rounded-2xl bg-gray-100 text-white'>
@@ -65,12 +66,11 @@ function Slider() {
               src={slides[current].image} 
               alt={slides[current].title}
               fill
-              priority={current === 0} // ⚡ ১ম স্লাইডেই শুধু priority লোড হবে যা LCP দ্রুত করবে
+              priority={current === 0} 
               sizes="(max-width: 768px) 100vw, 66vw"
               className='object-cover'
             />
             
-            {/* হালকা gradient — শুধু টেক্সট পড়ার সুবিধার জন্য */}
             <div className='absolute inset-0 flex flex-col justify-end items-start px-8 md:px-12 pb-10 md:pb-16 bg-gradient-to-t from-black/60 via-black/10 to-transparent'>
               <motion.h3
                 initial={{ opacity: 0 }}
@@ -111,12 +111,12 @@ function Slider() {
           </motion.div>
         </AnimatePresence>
 
-        {/* স্লাইড counter (01 / 03) */}
+        {/* Counter (01 / 03) */}
         <div className='absolute top-4 right-6 z-10 text-white/80 text-sm'>
           <span className='text-xl md:text-2xl font-semibold text-white'>0{current + 1}</span> / 0{slides.length}
         </div>
 
-        {/* থাম্বনেইল প্রিভিউ */}
+        {/* Thumbnails */}
         <div className='absolute bottom-4 right-4 md:right-8 flex gap-3 z-10'>
           {slides.map((slide, index) => (
             <div 
