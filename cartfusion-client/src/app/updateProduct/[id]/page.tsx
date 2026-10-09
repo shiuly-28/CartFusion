@@ -214,11 +214,11 @@ function UpdateProduct() {
           value={description}
         />
 
-        <div className='flex items-center gap-3 mt-5'>
+        {/* <div className='flex items-center gap-3 mt-5'>
           <input type="checkbox" className='w-5 h-5 accent-[#00684D]'
             checked={isWearable} onChange={() => setIsWearable(!isWearable)} />
           <span className='text-sm'>This is wearable / clothing product</span>
-        </div>
+        </div> */}
 
         {/* {isWearable && (
           <div className='mt-4'>
