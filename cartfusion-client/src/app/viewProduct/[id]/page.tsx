@@ -168,7 +168,7 @@ function ViewProduct() {
         </div>
 
         {product && <div className='mt-10 bg-gray-50 border border-gray-200 rounded-lg p-6'>
-          {product.isWearable && (
+          {/* {product.isWearable && (
             <div className='mb-5'>
               <p className='font-semibold mb-2 text-gray-900'>
                 Available Sizes
@@ -181,7 +181,7 @@ function ViewProduct() {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
 
           <div className='space-y-2 text-gray-600'>
             {typeof product.replacementDays == "number" && product.replacementDays > 0 && (
