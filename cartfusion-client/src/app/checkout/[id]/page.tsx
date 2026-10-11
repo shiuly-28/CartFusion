@@ -7,6 +7,7 @@ import { motion } from "motion/react"
 import Image from 'next/image';
 import { FaStripe } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
+import { Loader, Loader2 } from 'lucide-react';
 
 function Checkout() {
   const params = useParams()
@@ -50,9 +51,9 @@ function Checkout() {
 
   if (!item) {
     return (
-      <div className='min-h-screen bg-linear-to-br from-[#020617] via-black to-[#020617]
-       text-4xl text-white flex items-center justify-center font-semibold'>
-        Loading....
+      <div className='min-h-screen bg-white
+       text-4xl text-gray-800 flex items-center justify-center font-semibold'>
+       <Loader2 size={40} className='text-[#00684D]' />
       </div>
     )
   }
@@ -98,7 +99,7 @@ function Checkout() {
   }
 
   return (
-    <div className='min-h-screen bg-linear-to-br from-[#020617] via-black to-[#020617] flex items-center justify-center px-6 py-12'>
+    <div className='min-h-screen bg-white text-gray-900 flex items-center justify-center px-6 py-12'>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -107,11 +108,11 @@ function Checkout() {
         className='w-full max-w-5xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl md:p-10 grid md:grid-cols-2 gap-8'
       >
         <div className='space-y-5'>
-          <h2 className='text-2xl font-bold text-white hover:text-[#00684D]'>Delivery Address</h2>
+          <h2 className='text-2xl font-bold text-black hover:text-[#00684D]'>Delivery Address</h2>
           <input 
             type="text" 
             placeholder='Full Name' 
-            className='w-full p-3 rounded-xl bg-black/60 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
+            className='w-full p-3 rounded-xl bg-black/10 text-gray-600 border border-white/40  placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
             onChange={(e) => setName(e.target.value)} 
             value={name}
           />
@@ -119,14 +120,14 @@ function Checkout() {
           <input 
             type="text" 
             placeholder='Phone Number' 
-            className='w-full p-3 rounded-xl bg-black/60 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
+            className='w-full p-3 rounded-xl bg-black/10 text-gray-600 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
             onChange={(e) => setPhone(e.target.value)} 
             value={phone}
           />
 
           <textarea 
             placeholder='Complete Address' 
-            className='w-full p-3 rounded-xl bg-black/60 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
+            className='w-full p-3 rounded-xl bg-black/10 text-gray-600 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
             onChange={(e) => setAddress(e.target.value)} 
             value={address}
           />
@@ -135,7 +136,7 @@ function Checkout() {
             <input 
               type="text" 
               placeholder='City' 
-              className='w-full p-3 rounded-xl bg-black/60 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
+              className='w-full p-3 rounded-xl bg-black/10 text-gray-600 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
               onChange={(e) => setCity(e.target.value)} 
               value={city}
             />
@@ -143,7 +144,7 @@ function Checkout() {
             <input 
               type="text" 
               placeholder='Pincode' 
-              className='w-full p-3 rounded-xl bg-black/60 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
+              className='w-full p-3 rounded-xl bg-black/10 text-gray-600 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D] hover:border-white/40 transition' 
               onChange={(e) => setPincode(e.target.value)} 
               value={pincode}
             />
@@ -151,11 +152,11 @@ function Checkout() {
         </div>
 
         <div className='space-y-5'>
-          <h2 className='text-2xl font-bold text-white hover:text-[#00684D]'>Order Summary</h2>
-          <div className='flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10'>
+          <h2 className='text-2xl font-bold text-gray-600 hover:text-[#00684D]'>Order Summary</h2>
+          <div className='flex items-center gap-4 bg-gray-200 p-4 rounded-xl border border-gray-300'>
             
             {/* Image Container with fixed height/width for fill attribute */}
-            <div className='relative h-20 w-20 shrink-0 bg-white rounded-lg overflow-hidden'>
+            <div className='relative h-20 w-20 shrink-0 bg-gray-600 rounded-lg overflow-hidden'>
               <Image 
                 src={item.product.image1} 
                 alt={item.product.title || 'Product Image'} 
@@ -166,13 +167,13 @@ function Checkout() {
             </div>
 
             <div className='flex-1'>
-              <p className='font-semibold text-gray-300'>{item.product.title}</p>
-              <p className='font-bold text-gray-400'>Qty: {item.quantity}</p>
+              <p className='font-semibold text-gray-700'>{item.product.title}</p>
+              <p className='font-bold text-gray-500'>Qty: {item.quantity}</p>
             </div>
             <p className='font-bold text-[#00684D] text-lg'>৳ {productTotal}</p>
           </div>
 
-          <div className='space-y-2 text-sm text-gray-300'>
+          <div className='space-y-2 text-sm text-gray-500'>
             <div className='flex justify-between'>
               <span>Delivery Charge</span>
               <span>৳ {deliveryCharge}</span>
@@ -181,14 +182,14 @@ function Checkout() {
               <span>Service Charge</span>
               <span>৳ {serviceCharge}</span>
             </div>
-            <div className='flex justify-between text-lg font-bold border-t border-white/20 text-white pt-2'>
+            <div className='flex justify-between text-lg font-bold border-t border-gray-300 text-gray-600 pt-2'>
               <span>Total</span>
               <span className='text-[#00684D]'>৳ {finalTotal}</span>
             </div>
           </div>
 
           <div className='space-y-3'>
-            <p className='font-semibold text-white'>Payment Method</p>
+            <p className='font-semibold text-gray-600'>Payment Method</p>
             <div className='flex gap-3'>
 
               <motion.button
@@ -198,7 +199,7 @@ function Checkout() {
               className={`flex-1 py-3 rounded-xl font-semibold transition text-white
                  ${paymentMethod === "cod"
                 ? "bg-[#00684D]"
-                : "bg-white/10"
+                : "bg-amber-500"
               } `}
               >Cash On Delivery</motion.button>
               <motion.button
@@ -210,7 +211,7 @@ function Checkout() {
                  gap-2 transition text-white
                  ${paymentMethod === "stripe"
                 ? "bg-[#00684D]"
-                : "bg-white/10"
+                : "bg-amber-500"
               }`}
              
               ><FaStripe className='text-xl border rounded bg-[#00684D] p-[2px]'/>Stripe</motion.button>
