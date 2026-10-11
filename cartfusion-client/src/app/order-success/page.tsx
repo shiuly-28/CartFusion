@@ -8,8 +8,7 @@ import { useRouter } from 'next/navigation'
 function OrderSuccess() {
   const router = useRouter()
   return (
-    <div className='min-h-screen bg-gradient-to-br from-[#00684D] via-black
-     to-gray-900 flex items-center justify-center text-white'>
+    <div className='min-h-screen bg-white text-gray-900 flex items-center justify-center '>
       <motion.div
         initial={{ opacity: 0, y:40 }}
               animate={{ opacity: 1, y:0 }}
@@ -23,10 +22,10 @@ function OrderSuccess() {
           className='flex justify-center'>
             <FaCheckCircle className='text-[#00684D]' size={120}/>
         </motion.div>
-        <h1 className='text-3xl font-bold text-white mt-6'>Order Placed Successfully</h1>
+        <h1 className='text-3xl font-bold text-gray-700 mt-6'>Order Placed Successfully</h1>
         <div className='flex flex-col items-center gap-2 mt-4 text-gray-300'>
           <FaBox size={32} className='text-[#00684D]'/>
-          <p>Your order has been recived and is now being processed</p>
+          <p className='text-gray-700'>Your order has been recived and is now being processed</p>
         </div>
 
         <motion.div

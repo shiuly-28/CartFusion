@@ -9,8 +9,7 @@ function OrderFailed() {
    const router = useRouter()
 
   return (
-  <div className='min-h-screen bg-gradient-to-br from-red-400 via-black
-     to-gray-900 flex items-center justify-center text-white'>
+  <div className='min-h-screen bg-white text-gray-900 flex items-center justify-center '>
       <motion.div
         initial={{ opacity: 0, y:40 }}
               animate={{ opacity: 1, y:0 }}
@@ -25,14 +24,14 @@ function OrderFailed() {
             <FaCheckCircle className='text-red-500' size={120}/>
         </motion.div>
         <h1 className='text-3xl font-bold text-white mt-6'>Order Failed</h1>
-       <p className='text-gray-400 mt-3'>Something went wrong</p>
-       <p className='text-gray-400 mt-3'>Please try again or choose another payment method.</p>
+       <p className='text-gray-500 mt-3'>Something went wrong</p>
+       <p className='text-gray-500 mt-3'>Please try again or choose another payment method.</p>
 
         <motion.div
         onClick={()=>router.push("/orders")}
         whileHover={{scale: 1.05}}
         whileTap={{ scale: 0.96 }}
-        className='mt-8 w-full py-3 rounded-lg bg-white/20 hover:bg-white-30
+        className='mt-8 w-full py-3 rounded-lg bg-[#00684D] hover:bg-white-30
          text-white font-semibold'>
           Go to Order Page
         </motion.div>

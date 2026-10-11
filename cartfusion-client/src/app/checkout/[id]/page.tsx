@@ -7,7 +7,6 @@ import { motion } from "motion/react"
 import Image from 'next/image';
 import { FaStripe } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
-import { Loader, Loader2 } from 'lucide-react';
 
 function Checkout() {
   const params = useParams()
@@ -53,7 +52,7 @@ function Checkout() {
     return (
       <div className='min-h-screen bg-white
        text-4xl text-gray-800 flex items-center justify-center font-semibold'>
-       <Loader2 size={40} className='text-[#00684D]' />
+        Loading....
       </div>
     )
   }
