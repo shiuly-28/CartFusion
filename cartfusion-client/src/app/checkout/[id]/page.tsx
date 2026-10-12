@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image';
 import { FaStripe } from 'react-icons/fa';
+import { IoArrowBack } from 'react-icons/io5';
 import { ClipLoader } from 'react-spinners';
 
 function Checkout() {
@@ -50,8 +51,7 @@ function Checkout() {
 
   if (!item) {
     return (
-      <div className='min-h-screen bg-white
-       text-4xl text-gray-800 flex items-center justify-center font-semibold'>
+      <div className='min-h-screen bg-white text-4xl text-gray-800 flex items-center justify-center font-semibold'>
         Loading....
       </div>
     )
@@ -81,9 +81,8 @@ function Checkout() {
     setLoading(true)
     try{
       if(paymentMethod === "cod"){
-        const result = await axios.post("/api/order/cod", payload)
+        await axios.post("/api/order/cod", payload)
         router.push("/order-success")
-    
         setLoading(false)
       }else{
         const result = await axios.post("/api/order/online-pay", payload)
@@ -98,13 +97,23 @@ function Checkout() {
   }
 
   return (
-    <div className='min-h-screen bg-white text-gray-900 flex items-center justify-center px-6 py-12'>
+    <div className='min-h-screen bg-white text-gray-900 flex flex-col items-center justify-center px-6 py-12 relative'>
+      
+      {/* 🟢 Back Button added here */}
+      <button 
+        onClick={() => router.back()} 
+        className='absolute top-6 left-6 sm:left-12 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-xl font-medium transition'
+      >
+        <IoArrowBack className='text-lg' />
+        <span>Back</span>
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -40 }}
         transition={{ duration: 0.5 }}
-        className='w-full max-w-5xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl md:p-10 grid md:grid-cols-2 gap-8'
+        className='w-full max-w-5xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl md:p-10 grid md:grid-cols-2 gap-8 mt-6'
       >
         <div className='space-y-5'>
           <h2 className='text-2xl font-bold text-black hover:text-[#00684D]'>Delivery Address</h2>
@@ -154,7 +163,6 @@ function Checkout() {
           <h2 className='text-2xl font-bold text-gray-600 hover:text-[#00684D]'>Order Summary</h2>
           <div className='flex items-center gap-4 bg-gray-200 p-4 rounded-xl border border-gray-300'>
             
-            {/* Image Container with fixed height/width for fill attribute */}
             <div className='relative h-20 w-20 shrink-0 bg-gray-600 rounded-lg overflow-hidden'>
               <Image 
                 src={item.product.image1} 
@@ -192,19 +200,19 @@ function Checkout() {
             <div className='flex gap-3'>
 
               <motion.button
-          whileHover={{scale:1.03}}
-          whileTap={{scale:0.97}}
-            onClick={()=>setPaymentMethod("cod")} 
-              className={`flex-1 py-3 rounded-xl font-semibold transition text-white
+              whileHover={{scale:1.03}}
+              whileTap={{scale:0.97}}
+                onClick={()=>setPaymentMethod("cod")} 
+                className={`flex-1 py-3 rounded-xl font-semibold transition text-white
                  ${paymentMethod === "cod"
                 ? "bg-[#00684D]"
                 : "bg-amber-500"
               } `}
               >Cash On Delivery</motion.button>
               <motion.button
-          whileHover={{scale:1.03}}
-          whileTap={{scale:0.97}}
-           
+              whileHover={{scale:1.03}}
+              whileTap={{scale:0.97}}
+               
                onClick={()=>setPaymentMethod("stripe")}
                className={`flex-1 py-3 rounded-xl font-semibold flex items-center justify-center
                  gap-2 transition text-white
@@ -212,7 +220,7 @@ function Checkout() {
                 ? "bg-[#00684D]"
                 : "bg-amber-500"
               }`}
-             
+               
               ><FaStripe className='text-xl border rounded bg-[#00684D] p-[2px]'/>Stripe</motion.button>
             </div>
           </div>
