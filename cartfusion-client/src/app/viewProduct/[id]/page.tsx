@@ -5,146 +5,182 @@ import { IProduct } from '@/model/product.model';
 import { IUser } from '@/model/user.model';
 import { RootState } from '@/redux/store';
 import axios from 'axios';
-import {motion } from "motion/react"
+import { motion } from "motion/react"
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
-import { FaArrowLeft, FaRegStar, FaStar, FaUserCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaBolt, FaRegStar, FaShoppingCart, FaStar, FaUserCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { ClipLoader } from 'react-spinners';
 import { useSession } from 'next-auth/react';
 
 function ViewProduct() {
-    const params = useParams()
-    const productId = params.id as string;
-    UseGetAllProducts()
-    const [reviewsRating, setReviewsRating] = useState(0)
-    const [reviewsComment, setReviewsComment] = useState("")
-    const [reviewsImage, setReviewsImage] = useState<File | null>(null)
-    const [preview, setPreview] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false);
+  const params = useParams()
+  const productId = params.id as string;
+  UseGetAllProducts()
+  const [reviewsRating, setReviewsRating] = useState(0)
+  const [reviewsComment, setReviewsComment] = useState("")
+  const [reviewsImage, setReviewsImage] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [buyNowLoading, setBuyNowLoading] = useState(false);
 
-    const { data: session } = useSession();
-    const { userData } = useSelector((state: RootState) => state.user);
-    const {allProductData} = useSelector((state:RootState) =>state.merchant)
-    const router = useRouter()
-    
-    const  product:IProduct | undefined = allProductData?.find((p:IProduct)=>String(p._id) === String(productId))
+  const { data: session } = useSession();
+  const { userData } = useSelector((state: RootState) => state.user);
+  const { allProductData } = useSelector((state: RootState) => state.merchant)
+  const router = useRouter()
 
-    const images : string[]= [
-        product?.image1,
-        product?.image2,
-        product?.image3,
-        product?.image4
-    ].filter((img): img is string => Boolean(img))
+  const product: IProduct | undefined = allProductData?.find((p: IProduct) => String(p._id) === String(productId))
 
-    const relatedProducts = allProductData.filter((p)=> p.category === product?.category
-     && p._id !==product._id)
+  const images: string[] = [
+    product?.image1,
+    product?.image2,
+    product?.image3,
+    product?.image4
+  ].filter((img): img is string => Boolean(img))
 
-     const totalReviews = product?.reviews?.length ?? 0
+  const relatedProducts = allProductData.filter((p) => p.category === product?.category && p._id !== product?._id)
 
-     const avgRating = product && totalReviews>0 ?(
-      product.reviews!.reduce((sum:number, r : {rating:number})=> sum + r.rating, 0)/totalReviews
-     ).toFixed(1) : 0
+  const totalReviews = product?.reviews?.length ?? 0
 
-    const handleAddCart = async (e: React.MouseEvent) => {
-      e.stopPropagation()
+  const avgRating = product && totalReviews > 0 ? (
+    product.reviews!.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / totalReviews
+  ).toFixed(1) : 0
 
-      if (!session?.user && !userData) {
-        alert("কার্টে পণ্য যোগ করতে প্রথমে লগইন করতে হবে!")
-        router.push(`/login?callbackUrl=/viewProduct/${productId}`)
-        return
-      }
-           try {
-             const result = await axios.post("/api/user/cart/add", {
-               productId: productId,
-               quantity: 1
-             })
-             console.log(result.data)
-             alert("✅ Added to cart")
-             router.push("/cart")
-           }catch(error){
-             console.log(error)
-             const errMsg = (error as any)?.response?.data?.message || "Add to cart error"
-             alert(errMsg)
-             if ((error as any)?.response?.status === 401) {
-               router.push(`/login?callbackUrl=/viewProduct/${productId}`)
-             }
-           }
-          }
+  const handleAddCart = async (e: React.MouseEvent) => {
+    e.stopPropagation()
 
-    const [activeImage, setActiveImage] = useState(0)
-
-    const handleSubmitReview = async () =>{
-      const formData = new FormData()
-      formData.append("productId",String(productId));
-      formData.append("rating", String(reviewsRating))
-      formData.append("comment", reviewsComment)
-      if(reviewsImage){
-        formData.append("image", reviewsImage)
-      }
-      setLoading(true)
-      try{
-        const result = await axios.post("/api/merchant/addReview", formData)
-        setLoading(false)
-        alert("✅ Review added successfully");
-        setPreview(null)
-        setReviewsComment("")
-        setReviewsRating(0)
-        setReviewsImage(null)
-      }catch(error){
-        console.log(error)
-        setLoading(false)
-        alert("Add review error")
-      }
+    if (!session?.user && !userData) {
+      alert("কার্টে পণ্য যোগ করতে প্রথমে লগইন করতে হবে!")
+      router.push(`/login?callbackUrl=/viewProduct/${productId}`)
+      return
     }
+
+    if (!product || product.stock <= 0) {
+      alert("দুঃখিত, এই পণ্যটি স্টকে নেই!")
+      return
+    }
+
+    setCartLoading(true)
+    try {
+      const result = await axios.post("/api/user/cart/add", {
+        productId: productId,
+        quantity: 1
+      })
+      console.log(result.data)
+      alert("✅ Added to cart")
+      router.push("/cart")
+    } catch (error) {
+      console.log(error)
+      const errMsg = (error as any)?.response?.data?.message || "Add to cart error"
+      alert(errMsg)
+      if ((error as any)?.response?.status === 401) {
+        router.push(`/login?callbackUrl=/viewProduct/${productId}`)
+      }
+    } finally {
+      setCartLoading(false)
+    }
+  }
+
+  const handleBuyNow = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    if (!session?.user && !userData) {
+      alert("অর্ডার করতে প্রথমে লগইন করতে হবে!")
+      router.push(`/login?callbackUrl=/viewProduct/${productId}`)
+      return
+    }
+
+    if (!product || product.stock <= 0) {
+      alert("দুঃখিত, এই পণ্যটি স্টকে নেই!")
+      return
+    }
+
+    setBuyNowLoading(true)
+    try {
+      await axios.post("/api/user/cart/add", {
+        productId: productId,
+        quantity: 1
+      })
+      router.push(`/checkout/${productId}`)
+    } catch (error) {
+      console.log(error)
+      const errMsg = (error as any)?.response?.data?.message || "Checkout failed"
+      alert(errMsg)
+      if ((error as any)?.response?.status === 401) {
+        router.push(`/login?callbackUrl=/viewProduct/${productId}`)
+      }
+    } finally {
+      setBuyNowLoading(false)
+    }
+  }
+
+  const [activeImage, setActiveImage] = useState(0)
+
+  const handleSubmitReview = async () => {
+    const formData = new FormData()
+    formData.append("productId", String(productId));
+    formData.append("rating", String(reviewsRating))
+    formData.append("comment", reviewsComment)
+    if (reviewsImage) {
+      formData.append("image", reviewsImage)
+    }
+    setLoading(true)
+    try {
+      const result = await axios.post("/api/merchant/addReview", formData)
+      setLoading(false)
+      alert("✅ Review added successfully");
+      setPreview(null)
+      setReviewsComment("")
+      setReviewsRating(0)
+      setReviewsImage(null)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+      alert("Add review error")
+    }
+  }
 
   return (
     <div className='min-h-screen bg-white px-4 p-10'>
       <div className='max-w-6xl mx-auto'>
-          {/* 🟢 Back Button */}
-        <button 
-          onClick={() => router.back()} 
+        {/* 🟢 Back Button */}
+        <button
+          onClick={() => router.back()}
           className='flex items-center gap-2 text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg mb-6 transition-all duration-200 border border-gray-200'
         >
           <FaArrowLeft className='text-sm' />
           <span className='text-sm font-medium'>Back</span>
         </button>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
-            {/* left loop */}
-            <div className='flex flex-col lg:flex-row gap-4'>
-                {/* main image */}
-                <div className='relative w-full lg:w-[450px] h-[420px] bg-gray-50 rounded-lg overflow-hidden
+          {/* left loop */}
+          <div className='flex flex-col lg:flex-row gap-4'>
+            {/* main image */}
+            <div className='relative w-full lg:w-[450px] h-[420px] bg-gray-50 rounded-lg overflow-hidden
                 flex items-center justify-center border border-gray-200'>
-                    {images.length > 0 && images[activeImage] &&
-                        <Image  src={images[activeImage]} alt={product?.title ?? "product image"}
-                    fill
-                    className='object-contain'
-                    priority/>}
-                </div>
+              {images.length > 0 && images[activeImage] &&
+                <Image src={images[activeImage]} alt={product?.title ?? "product image"}
+                  fill
+                  className='object-contain'
+                  priority />}
+            </div>
 
-                {/* image thumbless */}
-               <div className='flex flex-row lg:flex-col gap-3 justify-center'>
-            {images.map((img, i) => (
-           <div 
-          key={i} 
-          onClick={() => setActiveImage(i)} 
-          className={`relative w-20 h-20 border-2 rounded-lg cursor-pointer 
-          overflow-hidden flex items-center justify-center hover:scale-105 
-          transition-all duration-200 ${
-            activeImage === i
-            ? "border-[#00684D] shadow-md"
-            : "border-gray-200 hover:border-gray-400"  
-          }`}>
-          <Image 
-          src={img} 
-          alt={`Product preview ${i + 1}`} 
-          fill 
-         className="object-cover"/>
-        </div>
-       ))}
-      </div>
-        </div>
+            {/* Thumbnail */}
+            <div className='flex lg:flex-col gap-3 justify-center'>
+              {images.map((img, i) => (
+                <div
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  className={`relative w-16 h-16 rounded-md overflow-hidden cursor-pointer border-2 transition ${activeImage === i ? "border-[#00684D]" : "border-gray-200"
+                    }`}
+                >
+                  <Image src={img} alt={`thumb-${i}`} fill className="object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Right bottom */}
           {product && <div>
             <h3 className='text-3xl text-gray-900 font-bold mb-3'>{product?.title}</h3>
@@ -152,12 +188,12 @@ function ViewProduct() {
             <p className='text-2xl text-[#00684D] font-bold'>৳ {product?.price}</p>
             <div className='flex items-center gap-2 mt-1 mb-4'>
               <div className='flex text-yellow-400'>
-                {[1, 2, 3, 4, 5].map((i)=>(
-                  i<= Math.round(Number(avgRating)) ?
-                  <FaStar key={i}/>: <FaRegStar key={i} className='text-gray-300'/>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  i <= Math.round(Number(avgRating)) ?
+                    <FaStar key={i} /> : <FaRegStar key={i} className='text-gray-300' />
                 ))}
               </div>
-              <span className='text-sm text-gray-500'>(avgRating / {totalReviews}) Reviews</span>
+              <span className='text-sm text-gray-500'>({avgRating} / {totalReviews} Reviews)</span>
             </div>
             <p className='mb-4 text-gray-600'>{product?.description}</p>
             <p className='mb-3 text-gray-700'>
@@ -165,51 +201,51 @@ function ViewProduct() {
                 ? "text-[#00684D]"
                 : "text-red-500"
               }>
-                {product?.stock > 0 ? "In  Stock" : "Out of Stock"}
+                {product?.stock > 0 ? "In Stock" : "Out of Stock"}
               </span>
             </p>
-            <motion.button 
-            onClick={handleAddCart}
-            whileHover={{scale: 1.02}}
-            whileTap={{scale:0.96}}
-            className='w-full bg-[#00684D] hover:bg-[#045f47]
-             py-3 rounded font-semibold transition text-white'
-            >
-              Add to Cart
-            </motion.button>
+
+            {/* Action Buttons: Add to Cart & Buy Now */}
+            <div className='flex flex-col sm:flex-row gap-3 mt-4'>
+              <motion.button
+                onClick={handleAddCart}
+                disabled={product.stock <= 0 || cartLoading}
+                whileHover={product.stock > 0 ? { scale: 1.02 } : {}}
+                whileTap={product.stock > 0 ? { scale: 0.96 } : {}}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition border-2 ${
+                  product.stock <= 0
+                    ? 'border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed'
+                    : 'border-[#00684D] text-[#00684D] hover:bg-emerald-50 bg-white'
+                }`}
+              >
+                <FaShoppingCart size={16} />
+                {cartLoading ? "Adding..." : "Add to Cart"}
+              </motion.button>
+
+              <motion.button
+                onClick={handleBuyNow}
+                disabled={product.stock <= 0 || buyNowLoading}
+                whileHover={product.stock > 0 ? { scale: 1.02 } : {}}
+                whileTap={product.stock > 0 ? { scale: 0.96 } : {}}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition text-white shadow-md ${
+                  product.stock <= 0
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[#00684D] hover:bg-[#045f47] shadow-[#00684D]/20'
+                }`}
+              >
+                <FaBolt size={16} />
+                {buyNowLoading ? "Processing..." : "Buy Now"}
+              </motion.button>
+            </div>
           </div>}
         </div>
 
         {product && <div className='mt-10 bg-gray-50 border border-gray-200 rounded-lg p-6'>
-          {/* {product.isWearable && (
+          {product.detailsPoint && product.detailsPoint.length > 0 && (
             <div className='mb-5'>
-              <p className='font-semibold mb-2 text-gray-900'>
-                Available Sizes
-              </p>
-              <div className='flex flex-wrap gap-2'>
-                {product.size?.map((s)=>(
-                  <span key={s} className='px-3 py-1 border bg-white border-gray-300 text-gray-700 rounded'>
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )} */}
-
-          <div className='space-y-2 text-gray-600'>
-            {typeof product.replacementDays == "number" && product.replacementDays > 0 && (
-              <p>✅ {product.replacementDays} Days Replacement</p>
-            )}
-            {product.freeDelivery === true && <p>✅ Free Delivery</p>}
-            {product.payOnDevelivery === true && <p>✅ Cash on Delivery Available</p>}
-            {product.warranty && product.warranty !== "No warranty" &&
-             <p>✅ warranty: {product.warranty}</p>}
-          </div>
-          {Array.isArray(product.detailsPoint) && product.detailsPoint.length > 0 && (
-            <div className='mb-6 mt-4'>
-              <h3 className='font-semibold mb-2 text-gray-900'>Highlights</h3>
+              <h4 className='text-xl font-bold mb-2 text-gray-900'>Highlights</h4>
               <ul className='list-disc pl-5 space-y-1 text-gray-600'>
-                {product.detailsPoint.map((p,i)=>(
+                {product.detailsPoint.map((p, i) => (
                   <li key={i}>{p}</li>
                 ))}
               </ul>
@@ -220,11 +256,11 @@ function ViewProduct() {
         {Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
           <div className='mt-12 bg-gray-50 border border-gray-200 rounded-lg p-6'>
             <h3 className='text-2xl font-bold mb-5 text-gray-900'>Related Products</h3>
-           <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5'>
-             {relatedProducts.slice(0.8).map((rp)=>(
-            <ProductCard key={rp._id?.toString()} product={rp}/>
-            ))}
-           </div>
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5'>
+              {relatedProducts.slice(0, 8).map((rp) => (
+                <ProductCard key={rp._id?.toString()} product={rp} />
+              ))}
+            </div>
           </div>
         )}
 
@@ -234,103 +270,98 @@ function ViewProduct() {
             <p className='text-gray-900 font-semibold mb-2'>Add your Review</p>
             <div className='flex gap-2 mb-3 text-yellow-400'>
               {
-                [1, 2, 3, 4, 5].map((i)=>(
+                [1, 2, 3, 4, 5].map((i) => (
                   <span className='cursor-pointer'
-                   onClick={()=>setReviewsRating(i)} key={i}>
-                    {i<= reviewsRating ? <FaStar/> : <FaRegStar className='text-gray-300'/>}
+                    onClick={() => setReviewsRating(i)} key={i}>
+                    {i <= reviewsRating ? <FaStar /> : <FaRegStar className='text-gray-300' />}
                   </span>
                 ))
               }
             </div>
 
             <textarea
-            onChange={(e)=>setReviewsComment(e.target.value)} value={reviewsComment}
-            placeholder='Write a review...' className='w-full p-3 focus:ring-[#00684D] focus:outline-none 
+              onChange={(e) => setReviewsComment(e.target.value)} value={reviewsComment}
+              placeholder='Write a review...' className='w-full p-3 focus:ring-[#00684D] focus:outline-none 
             focus:ring-2 rounded bg-white text-gray-900
-            border border-gray-300 mb-3' rows={3}/>
+            border border-gray-300 mb-3' rows={3} />
 
-           <div className='flex flex-col'>
-            <label className='text-gray-900 font-semibold mb-2'
-            htmlFor='img'>Select Image for Review</label>
-            <input type="file" accept='image/*' className='mb-3 bg-white text-black p-2 w-[200px] rounded-lg border border-gray-300' id='img'
-            onChange={(e)=>{
-              const file = e.target.files?.[0]
-              if(file){
-                 setReviewsImage(file)
-                setPreview(URL.createObjectURL(file))
-              }
-            }} />
+            <div className='flex flex-col'>
+              <label className='text-gray-900 font-semibold mb-2'
+                htmlFor='img'>Select Image for Review</label>
+              <input type="file" accept='image/*' className='mb-3 bg-white text-black p-2 w-[200px] rounded-lg border border-gray-300' id='img'
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setReviewsImage(file)
+                    setPreview(URL.createObjectURL(file))
+                  }
+                }} />
 
-            {preview && <Image src={preview} alt='preview' width={100} height={100}
-            className='rounded mb-3'/>}
-           </div>
+              {preview && <Image src={preview} alt='preview' width={100} height={100}
+                className='rounded mb-3' />}
+            </div>
 
-           <motion.button
-           whileHover={{scale:1.04}}
-           whileTap={{scale: 0.97}}
-           disabled = {loading}
-           onClick={handleSubmitReview}
-            className='bg-[#00684D] hover:bg-[#045f47] py-2 px-6 rounded 
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              disabled={loading}
+              onClick={handleSubmitReview}
+              className='bg-[#00684D] hover:bg-[#045f47] py-2 px-6 rounded 
            text-white font-semibold mt-4'>{loading ?
-            <ClipLoader size={22} color='white'/> : "Submit Review"}</motion.button>
+                <ClipLoader size={22} color='white' /> : "Submit Review"}</motion.button>
           </div>
 
-              {product?.reviews && product.reviews.length > 0 ? (
-               <h2 className='text-gray-900 font-semibold mb-2 text-2xl'>All Reviews</h2>
-            
-            ):(
-              <h2 className='text-gray-900 font-semibold mb-2 text-2xl'>No Reviews found</h2>
-            )
-          }
+          {product?.reviews && product.reviews.length > 0 ? (
+            <h2 className='text-gray-900 font-semibold mb-2 text-2xl'>All Reviews</h2>
+          ) : (
+            <h2 className='text-gray-900 font-semibold mb-2 text-2xl'>No Reviews found</h2>
+          )}
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10'>
-           
-{product?.reviews?.map((r, i) => {
-  const reviewUser = r.user as IUser;
-  return (
-    <div key={i} className='bg-white w-[250px] border border-gray-200 shadow-sm rounded-lg p-5'>
-      <div className='flex items-center gap-3 mb-2'>
-        <div className='w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 text-gray-500'>
-          {reviewUser?.image ? (
-            <Image 
-              src={reviewUser.image} 
-              alt={reviewUser?.name || "User"}
-              width={40}
-              height={40}
-              className='rounded-full object-cover'
-            />
-          ) : (
-            <FaUserCircle className='w-8 h-8'/>
-          )}
-        </div>
-        <div>
-          <p className='text-gray-900 font-semibold text-sm'>{reviewUser?.name || "Deleted User"}</p>
-          <div className='flex text-yellow-400 text-sm mt-1.5'>
-            {[1, 2, 3, 4, 5].map((i) => (
-              i <= r.rating ? <FaStar key={i}/> : <FaRegStar key={i} className='text-gray-300'/>
-            ))}
+            {product?.reviews?.map((r, i) => {
+              const reviewUser = r.user as IUser;
+              return (
+                <div key={i} className='bg-white w-[250px] border border-gray-200 shadow-sm rounded-lg p-5'>
+                  <div className='flex items-center gap-3 mb-2'>
+                    <div className='w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 text-gray-500'>
+                      {reviewUser?.image ? (
+                        <Image
+                          src={reviewUser.image}
+                          alt={reviewUser?.name || "User"}
+                          width={40}
+                          height={40}
+                          className='rounded-full object-cover'
+                        />
+                      ) : (
+                        <FaUserCircle className='w-8 h-8' />
+                      )}
+                    </div>
+                    <div>
+                      <p className='text-gray-900 font-semibold text-sm'>{reviewUser?.name || "Deleted User"}</p>
+                      <div className='flex text-yellow-400 text-sm mt-1.5'>
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          i <= r.rating ? <FaStar key={i} /> : <FaRegStar key={i} className='text-gray-300' />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className='text-gray-700 text-sm mb-3'> {r.comment}</p>
+                  {r.image ? (
+                    <div className='w-[180px] h-[180px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50'>
+                      <Image src={r.image} alt='Review Image' width={140} height={180} className='object-contain' />
+                    </div>
+                  ) : (
+                    <div className='w-[180px] h-[180px] border border-gray-200 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center text-gray-400 text-xl'>
+                      No Review Image
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
-
-      <p className='text-gray-700 text-sm mb-3'> {r.comment}</p>
-      {r.image ? (
-        <div className='w-[180px] h-[180px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50'>
-          <Image src={r.image} alt='Review Image' width={140} height={180} className='object-contain'/>
-        </div>
-      ) : (
-        <div className='w-[180px] h-[180px] border border-gray-200 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center text-gray-400 text-xl'>
-          No Review Image
-        </div>
-      )}
-    </div>
-  );
-})}
-          </div>
-        </div>
-      </div>
-
-
     </div>
   )
 }
