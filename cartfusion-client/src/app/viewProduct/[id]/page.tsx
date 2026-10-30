@@ -12,6 +12,7 @@ import React, { useState } from 'react'
 import { FaArrowLeft, FaRegStar, FaStar, FaUserCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { ClipLoader } from 'react-spinners';
+import { useSession } from 'next-auth/react';
 
 function ViewProduct() {
     const params = useParams()
@@ -23,6 +24,8 @@ function ViewProduct() {
     const [preview, setPreview] = useState<string | null>(null)
     const [loading, setLoading] = useState(false);
 
+    const { data: session } = useSession();
+    const { userData } = useSelector((state: RootState) => state.user);
     const {allProductData} = useSelector((state:RootState) =>state.merchant)
     const router = useRouter()
     
@@ -44,8 +47,14 @@ function ViewProduct() {
       product.reviews!.reduce((sum:number, r : {rating:number})=> sum + r.rating, 0)/totalReviews
      ).toFixed(1) : 0
 
-        const handleAddCart = async(e: React.MouseEvent) => {
-             e.stopPropagation()
+    const handleAddCart = async (e: React.MouseEvent) => {
+      e.stopPropagation()
+
+      if (!session?.user && !userData) {
+        alert("কার্টে পণ্য যোগ করতে প্রথমে লগইন করতে হবে!")
+        router.push(`/login?callbackUrl=/viewProduct/${productId}`)
+        return
+      }
            try {
              const result = await axios.post("/api/user/cart/add", {
                productId: productId,
@@ -56,7 +65,11 @@ function ViewProduct() {
              router.push("/cart")
            }catch(error){
              console.log(error)
-             alert("add to cart error")
+             const errMsg = (error as any)?.response?.data?.message || "Add to cart error"
+             alert(errMsg)
+             if ((error as any)?.response?.status === 401) {
+               router.push(`/login?callbackUrl=/viewProduct/${productId}`)
+             }
            }
           }
 
