@@ -1,12 +1,14 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import { FiUpload } from 'react-icons/fi'
 import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { ClipLoader } from 'react-spinners'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 const inputCls =
   'p-3 bg-white border border-gray-300 rounded text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00684D]'
@@ -55,6 +57,16 @@ function AddMerchantProduct() {
   const [currentPoint, setCurrentPoint] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { userData } = useSelector((state: RootState) => state.user)
+
+  useEffect(() => {
+    if (userData && userData.role !== 'admin') {
+      if (userData.role !== 'merchant' || !userData.isApproved) {
+        alert("শুধুমাত্র অনুমোদিত মার্চেন্টরাই প্রোডাক্ট যোগ করতে পারবেন।")
+        router.push("/")
+      }
+    }
+  }, [userData, router])
 
   // const toggleSize = (size: string) => {
   //   setSelectedSizes((prev) =>
@@ -118,10 +130,11 @@ function AddMerchantProduct() {
       setLoading(false)
       alert("✅ Product added successfully. Waiting for admin approval")
       router.push("/")
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false)
       console.log("ADD PRODUCT ERROR:", error)
-      alert("❌ Product add failed")
+      const errorMsg = error?.response?.data?.message || "Product add failed"
+      alert(`❌ ${errorMsg}`)
     }
   }
 
