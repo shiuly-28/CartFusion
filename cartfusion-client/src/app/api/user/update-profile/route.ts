@@ -12,13 +12,13 @@ export async function POST(req: NextRequest) {
     if (!session || !session.user?.email) {
       return NextResponse.json(
         { message: "Unauthorized User" },
-        { status: 401 } // 🌟 Unauthorized-এর জন্য 401 দেওয়া ভালো
+        { status: 401 }
       );
     }
 
     const userEmail = session.user.email;
     const formData = await req.formData();
-    
+
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
     const file = formData.get("image") as File | null;
@@ -30,13 +30,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🌟 আপডেটের জন্য ডাটা প্রস্তুত করা
     const updateData: { name: string; phone: string; image?: string } = {
       name,
       phone,
     };
 
-    // যদি নতুন ইমেজ সিলেক্ট করা থাকে তবেই কেবল image ফিল্ড আপডেট হবে
     if (file && file.size > 0) {
       const imageUrl = await uploadOnCloudinary(file);
       if (imageUrl) {
@@ -48,7 +46,7 @@ export async function POST(req: NextRequest) {
       { email: userEmail },
       { $set: updateData },
       { new: true }
-    );
+    ).select("-password");
 
     if (!updatedUser) {
       return NextResponse.json(
@@ -58,7 +56,6 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(updatedUser, { status: 200 });
-
   } catch (error: any) {
     return NextResponse.json(
       { message: `Update profile error: ${error.message}` },
