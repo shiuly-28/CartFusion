@@ -18,7 +18,7 @@ export async function POST(req:NextRequest){
             shopAddress,
             gstNumber, 
             verificationStatus: "pending",
-            requestAt:new Date()
+            requestedAt: new Date()
         },{new:true})
         if(!user){
             return NextResponse.json({message: "user not found"},

@@ -5,7 +5,12 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     await connectDb();
-    const merchants = await User.find({ role: "merchant" })
+    const merchants = await User.find({
+      $or: [
+        { role: "merchant" },
+        { shopName: { $exists: true, $ne: "" } },
+      ],
+    })
       .select("-password -chats")
       .sort({ createdAt: -1 })
       .populate("merchantProducts");

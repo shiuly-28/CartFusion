@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
     } else if (status === "rejected") {
       merchant.verificationStatus = "rejected";
       merchant.isApproved = false;
+      merchant.role = "user";
       merchant.rejectedReason = rejectedReason || "rejected by admin";
     } else {
       return NextResponse.json(

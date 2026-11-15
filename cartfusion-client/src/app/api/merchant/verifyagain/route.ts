@@ -23,9 +23,9 @@ export async function POST(req:NextRequest){
             shopAddress,
             gstNumber, 
             verificationStatus: "pending",
-            requestAt:new Date(),
-            rejectedReason:null,
-            isApproved:false
+            requestedAt: new Date(),
+            rejectedReason: null,
+            isApproved: false
         },{new:true})
         if(!UpdatedMerchant){
             return NextResponse.json({message: "Merchant not found"},
