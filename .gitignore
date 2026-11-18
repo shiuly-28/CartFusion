@@ -7,3 +7,7 @@
 venv/
 config.bat
 node_modules
+
+# Environment variables & secrets (added by GitHub Guardian)
+.env
+.env.*
