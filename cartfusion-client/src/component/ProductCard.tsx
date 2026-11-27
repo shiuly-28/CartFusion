@@ -5,9 +5,11 @@ import { motion } from "motion/react"
 import Image from 'next/image'
 import { FaChevronLeft, FaChevronRight, FaRegStar, FaShoppingCart, FaStar } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
-import { IUser } from '@/model/user.model' 
+import { IUser } from '@/model/user.model'
+import axios from 'axios'
 
 function ProductCard({product} : {product:IProduct}) {
+  const [addingCart, setAddingCart] = useState(false)
   const images = [
     product.image1,
     product.image2,
@@ -28,6 +30,27 @@ function ProductCard({product} : {product:IProduct}) {
   const avgRating = product && totalReviews > 0 
     ? (product.reviews!.reduce((sum:number, r : {rating:number})=> sum + r.rating, 0)/totalReviews).toFixed(1) 
     : 0
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setAddingCart(true)
+    try {
+      await axios.post("/api/user/cart/add", {
+        productId: product._id,
+        quantity: 1,
+      })
+      alert("✅ Added to cart")
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        alert("কার্টে পণ্য যোগ করতে প্রথমে লগইন করতে হবে!")
+        router.push("/login")
+      } else {
+        alert("Failed to add to cart")
+      }
+    } finally {
+      setAddingCart(false)
+    }
+  }
 
   return (
     <motion.div 
@@ -56,7 +79,7 @@ function ProductCard({product} : {product:IProduct}) {
         <button
           onClick={(e) =>{
             e.stopPropagation();
-            next()
+            prev()
           }}
           className='absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md rounded-full text-gray-700 z-10 p-2 transition'
         >
@@ -66,7 +89,7 @@ function ProductCard({product} : {product:IProduct}) {
         <button
           onClick={(e) =>{
             e.stopPropagation();
-            prev()
+            next()
           }}
           className='absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md rounded-full text-gray-700 z-10 p-2 transition'
         >
@@ -107,9 +130,11 @@ function ProductCard({product} : {product:IProduct}) {
 
         <motion.button 
           whileTap={{ scale: 0.95 }}
-          className='w-full mt-3 bg-[#00684D] hover:bg-[#045f47] text-white py-2 rounded-lg flex items-center justify-center gap-2 transition font-medium text-sm'
+          disabled={addingCart}
+          onClick={handleAddToCart}
+          className='w-full mt-3 bg-[#00684D] hover:bg-[#045f47] text-white py-2 rounded-lg flex items-center justify-center gap-2 transition font-medium text-sm disabled:opacity-50'
         >
-          <FaShoppingCart size={14}/> Add to cart
+          <FaShoppingCart size={14}/> {addingCart ? "Adding..." : "Add to cart"}
         </motion.button>
       </div>
     </motion.div>

@@ -124,7 +124,8 @@ export async function POST(req: NextRequest) {
       })
 
       user.cart = user.cart.filter((item: any) =>
-         item.product._id.toString() !== productId.toString())
+         (item.product?._id || item.product).toString() !== productId.toString()
+      )
 
       user.orders.push(order._id)
       await user.save()

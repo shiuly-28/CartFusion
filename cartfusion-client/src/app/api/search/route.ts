@@ -30,11 +30,11 @@ export async function GET(req:NextRequest){
             filter.category = category;
         }
         if(shop && shop !== "all"){
-            filter.merchant = category;
+            filter.merchant = shop;
         }
 
         const products = await Product.find(filter).populate("merchant", "shopName image")
-        .sort({createAt:-1})
+        .sort({createdAt: -1})
         return NextResponse.json(
             {
                 success: true,

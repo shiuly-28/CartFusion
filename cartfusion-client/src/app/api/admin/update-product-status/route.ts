@@ -29,8 +29,9 @@ product.rejectedReason = undefined;
 }
 
 if(status === "rejected"){
-product.verificationStatus = "rejected",
-product.rejectedReason = rejectedReason || "rejected by admin"
+product.verificationStatus = "rejected";
+product.isActive = false;
+product.rejectedReason = rejectedReason || "rejected by admin";
 }
 
 await product.save()

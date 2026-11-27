@@ -46,7 +46,7 @@ function UserOrders() {
   return (
     <div className='w-full min-h-screen px-3 sm:px-6 lg:px-10 py-6 bg-gray-50 text-gray-900'>
       <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-xl lg:text-3xl font-bold text-gray-900'>Merchant Order</h1>
+        <h1 className='text-xl lg:text-3xl font-bold text-gray-900'>Customer Orders</h1>
         <p className='text-gray-600'>{orders.length} Orders</p>
       </div>
 

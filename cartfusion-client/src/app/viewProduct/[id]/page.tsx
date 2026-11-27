@@ -118,6 +118,21 @@ function ViewProduct() {
 
   const [activeImage, setActiveImage] = useState(0)
 
+  if (!product) {
+    return (
+      <div className='min-h-screen bg-white flex flex-col items-center justify-center gap-4 text-gray-500'>
+        <button
+          onClick={() => router.back()}
+          className='flex items-center gap-2 text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition border border-gray-200'
+        >
+          <FaArrowLeft className='text-sm' />
+          <span>Back</span>
+        </button>
+        <p className='text-lg font-medium'>Loading product...</p>
+      </div>
+    )
+  }
+
   const handleSubmitReview = async () => {
     const formData = new FormData()
     formData.append("productId", String(productId));

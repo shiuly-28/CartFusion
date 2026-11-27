@@ -225,11 +225,13 @@ function Orders() {
 
                           {order.orderStatus !== "cancelled" && order.orderStatus !== "returned" && (
                             <>
-                              <button onClick={() => setSelectedOrder(order)}
+                              <button
+                                onClick={() => setSelectedOrder(order)}
                                 className='px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-nowrap'>
                                 Check Details
                               </button>
-                              <button disabled={order.orderStatus === "delivered"}
+                              <button
+                                disabled={order.orderStatus === "delivered"}
                                 onClick={() => setTrackOrderModel(order)}
                                 className={`px-3 flex py-1 justify-center items-center rounded transition text-nowrap
                                   ${order.orderStatus === "delivered"
