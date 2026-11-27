@@ -9,6 +9,11 @@ config.bat
 node_modules
 
 # Environment variables & secrets (added by GitHub Guardian)
+<<<<<<< HEAD
+=======
+
+# Environment variables & secrets (added by GitHub Guardian)
+>>>>>>> 5f0c81e67b7198a0d33d6d3abdd37460fe47c2d7
 
 # Environment variables & secrets (added by GitHub Guardian)
 .env
